@@ -595,6 +595,7 @@ typedef enum {
 	STAT_CAPTUREHOLD_RED,			// JPW NERVE - red team score
 	STAT_CAPTUREHOLD_BLUE,			// JPW NERVE - blue team score
 	STAT_XP,						// Gordon: "realtime" version of xp that doesnt need to go thru the scoreboard
+	STAT_SPRINTTIME	                // sprinttime for CG_DrawStaminaBar()
 } statIndex_t;
 
 // player_state->persistant[] indexes

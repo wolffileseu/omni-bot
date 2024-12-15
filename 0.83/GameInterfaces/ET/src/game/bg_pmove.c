@@ -5575,6 +5575,9 @@ void PmoveSingle (pmove_t *pmove) {
 		//	SnapVector( pm->ps->velocity );
 	}
 	// end CS
+
+	// save sprinttime for CG_DrawStaminaBar()
+	pm->ps->stats[STAT_SPRINTTIME] = pm->pmext->sprintTime;
 }
 
 
