@@ -5,6 +5,7 @@ import modules ;
 BOOST = [ modules.peek : BOOST ] ; 
 BOOST_LIB = [ modules.peek : BOOST_LIB ] ; 
 BOOST_SUFFIX = [ modules.peek : BOOST_SUFFIX ] ; 
+OSPLAT = [ modules.peek : OSPLAT ] ;
 
 # define requirements common to all subprojects
 project Omnibot
@@ -85,7 +86,14 @@ rule tag ( name : type ? : property-set )
 		}
 		else if [ $(property-set).get <address-model> ] = 64
 		{
-			return $(name).x86_64.so ;
+			if $(OSPLAT) = ARM
+			{
+				return $(name).aarch64.so ;
+			}
+			else
+			{
+				return $(name).x86_64.so ;
+			}
 		}
 		else
 		{

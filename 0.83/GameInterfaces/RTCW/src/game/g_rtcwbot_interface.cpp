@@ -1416,15 +1416,9 @@ void UpdateBotInput( int _client, const ClientInput &_input ) {
 		cmd.wbuttons &= ~WBUTTON_ATTACK2;
 	} else
 	{
-		float fMaxSpeed = 127.f;
-
 		// Convert the bots vector to angles and set the view angle to the orientation
 		vectoangles( _input.m_Facing, angles );
 		SetClientViewAngle( bot, angles );
-
-		if ( cmd.buttons & BUTTON_WALKING ) {
-			fMaxSpeed = 64.f;
-		}
 
 		// Convert the move direction into forward and right moves to
 		// take the bots orientation into account.
@@ -1434,11 +1428,10 @@ void UpdateBotInput( int _client, const ClientInput &_input ) {
 		bodyangles[PITCH] = 0;
 
 		AngleVectors( bodyangles, forward, right, NULL );
-		const float fwd = DotProduct( forward, _input.m_MoveDir );
-		const float rght = DotProduct( right, _input.m_MoveDir );
 
-		cmd.forwardmove = (char)( fwd * fMaxSpeed );
-		cmd.rightmove = (char)( rght * fMaxSpeed );
+		signed char fMaxSpeed = (cmd.buttons & BUTTON_WALKING) ? 64 : 127;
+		cmd.forwardmove = (signed char)(DotProduct(forward, _input.m_MoveDir) * fMaxSpeed);
+		cmd.rightmove = (signed char)(DotProduct(right, _input.m_MoveDir) * fMaxSpeed);
 
 		if ( _input.m_ButtonFlags.CheckFlag( BOT_BUTTON_FWD ) || _input.m_ButtonFlags.CheckFlag( BOT_BUTTON_MOVEUP ) ) {
 			cmd.forwardmove = fMaxSpeed;

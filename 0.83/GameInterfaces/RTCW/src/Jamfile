@@ -1,6 +1,9 @@
 # Root project file for the RTCW interface.
 # Builds the game mod libraries.
 
+import modules ;
+OSPLAT = [ modules.peek : OSPLAT ] ;
+
 project omnibot_rtcw
 	: build-dir ./build
 	: requirements
@@ -38,7 +41,14 @@ rule tag ( name : type ? : property-set )
 			local suffix = i386 ;
 			if [ $(property-set).get <address-model> ] = 64
 			{
-				suffix = x86_64 ;
+				if $(OSPLAT) = ARM
+				{
+					suffix = aarch64 ;
+				}
+				else
+				{
+					suffix = x86_64 ;
+				}
 			}
 			return $(name).mp.$(suffix).$(ext) ;
 		}

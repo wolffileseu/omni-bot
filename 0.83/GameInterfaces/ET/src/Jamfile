@@ -1,6 +1,9 @@
 # Root project file for the ET mod.
 # Builds the game libraries.
 
+import modules ;
+OSPLAT = [ modules.peek : OSPLAT ] ;
+
 project omnibot_et
 	: build-dir ./build
 	: requirements
@@ -34,7 +37,14 @@ rule tag ( name : type ? : property-set )
 		}
 		else if [ $(property-set).get <address-model> ] = 64
 		{
-			return $(name).mp.x86_64.so ;
+			if $(OSPLAT) = ARM
+			{
+				return $(name).mp.aarch64.so ;
+			}
+			else
+			{
+				return $(name).mp.x86_64.so ;
+			}
 		}
 		else
 		{
