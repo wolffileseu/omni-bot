@@ -86,7 +86,7 @@ rule tag ( name : type ? : property-set )
 		}
 		else if [ $(property-set).get <address-model> ] = 64
 		{
-			if $(OSPLAT) = ARM
+			if $(OSPLAT) = ARM || [ $(property-set).get <toolset-gcc:version> ] = arm
 			{
 				return $(name).aarch64.so ;
 			}

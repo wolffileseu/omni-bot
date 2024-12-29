@@ -41,7 +41,7 @@ rule tag ( name : type ? : property-set )
 			local suffix = i386 ;
 			if [ $(property-set).get <address-model> ] = 64
 			{
-				if $(OSPLAT) = ARM
+				if $(OSPLAT) = ARM || [ $(property-set).get <toolset-gcc:version> ] = arm
 				{
 					suffix = aarch64 ;
 				}
