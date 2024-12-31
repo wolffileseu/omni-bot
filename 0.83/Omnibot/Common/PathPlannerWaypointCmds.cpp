@@ -1650,25 +1650,24 @@ void PathPlannerWaypoint::cmdWaypointGetWpNames(const StringVector &_args)
 	if(!m_PlannerFlags.CheckFlag(NAV_VIEW))
 		return;
 
-	String exp = ".*";
-	if(_args.size() >= 1)
-		exp = _args[0];
+	String exp;
+	if(_args.size() > 1)
+		exp = _args[1];
 
 	WaypointList wl;
 
 	for(obuint32 i = 0; i < m_WaypointList.size(); ++i)
 	{
 		Waypoint *pWp = m_WaypointList[i];
-		if(!pWp->GetName().empty() && !Utils::RegexMatch( exp.c_str(), pWp->GetName().c_str() ) )
-			continue;
-		wl.push_back(pWp);
+		if(exp.empty() || !pWp->GetName().empty() && Utils::RegexMatch( exp.c_str(), pWp->GetName().c_str() ) )
+			wl.push_back(pWp);
 	}
 
 	std::sort(wl.begin(), wl.end(), _NameLT);
 
 	for(obuint32 i = 0; i < wl.size(); ++i)
 	{
-		EngineFuncs::ConsoleMessage(va("%s : uid # %d: ", wl[i]->GetName().c_str(), wl[i]->GetUID()));
+		EngineFuncs::ConsoleMessage(va("%s : uid # %d", wl[i]->GetName().c_str(), wl[i]->GetUID()));
 	}
 }
 
