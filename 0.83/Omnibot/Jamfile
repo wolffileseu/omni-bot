@@ -5,6 +5,7 @@ import modules ;
 BOOST = [ modules.peek : BOOST ] ; 
 BOOST_LIB = [ modules.peek : BOOST_LIB ] ; 
 BOOST_SUFFIX = [ modules.peek : BOOST_SUFFIX ] ; 
+if $(BOOST_SUFFIX) { } else { BOOST_SUFFIX = "" ; }
 OSPLAT = [ modules.peek : OSPLAT ] ;
 
 # define requirements common to all subprojects
