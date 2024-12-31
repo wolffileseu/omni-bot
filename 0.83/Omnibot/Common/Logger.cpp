@@ -306,7 +306,7 @@ const std::string &Logger::HeaderString(const LogFlags logBits) const
 	}
 	if(m_OutMask & WRITE_LINE)
 	{
-		sprintf(temp, "[%04d]", SourceLine());
+		sprintf(temp, "[%04u]", SourceLine());
 		HeaderString += temp;
 	}
 	

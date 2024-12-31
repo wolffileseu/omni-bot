@@ -220,8 +220,8 @@ static int GM_CDECL gmfClamp(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(3);
 	if(a_thread->ParamType(0)==GM_INT &&
-		a_thread->ParamType(0)==GM_INT &&
-		a_thread->ParamType(0)==GM_INT)
+		a_thread->ParamType(1)==GM_INT &&
+		a_thread->ParamType(2)==GM_INT)
 	{
 		GM_CHECK_INT_PARAM(value, 0);
 		GM_CHECK_INT_PARAM(min, 1);
