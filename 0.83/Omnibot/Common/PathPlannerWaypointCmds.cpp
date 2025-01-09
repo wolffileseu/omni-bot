@@ -115,6 +115,8 @@ void PathPlannerWaypoint::InitCommands()
 		this, &PathPlannerWaypoint::cmdWaypointUnSplit);
 	SetEx("waypoint_ground", "Grounds all waypoints based on the navigation rendering offsets.",
 		this, &PathPlannerWaypoint::cmdWaypointGround);
+	SetEx("waypoint_clearfacing", "Clears facing vectors from all waypoints", 
+		this, &PathPlannerWaypoint::cmdWaypointClearFacing);
 	
 }
 
@@ -2124,6 +2126,15 @@ void PathPlannerWaypoint::cmdWaypointGround(const StringVector &_args)
 		}
 	}
 	//PRINT_USAGE(strUsage);
+}
+
+void PathPlannerWaypoint::cmdWaypointClearFacing(const StringVector &_args)
+{
+	for(auto &wP : m_WaypointList)
+	{
+		wP->m_Facing = Vector3f::ZERO;
+	}
+	EngineFuncs::ConsoleMessage("Cleared facing vectors from all waypoints.");
 }
 
 //////////////////////////////////////////////////////////////////////////

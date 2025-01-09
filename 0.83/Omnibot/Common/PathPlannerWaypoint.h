@@ -302,6 +302,7 @@ protected:
 	void cmdWaypointSplit(const StringVector &_args);
 	void cmdWaypointUnSplit(const StringVector &_args);
 	void cmdWaypointGround(const StringVector &_args);
+	void cmdWaypointClearFacing(const StringVector &_args);
 
 	Waypoint_Header		m_WaypointHeader;
 	VisFile_Header		m_VisFileHeader;
