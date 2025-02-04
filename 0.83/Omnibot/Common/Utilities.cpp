@@ -237,11 +237,8 @@ namespace Utils
 
 	bool IsWhiteSpace(const char _ch)
 	{
-		const obuint8 cr = 0x0D;
-		const obuint8 lf = 0x0A;
 		return 
-			_ch == cr || 
-			_ch == lf ||
+			_ch == '\r' || 
 			_ch == '\t' ||
 			_ch == '\n' ||
 			_ch == ' ';
@@ -272,6 +269,24 @@ namespace Utils
 			}
 			_tokens.push_back(_s.substr(pos_start, pos_end - pos_start));
 		}
+	}
+
+	void Tokenize(const String &_s, char _separator, StringVector &_tokens)
+	{
+		_tokens.clear();
+		size_t pos_start = 0;
+
+		while (pos_start < _s.length()) 
+		{
+			size_t pos_end = _s.find_first_of(_separator, pos_start);
+			if (pos_end == String::npos) {
+				_tokens.push_back(_s.substr(pos_start));
+				return;
+			}
+			_tokens.push_back(_s.substr(pos_start, pos_end - pos_start));
+			pos_start = pos_end+1;
+		}
+		_tokens.push_back("");
 	}
 
 	const char *VarArgs(char *_outbuffer, int _buffsize, const char* _msg, ...)

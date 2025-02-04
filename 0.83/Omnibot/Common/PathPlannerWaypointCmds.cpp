@@ -117,7 +117,10 @@ void PathPlannerWaypoint::InitCommands()
 		this, &PathPlannerWaypoint::cmdWaypointGround);
 	SetEx("waypoint_clearfacing", "Clears facing vectors from all waypoints", 
 		this, &PathPlannerWaypoint::cmdWaypointClearFacing);
-	
+	SetEx("waypoint_import", "Load waypoints from a text file", 
+		this, &PathPlannerWaypoint::cmdWaypointImport);
+	SetEx("waypoint_export", "Save waypoints to a text file", 
+		this, &PathPlannerWaypoint::cmdWaypointExport);
 }
 
 void PathPlannerWaypoint::cmdWaypointAdd(const StringVector &_args)
@@ -261,6 +264,22 @@ void PathPlannerWaypoint::cmdWaypointLoad(const StringVector &_args)
 	} 
 	else
 		EngineFuncs::ConsoleError("ERROR Loading Waypoints.");
+}
+
+void PathPlannerWaypoint::cmdWaypointImport(const StringVector &_args)
+{
+	if(Import(g_EngineFuncs->GetMapName()))
+		EngineFuncs::ConsoleMessage("Imported waypoints.");
+	else
+		EngineFuncs::ConsoleError("ERROR importing waypoints.");
+}
+
+void PathPlannerWaypoint::cmdWaypointExport(const StringVector &_args)
+{
+	if(Export(g_EngineFuncs->GetMapName()))
+		EngineFuncs::ConsoleMessage("Exported waypoints.");
+	else
+		EngineFuncs::ConsoleError("ERROR exporting waypoints.");
 }
 
 void PathPlannerWaypoint::cmdWaypointSetName(const StringVector &_args)

@@ -1345,6 +1345,136 @@ bool PathPlannerWaypoint::Save(const String &_mapname)
 	return true;
 }
 
+bool PathPlannerWaypoint::Import(const String &_mapname)
+{
+	File f;
+	f.OpenForRead(("user/" + _mapname + ".way.csv").c_str(), File::Text);
+	if(!f.IsOpen()) return false;
+	Unload();
+	m_NavDir = "";
+	obuint32 maxUID = 0;
+	StringVector parts, connections, con;
+	String line;
+
+	while(f.ReadLine(line))
+	{
+		Utils::Tokenize(line, '\t', parts);
+		if(parts.size() != 8) return false;
+		int uid = atoi(parts[0].c_str());
+		if(uid <= 0) return false;
+		Waypoint *w = new Waypoint;
+		w->m_UID = uid;
+		if(sscanf(parts[1].c_str(), "%f,%f,%f", &w->m_Position.x, &w->m_Position.y, &w->m_Position.z)!=3) return false;
+		w->m_Radius = (float)atof(parts[2].c_str());
+		if(sscanf(parts[3].c_str(), "%llx", &w->m_NavigationFlags)!=1) return false;
+		w->m_WaypointName = parts[4];
+		if(!parts[5].empty())
+			if(sscanf(parts[5].c_str(), "%f,%f,%f", &w->m_Facing.x, &w->m_Facing.y, &w->m_Facing.z)!=3) return false;
+
+		//properties (paththrough)
+		String prop = parts[6];
+		while(!prop.empty())
+		{
+			size_t pos1 = prop.find(": ");
+			if(pos1 == String::npos) return false;
+			String key = prop.substr(0, pos1);
+			pos1 += 2;
+			size_t pos2 = prop.find(" | ", pos1);
+			String value;
+			if(pos2 == String::npos) {
+				value = prop.substr(pos1);
+				prop.clear();
+			}
+			else {
+				value = prop.substr(pos1, pos2-pos1);
+				prop = prop.substr(pos2+3);
+			}
+			w->GetPropertyMap().AddProperty(key, value);
+		}
+
+		connections.push_back(parts[7]);
+		m_WaypointList.push_back(w);
+		if(maxUID < (obuint32)uid) maxUID = uid;
+		w->PostLoad();
+	}
+	Waypoint::m_NextUID = maxUID + 1;
+
+	//connections
+	int i = 0;
+	for(Waypoint *w1 : m_WaypointList)
+	{
+		String &p = connections[i++];
+		if(!p.empty())
+		{
+			Utils::Tokenize(p, ',', con);
+			for(String &s : con)
+			{
+				int id = atoi(s.c_str());
+				if(id<=0) return false;
+				Waypoint *found = 0;
+				for(Waypoint *w2 : m_WaypointList)
+				{
+					if(w2->m_UID == (obuint32)id)
+					{
+						found = w2;
+						break;
+					}
+				}
+				if(!found) return false;
+				Waypoint::ConnectionInfo conn = { found, 0 };
+				w1->m_Connections.push_back(conn);
+			}
+		}
+	}
+	return i>0;
+}
+
+bool PathPlannerWaypoint::Export(const String &_mapname)
+{
+	if(_mapname.empty() || m_WaypointList.empty()) return false;
+
+	File f;
+	f.OpenForWrite(("user/" + _mapname + ".way.csv").c_str(), File::Text, false);
+	if(!f.IsOpen()) return false;
+
+	for(auto &w : m_WaypointList)
+	{
+		f.Printf("%d\t%f,%f,%f\t", w->GetUID(), w->GetPosition().x, w->GetPosition().y, w->GetPosition().z);
+		float radius = w->m_Radius;
+		if(roundf(radius) != radius) f.Printf("%f", radius);
+		else f.Printf("%d", (int)radius);
+		f.Printf("\t%llx\t%s\t", w->GetNavigationFlags(), w->GetName().c_str());
+		if(!w->m_Facing.IsZero())
+			f.Printf("%f,%f,%f", w->m_Facing.x, w->m_Facing.y, w->m_Facing.z);
+		//properties
+		f.Printf("\t");
+		bool first = true;
+		const PropertyMap::ValueMap& properties = w->GetPropertyMap().GetProperties();
+		if(!properties.empty())
+		{
+			for(auto &p : properties)
+			{
+				if(first) first = false;
+				else f.Printf(" | ");
+				f.Printf("%s: %s", p.first.c_str(), p.second.c_str());
+			}
+		}
+		//connections
+		f.Printf("\t");
+		first = true;
+		for(auto it2 = w->m_Connections.begin(); it2 != w->m_Connections.end(); ++it2)
+			if(!(it2->m_ConnectionFlags & F_LNK_DONTSAVE))
+			{
+				if(first) first = false;
+				else f.Printf(",");
+				f.Printf("%d", it2->m_Connection->m_UID);
+			}
+		f.WriteNewLine();
+	}
+	f.Close();
+	return true;
+}
+
 void PathPlannerWaypoint::Unload()
 {
 	WaypointList::iterator it = m_WaypointList.begin();

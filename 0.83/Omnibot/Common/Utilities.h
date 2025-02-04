@@ -102,8 +102,11 @@ namespace Utils
 	float ClosestPointOfApproachTime(const Vector3f& aP1, const Vector3f& aV1, const Vector3f& aP2, const Vector3f& aV2) ;
 
 	// function: Tokenize
-	//		Splits a string into tokens using provided seperators. Stores in <StringVector>
+	//		Splits a string into tokens using provided seperators. Appends them to StringVector. Removes empty tokens.
 	void Tokenize(const String &_s, const String &_separators, StringVector &_tokens);
+
+	//		Splits a string into tokens using provided seperator. Clears previous content of StringVector. Does not remove empty tokens.
+	void Tokenize(const String &_s, char _separator, StringVector &_tokens);
 
 	const char *VarArgs(CHECK_VALID_BYTES(_buffsize) char *_outbuffer, int _buffsize, CHECK_PRINTF_ARGS const char* _msg, ...);
 

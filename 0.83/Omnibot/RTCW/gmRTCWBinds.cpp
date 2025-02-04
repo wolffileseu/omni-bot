@@ -46,7 +46,7 @@ static int GM_CDECL gmfSendPrivateMessage(gmThread *a_thread)
 		const char *pAsString = a_thread->Param(0).AsString(a_thread->GetMachine(), buffer, bufferSize);
 		if(pAsString)
 		{
-			int len = strlen(pAsString);
+			int len = (int)strlen(pAsString);
 			if(chatMsgSize - iMsgPos > len)
 			{
 				Utils::StringCopy(&targName[iMsgPos], pAsString, len);
@@ -61,7 +61,7 @@ static int GM_CDECL gmfSendPrivateMessage(gmThread *a_thread)
 			pAsString = a_thread->Param(i).AsString(a_thread->GetMachine(), buffer, bufferSize);
 			if(pAsString)
 			{
-				int len = strlen(pAsString);
+				int len = (int)strlen(pAsString);
 				if(chatMsgSize - iMsgPos > len)
 				{
 					Utils::StringCopy(&chatMsg[iMsgPos], pAsString, len);
@@ -299,7 +299,7 @@ static int GM_CDECL gmfSetCvar(gmThread *a_thread)
 		const char *pAsString = a_thread->Param(0).AsString(a_thread->GetMachine(), buffer, bufferSize);
 		if(pAsString)
 		{
-			int len = strlen(pAsString);
+			int len = (int)strlen(pAsString);
 			if(cvarSize - iPos > len)
 			{
 				Utils::StringCopy(&cvar[iPos], pAsString, len);
@@ -314,7 +314,7 @@ static int GM_CDECL gmfSetCvar(gmThread *a_thread)
 			pAsString = a_thread->Param(i).AsString(a_thread->GetMachine(), buffer, bufferSize);
 			if(pAsString)
 			{
-				int len = strlen(pAsString);
+				int len = (int)strlen(pAsString);
 				if(valueSize - iPos > len)
 				{
 					Utils::StringCopy(&value[iPos], pAsString, len);
@@ -358,7 +358,7 @@ static int GM_CDECL gmfGetCvar(gmThread *a_thread)
 		const char *pAsString = a_thread->Param(0).AsString(a_thread->GetMachine(), buffer, bufferSize);
 		if(pAsString)
 		{
-			int len = strlen(pAsString);
+			int len = (int)strlen(pAsString);
 			if(cvarSize - iPos > len)
 			{
 				Utils::StringCopy(&cvar[iPos], pAsString, len);

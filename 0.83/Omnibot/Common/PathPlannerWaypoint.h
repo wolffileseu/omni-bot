@@ -105,6 +105,8 @@ public:
 	bool FoundGoal() const;
 	bool Load(const String &_mapname, bool _dl = true);
 	bool Save(const String &_mapname);
+	bool Import(const String &_mapname);
+	bool Export(const String &_mapname);
 	void Unload();
 	static void SetNavDir(String &navDir, const char *_file);
 
@@ -303,6 +305,8 @@ protected:
 	void cmdWaypointUnSplit(const StringVector &_args);
 	void cmdWaypointGround(const StringVector &_args);
 	void cmdWaypointClearFacing(const StringVector &_args);
+	void cmdWaypointImport(const StringVector &_args);
+	void cmdWaypointExport(const StringVector &_args);
 
 	Waypoint_Header		m_WaypointHeader;
 	VisFile_Header		m_VisFileHeader;

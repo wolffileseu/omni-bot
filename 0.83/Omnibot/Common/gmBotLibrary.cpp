@@ -415,7 +415,7 @@ static int GM_CDECL gmfKickAll(gmThread *a_thread)
 //
 // Parameters:
 //
-//		string - The name of the bot to kick
+//		string - command
 //
 // Returns:
 //		None
