@@ -605,11 +605,11 @@ int gmFile::gmfReadLine(gmThread *a_thread)
 //////////////////////////////////////////////////////////////////////////
 
 // function: Write
-//		Write a value to a file.
+//		Write values to a file.
 //
 // Parameters:
 //
-//		<ANY> - Variable to read from the file.
+//		<int, float, or string> - values to write to the file.
 //
 // Returns:
 //		<int> - true if successful, false if not.
@@ -617,7 +617,7 @@ int gmFile::gmfWrite(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(1);
 	File *pNative = gmFile::GetThisObject( a_thread );
-	
+	bool success = true;
 	int nParams = a_thread->GetNumParams();
 	for(obint32 i = 0; i < nParams; ++i)
 	{
@@ -625,32 +625,25 @@ int gmFile::gmfWrite(gmThread *a_thread)
 		switch(v.m_type)
 		{
 		case GM_INT:
-			{
-				pNative->WriteInt32(v.m_value.m_int);
-				break;
-			}
+			success &= pNative->WriteInt32(v.m_value.m_int);
+			break;
 		case GM_FLOAT:
-			{
-				pNative->WriteFloat(v.m_value.m_float);
-				break;
-			}
+			success &= pNative->WriteFloat(v.m_value.m_float);
+			break;
 		case GM_STRING:
-			{
-				gmStringObject *pStr = v.GetStringObjectSafe();
-				pNative->WriteString(pStr->GetString());
-				break;
-			}
+			success &= pNative->WriteString(v.GetStringObjectSafe()->GetString());
+			break;
 		default:
 			if(v.m_type == GM_NEWLINE && pNative->GetFileMode() == File::Text)
 			{
-				pNative->WriteNewLine();
+				success &= pNative->WriteNewLine();
 				break;
 			}
 			GM_EXCEPTION_MSG("Expected int, float, or string");
 			return GM_EXCEPTION;
 		}
 	}
-	a_thread->PushInt(1);	
+	a_thread->PushInt(success ? 1 : 0);
 	return GM_OK;
 }
 
