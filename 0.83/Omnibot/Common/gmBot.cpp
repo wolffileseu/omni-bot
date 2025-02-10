@@ -1190,7 +1190,7 @@ int gmBot::gmfToWorldSpace(gmThread *a_thread)
 //		<MapGoal> - The goal to calculate distance to.
 //		- OR - 
 //		<int> - The gameId to calculate distance to.
-//		<int> - OPTIONAL - true to use eye position, false to use entity position(default false)
+//		<int> - OPTIONAL - false to use eye position, true to use entity position(default false)
 //
 // Returns:
 //		None
