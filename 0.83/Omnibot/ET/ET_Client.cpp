@@ -23,6 +23,7 @@ public:
 	{
 		GetRootState()->OnSpawn();
 		GetClient()->m_SpawnTime = IGame::GetTime();
+		GetClient()->m_RevivedTime = -9999;
 	}
 	State::StateStatus Update(float fDt) 
 	{
@@ -42,7 +43,8 @@ class Incapacitated : public StateChild
 public:
 	obReal GetPriority() 
 	{
-		return !InterfaceFuncs::IsAlive(GetClient()->GetGameEntity()) ? 1.f : 0.f; 
+		return !InterfaceFuncs::IsAlive(GetClient()->GetGameEntity())
+			|| IGame::GetTime() < GetClient()->m_RevivedTime + 2400 ? 1.f : 0.f; 
 	}
 
 	void Enter()

@@ -267,6 +267,7 @@ public:
 	virtual ~Client();
 
 	int		m_SpawnTime;
+	int		m_RevivedTime;
 
 protected:
 

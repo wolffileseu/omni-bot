@@ -22,6 +22,7 @@ Client::Client()
 	: m_DesiredTeam		(RANDOM_TEAM_IF_NO_TEAM)
 	, m_DesiredClass	(RANDOM_CLASS_IF_NO_CLASS)
 	, m_SpawnTime(0)
+	, m_RevivedTime(-9999)
 	, m_StepHeight		(0.0f)
 	, m_StateRoot		(NULL)
 	, m_Position		(Vector3f::ZERO)
@@ -264,6 +265,7 @@ void Client::ProcessEvent(const MessageHelper &_message, CallbackParameters &_cb
 		}
 		HANDLER(MESSAGE_REVIVED)
 		{
+			m_RevivedTime = IGame::GetTime();
 			const Event_Revived *m = _message.Get<Event_Revived>();
 			_cb.CallScript();
 			_cb.AddEntity("who", m->m_WhoRevivedMe);
