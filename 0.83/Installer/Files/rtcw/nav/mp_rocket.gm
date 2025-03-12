@@ -1,13 +1,9 @@
 global Map =
 {
+	Debug = 0,
 	Quiet = true,
-	FocusPrimary = false,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = false,
-	Debug = false,
-
-	PanzBarracksFired = false,
-	PanzBarracksBots = 0,
 
 	Switches =
 	{
@@ -16,6 +12,7 @@ global Map =
 			Enabled = true,
 			Priority = 0, // paththrough
 			WaypointName = "Door Switch",
+			AimPosition = Vec3(-2289, 1231, 368),
 		},
 	},
 
@@ -23,321 +20,266 @@ global Map =
 	{
 		bridgeladder =
 		{
-			navigate = function( _this )
+			navigate = function()
 			{
-				_this.Bot.HoldButton( BTN.FORWARD, 5 );
-				sleep( 6 );
+				this.AddAimRequest(Priority.High, "facing", Vec3(-0.521, 0.035, 0.853));
+				for (i=0; i<25; i+=1)
+				{
+					pos = this.Bot.GetPosition();
+					if (pos.z > 100){ return; }
+					if (pos.y < 790) {
+						this.Bot.HoldButton(BTN.STRAFE_R, 0.1);
+					}
+					if (pos.y > 810) {
+						this.Bot.HoldButton(BTN.STRAFE_L, 0.1);
+					}
+					sleep(0.5);
+				}
+				Util.MapDebugPrint("stuck at ladder", 1);
+				this.Bot.HoldButton(BTN.STRAFE_R, 3);
+				sleep(3);
 			},
 		},
 		rpanzbarracks =
 		{
-			navigate = function( _this )
+			EvalFunc = function()
 			{
-				// this is just using the barrier as they eval since its simple
-				// others will need to eval other map vars
-				if ( !Map.PanzBarracksFired && Map.PanzBarracksBots == 0 && _this.Bot.HasWeapon( WEAPON.PANZERFAUST ) ) {
-					wpTable = Util.WpNameInfo( "rpanzbarracks" );
-					Map.PanzBarracksBots += 1;
-					Map.PanzBarracksFired = true; // Even if he doesnt make it, don't try doing it again because teammates will be there by then
-					_this.Bot.DisableBotPush( true );
-					_this.Bot.DisableCombatMovement = true;
-
-					_this.Bot.HoldButton( BTN.SPRINT, 999 );
-					if ( _this.Goto( wpTable.position ) == EVENT.PATH_SUCCESS ) {
-						_this.Bot.ReleaseButton( BTN.SPRINT );
-						if ( _this.Bot.IsWeaponCharged( WEAPON.PANZERFAUST, 0 ) ) {
-							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
-							_this.BlockForWeaponChange( WEAPON.PANZERFAUST );
-							sleep( 0.3 ); // make sure its ready to fire
-							_this.Bot.HoldButton( BTN.ATTACK1, 2 );
-							sleep( 1 );
-							_this.AddWeaponRequest( Priority.High, WEAPON.AXIS_GRENADE );
-							_this.Bot.HoldButton( BTN.ATTACK1, 3 );
-							_this.BlockForWeaponChange( WEAPON.AXIS_GRENADE );
-							sleep( 2 );
-							_this.Bot.DisableBotPush( false );
-							_this.Bot.DisableCombatMovement = false;
-						}
-					}
-					Map.PanzBarracksBots -= 1;
-				}
-				yield();
+				return !Map.PanzBarracksFired && this.Bot.HasWeapon(WEAPON.PANZERFAUST);
 			},
+			navigate = function()
+			{
+				wpTable = Util.WpNameInfo("rpanzbarracks");
+				Map.PanzBarracksFired = true; // Even if he doesn't make it, don't try doing it again because teammates will be there by then
+				this.Bot.DisableBotPush(true);
+				this.Bot.DisableCombatMovement = true;
+
+				this.Bot.HoldButton(BTN.SPRINT, 999);
+				if (this.Goto(wpTable.position) == EVENT.PATH_SUCCESS) {
+					this.Bot.ReleaseButton(BTN.SPRINT);
+					if (this.Bot.IsWeaponCharged(WEAPON.PANZERFAUST, 0)) {
+						this.AddAimRequest(Priority.High, "facing", Vec3(0,-1,0));
+						this.AddWeaponRequest(Priority.High, WEAPON.PANZERFAUST);
+						this.BlockForWeaponChange(WEAPON.PANZERFAUST);
+						sleep(0.3); // make sure its ready to fire
+						this.Bot.HoldButton(BTN.ATTACK1, 2);
+						sleep(2);
+						this.AddWeaponRequest(Priority.High, WEAPON.AXIS_GRENADE);
+						this.Bot.HoldButton(BTN.ATTACK1, 3);
+						this.BlockForWeaponChange(WEAPON.AXIS_GRENADE);
+						sleep(3);
+					}
+				}
+			},
+			OnExit = function()
+			{
+				this.Bot.DisableBotPush(false);
+				this.Bot.DisableCombatMovement = false;
+			}
 		},
 	},
 
-	//levers trigger on map load, so add a variable to use when the
-	//lever is triggered the first time
-	mapstart = true,
-
 	KeyStatus = false, //home
 	DoorStatus = false, //closed
-	AxisOpenDoor = false,
 	OfficeStatus = false,
 	ServiceStatus = false,
 
-	Checkpoint_caveone_flag = "CHECKPOINT_caveone_flag",
-	Flag_Override_Key = "FLAG_Override_Key",
-	Cappoint_92 = "CAPPOINT_92",
-	Plant_service = "PLANT_Rocket_Bay_Emergency_Exit",
-	Plant_destroy_tunnel_rubble = "PLANT_Tunnel_Rubble",
-	Plant_office = "PLANT_Upper_Rocket_Bay_Door",
-
-	Tunnel_Rubble_Destroyed = function( trigger )
+	Tunnel_Rubble_Destroyed = function()
 	{
-		SetAvailableMapGoals( TEAM.ALLIES, true, Map.Plant_service );
-		SetAvailableMapGoals( TEAM.AXIS, false, {
-			"DEFEND_axis_spawn_defend_.*",
-			"DEFEND_axis_flag_defend_.*",
+		SetAvailableMapGoals(TEAM.ALLIES, true, "PLANT_Rocket_Bay_Emergency_Exit");
+		SetAvailableMapGoals(TEAM.AXIS, false, {
+			"DEFEND_spawn.*",
+			"DEFEND_flag.*",
 		});
-		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_key_defend_.*" );       // Fallback
-		Util.EnableGoal( "ROUTE_westelevator" );
-		Util.EnableGoal( "ROUTE_eastelevator" );
-		Util.EnableGoal( "ROUTE_tunnel" );
-
-		SetAvailableMapGoals( TEAM.AXIS, true, "PANZER_rPanzerWest" );
+		SetAvailableMapGoals(TEAM.AXIS, true, {
+			"DEFEND_key.*", // Fallback
+			"PANZER_rPanzer.*",
+		});
 		if (!Map.KeyStatus)
 		{
-			SetAvailableMapGoals( TEAM.AXIS, true, "GRENADE_rEleWest" );
+			SetAvailableMapGoals(TEAM.AXIS, true, "GRENADE_rEleWest");
 		}
+		Util.EnableGoal({ "ROUTE_westelevator", "ROUTE_eastelevator", "ROUTE_tunnel" });
+		Util.MapDebugPrint("Tunnel_Rubble_Destroyed");
 	},
 
-	Tunnel_Rubble_Planted = function( trigger )
+	Tunnel_Rubble_Planted = function()
 	{
 		//don't bother trying to defuse this
-		Util.DisableGoal( "DEFUSE_Tunnel_Rubble.*" );
+		Util.DisableGoal("DEFUSE_Tunnel_Rubble.*");
 	},
 
-	Tunnel_Rubble_Defused = function( trigger )
-	{
-	},
-
-	Rocket_Bay_Emergency_Exit_Destroyed = function( trigger )
+	Rocket_Bay_Emergency_Exit_Destroyed = function()
 	{
 		Map.ServiceStatus = true;
 
-		Util.EnableGoal( "ROUTE_keydel[45]" );
-		SetAvailableMapGoals( TEAM.ALLIES, true, Map.Plant_office );
-
-		Map.AxisOpenDoor = true;
-		Map.evaluate_door();
-
-		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_del_.*" );
-		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFEND_bEng_emergency.*" );
+		Util.EnableGoal("ROUTE_keydel[45]");
+		SetAvailableMapGoals(TEAM.ALLIES, true, "PLANT_Upper_Rocket_Bay_Door");
+		SetAvailableMapGoals(TEAM.AXIS, true, "DEFEND_del.*");
+		Util.MapDebugPrint("Rocket_Bay_Emergency_Exit_Destroyed");
 	},
 
-	Rocket_Bay_Emergency_Exit_Planted = function( trigger )
+	Rocket_Bay_Emergency_Exit_Planted = function()
 	{
 		//don't bother trying to defuse this if key is gone
-		if ( Map.KeyStatus ) {
-			Util.DisableGoal( "DEFUSE_Rocket_Bay.*" );
+		if (Map.KeyStatus) {
+			Util.DisableGoal("DEFUSE_Rocket_Bay.*");
 		}
-		SetAvailableMapGoals( TEAM.ALLIES, true, "DEFEND_bEng_emergency.*" );
 	},
 
-	Rocket_Bay_Emergency_Exit_Defused = function( trigger )
-	{
-	},
-
-	Upper_Rocket_Bay_Door_Destroyed = function( trigger )
+	Upper_Rocket_Bay_Door_Destroyed = function()
 	{
 		Map.OfficeStatus = true;
 
-		Map.AxisOpenDoor = true;
-		Map.evaluate_door();
-
-		//shift the action
-		Map.wait_for_door();
-		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_del_.*" );
+		SetAvailableMapGoals(TEAM.AXIS, true, "DEFEND_del.*");
+		Util.MapDebugPrint("Upper_Rocket_Bay_Door_Destroyed");
 	},
 
-	Upper_Rocket_Bay_Door_Planted = function( trigger )
-	{
-		//don't bother trying to defuse this if keycard stolen
-		if ( Map.KeyStatus ) {
-			Util.DisableGoal( "DEFUSE_Upper_Rocket.*" );
-		}
-
-	},
-
-	Upper_Rocket_Bay_Door_Defused = function( trigger )
+	Upper_Rocket_Bay_Door_Planted = function()
 	{
 	},
 
-	caveone_flag_Allies_Captured = function( trigger )
+	caveone_flag_Allies_Captured = function()
 	{
 		// Disable barracks firing
 		Map.PanzBarracksFired = true;
 
 		//50% chance for a bot to select flagspawn
-		//first parameter is team, second is spawnpoint
-		Util.RandomSpawn( TEAM.ALLIES, 1 );
+		//the second parameter is spawnpoint
+		Util.RandomSpawn(TEAM.ALLIES, 1);
+
+		Util.MapDebugPrint("caveone_flag_Allies_Captured");
 	},
 
-	caveone_flag_Axis_Captured = function( trigger )
+	caveone_flag_Axis_Captured = function()
 	{
+		Util.MapDebugPrint("caveone_flag_Axis_Captured");
 	},
 
-	Override_Key_Taken = function( trigger )
+	SetKey = function(b)
 	{
-		Map.KeyStatus = true;
-
-		//axis should shut the door using the controls switch
-		Map.AxisOpenDoor = false;
-
-		//check the door status to see which teams should open
+		Map.KeyStatus = b;
 		Map.evaluate_door();
 
-		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_del_.*" );
-		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_allies_del_.*" );
-
-		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_axis_key_.*" );
-		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_Allies_Key_.*" );
-
-		SetAvailableMapGoals( TEAM.AXIS, false, {
-			"DEFEND_axis_spawn_defend_.*",
-			"DEFEND_axis_flag_defend_.*",
+		SetAvailableMapGoals(TEAM.AXIS, b,
+			"PANZER_rTransmit.*"
+		);
+		SetAvailableMapGoals(TEAM.AXIS, !b, {
+			"DEFEND_key.*",
 			"PANZER_rPanzer.*",
+			"GRENADE_rEleWest",
 		});
-		SetAvailableMapGoals( TEAM.AXIS, true, "PANZER_rTransmit.*" );
-		SetAvailableMapGoals( TEAM.AXIS, false, "GRENADE_rEleWest" );
-	},
-
-	Override_Key_Returned = function( trigger )
-	{
-		Map.KeyStatus = false;
-
-		Map.AxisOpenDoor = true;
-
-		//check the door status to see which teams should open
-		Map.evaluate_door();
-
-		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_key_.*" );
-		SetAvailableMapGoals( TEAM.AXIS, false, "PANZER_.*" );
-		SetAvailableMapGoals( TEAM.AXIS, true, "PANZER_rPanzer.*" );
-		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_Allies_Key_.*" );
-		SetAvailableMapGoals( TEAM.AXIS, true, "GRENADE_rEleWest" );
-
-		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_allies_del_.*" );
 
 		//if office or service door is gone, keep the rear defense goals available
-		if ( !Map.OfficeStatus && !Map.ServiceStatus ) {
-			SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_axis_del_.*" );
-		}
+		SetAvailableMapGoals(TEAM.AXIS, b || Map.OfficeStatus || Map.ServiceStatus, "DEFEND_del_.*");
 	},
 
-	// called from the switch triggers
+	Override_Key_Taken = function()
+	{
+		SetAvailableMapGoals(TEAM.AXIS, false, {
+			"DEFEND_spawn.*",
+			"DEFEND_flag.*",
+		});
+		Map.SetKey(true);
+		Util.MapDebugPrint("Override_Key_Taken");
+	},
+
+	Override_Key_Returned = function()
+	{
+		Map.SetKey(false);
+		Util.MapDebugPrint("Override_Key_Returned");
+	},
+
+	// called from the door and key triggers
 	evaluate_door = function()
 	{
-		SetAvailableMapGoals( TEAM.AXIS, false, "SWITCH_controls" );
-
-		if ( Map.DoorStatus && !Map.AxisOpenDoor ) { //door is open and axis want it shut
-			SetAvailableMapGoals( TEAM.AXIS, true, "SWITCH_controls" );
-		} else if ( !Map.DoorStatus && Map.AxisOpenDoor )   { //axis can open now
-			SetAvailableMapGoals( TEAM.AXIS, true, "SWITCH_controls" );
-		}
+		//close the door if key is taken
+		SetAvailableMapGoals(TEAM.AXIS, Map.DoorStatus == Map.KeyStatus, "SWITCH_controls");
 	},
 
-	door_lever = function( trigger )
+	door_lever = function()
 	{
-		if ( Map.mapstart ) {
-			Map.mapstart = false;
-			return;
-		}
-
 		Map.Switches.door.Enabled = false;
-		SetAvailableMapGoals( TEAM.AXIS, false, "SWITCH_controls" );
+		SetAvailableMapGoals(TEAM.AXIS, false, "SWITCH_controls");
 	},
 
-	door_trigger = function( trigger )
+	door_trigger = function(trigger)
 	{
-		vel = ToVector( trigger.Action );
+		vel = ToVector(trigger.Action)[0];
 
-
-		if ( vel[0] < 0 ) {
+		if (vel < 0) {
 			Map.DoorStatus = false;
 			Map.Switches.door.Enabled = true;
-		} else if ( vel[0] > 0 )   {
+			Util.MapDebugPrint("door closing", 1);
+		} else if (vel > 0)   {
 			Map.DoorStatus = true;
 			Map.Switches.door.Enabled = false;
+			Util.MapDebugPrint("door opening", 1);
 		}
 
-		//run some logic tests
 		Map.evaluate_door();
 	},
 };
 
 global OnMapLoad = function()
 {
-	Util.SetGoalPosition( -1084, 374, -286, "PLANT_Tunnel_Rubble" );
+	Util.SetGoalPosition(-1084, 374, -286, "PLANT_Tunnel_Rubble");
 
-	OnTrigger( "Allies have destroyed the Upper Rocket Bay Door!", Map.Upper_Rocket_Bay_Door_Destroyed );
-	OnTrigger( "Planted at The Upper Rocket Bay Door.", Map.Upper_Rocket_Bay_Door_Planted );
-	OnTrigger( "Defused at The Upper Rocket Bay Door.", Map.Upper_Rocket_Bay_Door_Defused );
-	OnTrigger( "Allies have destroyed the Rocket Bay Emergency Exit!", Map.Rocket_Bay_Emergency_Exit_Destroyed );
-	OnTrigger( "Planted at The Rocket Bay Emergency Exit.", Map.Rocket_Bay_Emergency_Exit_Planted );
-	OnTrigger( "Defused at The Rocket Bay Emergency Exit.", Map.Rocket_Bay_Emergency_Exit_Defused );
-	OnTrigger( "Allies have broken through train tunnel cave in!", Map.Tunnel_Rubble_Destroyed );
-	OnTrigger( "Planted at Tunnel Rubble.", Map.Tunnel_Rubble_Planted );
-	OnTrigger( "Defused at Tunnel Rubble.", Map.Tunnel_Rubble_Defused );
-	OnTrigger( "Allies capture the First Cave!", Map.caveone_flag_Allies_Captured );
-	OnTrigger( "Axis reclaims the First Cave!", Map.caveone_flag_Axis_Captured );
-	OnTrigger( "Allies have stolen Override Key!", Map.Override_Key_Taken );
-	OnTrigger( "Flag returned Override Key!", Map.Override_Key_Returned );
-	OnTrigger( "rocdoor_lever1_goto", Map.door_lever );
-	OnTrigger( "rocdoor_right_goto", Map.door_trigger );
+	OnTrigger("Allies have destroyed the Upper Rocket Bay door!", Map.Upper_Rocket_Bay_Door_Destroyed);
+	OnTrigger("Planted at The Upper Rocket Bay Door.", Map.Upper_Rocket_Bay_Door_Planted);
+	OnTrigger("Allies have destroyed the Rocket Bay Emergency Exit!", Map.Rocket_Bay_Emergency_Exit_Destroyed);
+	OnTrigger("Planted at The Rocket Bay Emergency Exit.", Map.Rocket_Bay_Emergency_Exit_Planted);
+	OnTrigger("Allies have broken through train tunnel cave in!", Map.Tunnel_Rubble_Destroyed);
+	OnTrigger("Planted at Tunnel Rubble.", Map.Tunnel_Rubble_Planted);
+	OnTrigger("Allies capture the First Cave!", Map.caveone_flag_Allies_Captured);
+	OnTrigger("Axis reclaims the First Cave!", Map.caveone_flag_Axis_Captured);
+	OnTrigger("Allies have stolen Override Key!", Map.Override_Key_Taken);
+	OnTrigger("Flag returned Override Key!", Map.Override_Key_Returned);
+	OnTrigger("rocdoor_lever1_goto", Map.door_lever);
+	OnTrigger("rocdoor_right_goto", Map.door_trigger);
 
-	Util.DisableGoal( ".*", true ); //all but the routes
-	Util.EnableGoal( "CAPPOINT.*", true ); //all but the routes
+	Util.DisableGoal(".*", true);
 
-	docspush = OnTriggerRegion( AABB( -2460.000,1519.000,583.000,-2245.000,1608.000,702.000 ), RegionTrigger.DisableBotPush );
+	OnTriggerRegion(AABB(-2460.0,1519.0,583.0,-2245.0,1608.0,702.0), RegionTrigger.DisableBotPush); //bridge at rocket
+	OnTriggerRegion(AABB(-110.0,-689.0,-419.0,239.0,168.0,-223.0), RegionTrigger.DisableCombatMovement); //cave at checkpoint
 
+	SetMapGoalProperties("ATTACK_.*", {mincamptime = 15, maxcamptime = 30});
+	SetMapGoalProperties("DEFEND_.*", {mincamptime = 15, maxcamptime = 40});
+	SetMapGoalProperties("PANZER_.*", {mincamptime = 30, maxcamptime = 45});
 
-	SetMapGoalProperties( "ATTACK_.*", {mincamptime = 15, maxcamptime = 30} );
-	SetMapGoalProperties( "DEFEND_.*", {mincamptime = 15, maxcamptime = 30} );
-	SetMapGoalProperties( "PANZER_.*", {mincamptime = 30, maxcamptime = 45} );
-
-	RTCWUtil.SetPrimaryGoals( 1.0 );
-
-	SetAvailableMapGoals( TEAM.ALLIES, true, {
-		"ATTACK_Allies_Key.*",
-		"CHECKPOINT_.*",
-		"PLANT_Rocket_Bay.*",
+	SetAvailableMapGoals(TEAM.ALLIES, true, {
+		"ATTACK.*",
+		"CHECKPOINT.*",
 		"PLANT_Tunnel.*",
 		"FLAG_.*",
+		"CAPPOINT.*",
+	});
+	SetAvailableMapGoals(TEAM.AXIS, true, {
+		"DEFEND_spawn.*",
+		"DEFEND_flag.*",
 	});
 
-	SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_axis_key_defend_.*" );
-//	SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_axis_spawn_defend_.*" ); // cs: disabled breaks defense
-	//SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_axis_flag_defend_.*" ); // cs: disabled breaks defense
-//	SetAvailableMapGoals( TEAM.AXIS, false, "ATTACK_.*" );
-//	SetAvailableMapGoals( TEAM.AXIS, false, Map.Checkpoint_caveone_flag );
+	Util.LimitToClass("GRENADE.*", TEAM.AXIS, CLASS.ENGINEER, CLASS.SOLDIER);
 
-	SetMapGoalProperties( "DEFEND_bEng.*", {mincamptime = 30, maxcamptime = 60} );
-	Util.LimitToClass( "DEFEND_bEng.*", TEAM.ALLIES, CLASS.ENGINEER );
-	SetGoalPriority( "DEFEND_bEng.*", 0.9, TEAM.ALLIES, CLASS.ENGINEER );
-	SetGoalPriority( "SWITCH_controls", 0.9 );
-	Util.LimitToClass( "GRENADE.*", TEAM.AXIS, CLASS.ENGINEER, CLASS.SOLDIER );
+	Util.SetMaxUsersInProgress(1, "DEFEND.*");
+	Util.SetMaxUsersInProgress(1, "ATTACK.*");
+	Util.SetMaxUsersInProgress(1, "PANZER.*");
+	Util.SetMaxUsersInProgress(2, "CHECKPOINT.*");
 
-	Util.DisableGoal( "ROUTE_keydel[45]" );
+	SetGoalPriority("CHECKPOINT.*", 0.82);
+	SetGoalPriority("PLANT.*", 0.9);
 
-	//this removes the goal, so the bots wont target it or anything
-	Util.RemoveGoal( "MOVER_train1" );
+	Util.DisableGoal({ "ROUTE_keydel[45]", "ROUTE_westelevator", "ROUTE_eastelevator", "ROUTE_tunnel" });
+	Util.MapDebugPrint("OnMapLoad");
 
-	Util.SetMaxUsersInProgress( 1, "DEFEND_.*" );
-	Util.SetMaxUsersInProgress( 1, "ATTACK_.*" );
-	Util.SetMaxUsersInProgress( 1, "PANZER_.*" );
-	Util.SetMaxUsersInProgress( 2, "CHECKPOINT_.*" );
+	sleep(35);
+	if (!Map.KeyStatus)
+	{
+		SetAvailableMapGoals(TEAM.AXIS, true, "DEFEND_key.*");
+	}
+};
 
-	SetGoalPriority( "PLANT_Tunnel_Rubble.*", 1.0 );    // Plant me first for easy access
-	Util.DisableGoal( "ROUTE_westelevator" );
-	Util.DisableGoal( "ROUTE_eastelevator" );
-	Util.DisableGoal( "ROUTE_tunnel" );
-
-	//set up the switches
-	Util.UpdateSwitchData();
-
+global InitializeRoutes = function()
+{
 	MapRoutes =
 	{
 		FLAG_Override_Key =
@@ -347,7 +289,7 @@ global OnMapLoad = function()
 				ROUTE_tunnel =
 				{
 					Weight = 2,
-					ROUTE_westelevator = {Weight = 2,},
+					ROUTE_westelevator = {Weight = 2},
 					ROUTE_eastelevator = {},
 				},
 				ROUTE_upper_axisspawn = {},
@@ -359,23 +301,26 @@ global OnMapLoad = function()
 			},
 			ROUTE_forwardspawn =
 			{
-				ROUTE_westelevator = {Weight = 2,},
-				ROUTE_eastelevator = {},
+				ROUTE_westelevator = {Weight = 2},
+				ROUTE_eastelevator = {
+					ROUTE_rocketarea = {},
+					ROUTE_keydel4 = { ROUTE_keydel1 = {} },
+				},
 				ROUTE_axisladder = {},
 			},
 		},
 
-		CAPPOINT_92 =
+		CAPPOINT_console =
 		{
 			ROUTE_keygrab =
 			{
 				ROUTE_keydel1 = {},
 				ROUTE_keydel2 = {},
 				ROUTE_keydel3 = {},
-				ROUTE_keydel5 = { ROUTE_keydel4 = {}, },
+				ROUTE_keydel5 = { ROUTE_keydel4 = {} },
 			},
 		},
-		DEFEND_axis_key_defend_1 =
+		DEFEND_key_1 =
 		{
 			ROUTE_axis_spawn =
 			{
@@ -385,32 +330,20 @@ global OnMapLoad = function()
 		},
 	};
 
-	MapRoutes.ATTACK_Allies_Key_Attack_1 = MapRoutes.FLAG_Override_Key;
-	MapRoutes.ATTACK_Allies_Key_Attack_2 = MapRoutes.FLAG_Override_Key;
-	MapRoutes.ATTACK_Allies_Key_Attack_3 = MapRoutes.FLAG_Override_Key;
-	MapRoutes.ATTACK_Allies_Key_Attack_4 = MapRoutes.FLAG_Override_Key;
-	MapRoutes.ATTACK_Allies_Key_Attack_5 = MapRoutes.FLAG_Override_Key;
-	MapRoutes.ATTACK_Allies_Key_Attack_6 = MapRoutes.FLAG_Override_Key;
+	MapRoutes["ATTACK_Key.*"] = MapRoutes.FLAG_Override_Key;
 	MapRoutes.PLANT_Upper_Rocket_Bay_Door = MapRoutes.FLAG_Override_Key;
-	MapRoutes.DEFEND_axis_key_defend_2 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_3 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_4 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_5 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_6 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_7 = MapRoutes.DEFEND_axis_key_defend_1;
-	MapRoutes.DEFEND_axis_key_defend_8 = MapRoutes.DEFEND_axis_key_defend_1;
+	MapRoutes["DEFEND_key.*"] = MapRoutes.DEFEND_key_1;
 
-	Util.Routes( MapRoutes );
-	Util.MapDebugPrint( "OnMapLoad" );
+	Util.Routes(MapRoutes);
 };
 
-global OnBotJoin = function( bot )
+global OnBotJoin = function(bot)
 {
 	bot.TargetBreakableDist = 80.0;
-	RTCWUtil.NoSnipe( bot );
+	RTCWUtil.NoSnipe(bot);
 
 	//default spawn
-	if ( bot.GetTeam() == TEAM.ALLIES ) { // Spawn allies at flag
-		bot.ChangeSpawnPoint( 3 );
+	if (bot.GetTeam() == TEAM.ALLIES) { // Spawn allies at flag
+		bot.ChangeSpawnPoint(3);
 	}
 };
