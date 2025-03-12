@@ -1723,7 +1723,7 @@ void ClientSpawn( gentity_t *ent, qboolean revived ) {
 
 	if ( revived ) {
 		spawnPoint = ent;
-		VectorCopy( ent->s.origin, spawn_origin );
+		VectorCopy( ent->r.currentOrigin, spawn_origin );
 		spawn_origin[2] += 9;   // spawns seem to be sunk into ground?
 		VectorCopy( ent->s.angles, spawn_angles );
 	}
