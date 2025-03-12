@@ -370,10 +370,10 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 	if ( client->sess.spectatorState != SPECTATOR_FOLLOW ) {
 		client->ps.pm_type = PM_SPECTATOR;
 		client->ps.speed = 400; // faster than normal
-		if ( client->ps.sprintExertTime ) {
+		if ( client->ps.sprintExertTime )
 			client->ps.speed *= 3;  // (SA) allow sprint in free-cam mode
-
-		}
+		if ( client->noclip )
+			client->ps.pm_type = PM_NOCLIP;
 		// set up for pmove
 		memset( &pm, 0, sizeof( pm ) );
 		pm.ps = &client->ps;
