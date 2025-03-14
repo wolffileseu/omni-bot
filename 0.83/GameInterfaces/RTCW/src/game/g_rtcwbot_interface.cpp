@@ -2733,7 +2733,7 @@ obResult InterfaceSendMessage( const MessageHelper &_data, const GameEntity _ent
 				if ( pWho->s.eType == ET_EXPLOSIVE ) {
 					func_explosive_explode(pWho, 0, 0, 1000, MOD_GRENADE);
 				}
-				else if (pWho->spawnflags & AXIS_OBJECTIVE || pWho->spawnflags & AXIS_OBJECTIVE) { // trigger_objective_info's
+				else if (pWho->spawnflags & (AXIS_OBJECTIVE | ALLIED_OBJECTIVE)) { // trigger_objective_info's
 					G_UseTargets( pWho,  NULL );
 					pWho->think = G_FreeEntity;
 					pWho->nextthink = level.time + FRAMETIME;
