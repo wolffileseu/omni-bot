@@ -845,11 +845,10 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, float scale, vec4_t color, qha
 
 	ps = &cg.snap->ps;
 
-	if ( cgs.gametype >= GT_WOLF && ( ps->pm_flags & PMF_FOLLOW ) ) {
-		value = cgs.clientinfo[ ps->clientNum ].health;
-	} else {
-		value = ps->stats[STAT_HEALTH];
-	}
+	//if ( cgs.gametype >= GT_WOLF && ( ps->pm_flags & PMF_FOLLOW ) )
+	//	value = cgs.clientinfo[ ps->clientNum ].health;
+	//else
+	value = ps->stats[STAT_HEALTH];
 
 	// DHM - Nerve :: Don't show negative health
 	if ( value < 0 ) {
