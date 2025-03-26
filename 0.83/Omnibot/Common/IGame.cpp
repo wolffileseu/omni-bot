@@ -1592,190 +1592,203 @@ bool IGame::CreateCriteria(gmThread *_thread, CheckCriteria &_criteria, StringSt
 	//////////////////////////////////////////////////////////////////////////
 	// Subject
 	int NextArg = 0;
-	if(_thread->ParamType(NextArg)==GM_ENTITY)
+	if(_thread->ParamType(0)==GM_ENTITY)
 	{
 		GameEntity e;
-		e.FromInt(_thread->Param(NextArg).GetEntity());
+		e.FromInt(_thread->Param(0).GetEntity());
 		_criteria.m_Subject.SetEntity(e);
 
 		NextArg++;
 	}
+	else if(_thread->ParamType(0)==GM_NULL)
+	{
+		//ignore null entity
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	
 	const char *pExpression = _thread->Param(NextArg).GetCStringSafe(NULL);	
-	if(pExpression)
+	if(!pExpression)
 	{
-		int NumExpectedOperands = 0;
-		CriteriaArgType ExpectedArgTypes[MaxArgs] = {};
+		err << "expecting " << (NextArg==0 ? "entity" : "string criteria") << std::endl;
+		return false;
+	}
+	NextArg++;
+	int NumExpectedOperands = 0;
+	CriteriaArgType ExpectedArgTypes[MaxArgs] = {};
 
-		int iToken = CheckCriteria::TOK_CRITERIA;
+	int iToken = CheckCriteria::TOK_CRITERIA;
 
-		StringVector sv;
-		Utils::Tokenize(pExpression," ",sv);
-		for(obuint32 t = 0; t < sv.size(); ++t)
+	StringVector sv;
+	Utils::Tokenize(pExpression," ",sv);
+	for(obuint32 t = 0; t < sv.size(); ++t)
+	{
+		const obuint32 sHash = Utils::Hash32(sv[t].c_str());
+
+		if(iToken==CheckCriteria::TOK_CRITERIA)
 		{
-			const obuint32 sHash = Utils::Hash32(sv[t].c_str());
-
-			if(iToken==CheckCriteria::TOK_CRITERIA)
+			switch(sHash)
 			{
-				switch(sHash)
-				{
-				case 0x29b19c8a /* not */:
-				case 0x8fd958a1 /* doesnot */:
-					_criteria.m_Negated = true;
-					break;
-				case 0x84d1546a /* deleted */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_DELETED;
-					_criteria.m_Operator = Criteria::OP_EQUALS;
-					_criteria.m_Operand[0] = obUserData(1);
-					NumExpectedOperands = 0;
-					++iToken;
-					break;
-				case 0x587bc012 /* hasentflag */:
-				case 0xabcfd8b3 /* hasentflags */:
-				case 0x8770b3da /* haveentflag */:
-				case 0xdf6ad30b /* haveentflags */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_FLAG;
-					_criteria.m_Operator = Criteria::OP_EQUALS;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeInt;
-					++iToken;
-					break;
-				case 0x6b98ed8f /* health */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_HEALTH;
-					NumExpectedOperands = 1;
-					ExpectedArgTypes[0] = kTypeNum;
-					++iToken;
-					break;
-				case 0x7962a87c /* weaponequipped */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPON;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
-					++iToken;
-					break;
-				case 0x32741c32 /* velocity */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_VELOCITY;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeVector; // velocity vector
-					++iToken;
-					break;
-				case 0x3f44af2b /* weaponcharged */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPONCHARGED;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
-					++iToken;
-					break;
-				case 0x79e3594d /* weaponhasammo */:
-					_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPONHASAMMO;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // ammo amount
-					++iToken;
-					break;
-				case 0x8ad3b7b9 /* mapgoalavailable */:
-					_criteria.m_Criteria = Criteria::ON_MAPGOAL_AVAILABLE;
-					ExpectedArgTypes[NumExpectedOperands++] = kTypeMapGoal;
-					++iToken;
-					break;
-				default:
-					err << "invalid criteria " << sv[t].c_str() << std::endl;
-					return false;
-				}
-			}
-			else if(iToken==CheckCriteria::TOK_OPERATOR)
-			{
-				_criteria.ParseOperator(sHash);
+			case 0x29b19c8a /* not */:
+			case 0x8fd958a1 /* doesnot */:
+				_criteria.m_Negated = true;
 				break;
+			case 0x84d1546a /* deleted */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_DELETED;
+				_criteria.m_Operator = Criteria::OP_EQUALS;
+				_criteria.m_Operand[0] = obUserData(1);
+				NumExpectedOperands = 0;
+				++iToken;
+				break;
+			case 0x587bc012 /* hasentflag */:
+			case 0xabcfd8b3 /* hasentflags */:
+			case 0x8770b3da /* haveentflag */:
+			case 0xdf6ad30b /* haveentflags */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_FLAG;
+				_criteria.m_Operator = Criteria::OP_EQUALS;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeInt;
+				++iToken;
+				break;
+			case 0x6b98ed8f /* health */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_HEALTH;
+				NumExpectedOperands = 1;
+				ExpectedArgTypes[0] = kTypeNum;
+				++iToken;
+				break;
+			case 0x7962a87c /* weaponequipped */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPON;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
+				++iToken;
+				break;
+			case 0x32741c32 /* velocity */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_VELOCITY;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeVector; // velocity vector
+				++iToken;
+				break;
+			case 0x3f44af2b /* weaponcharged */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPONCHARGED;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
+				++iToken;
+				break;
+			case 0x79e3594d /* weaponhasammo */:
+				_criteria.m_Criteria = Criteria::ON_ENTITY_WEAPONHASAMMO;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // weaponid
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeInt; // ammo amount
+				++iToken;
+				break;
+			case 0x8ad3b7b9 /* mapgoalavailable */:
+				_criteria.m_Criteria = Criteria::ON_MAPGOAL_AVAILABLE;
+				ExpectedArgTypes[NumExpectedOperands++] = kTypeMapGoal;
+				++iToken;
+				break;
+			default:
+				err << "invalid criteria " << sv[t].c_str() << std::endl;
+				return false;
 			}
 		}
-
-		//////////////////////////////////////////////////////////////////////////
-		// Operand
-		for(int i = 0; i < NumExpectedOperands; ++i)
+		else if(iToken==CheckCriteria::TOK_OPERATOR)
 		{
-			gmVariable o = _thread->Param(2+i);
+			_criteria.ParseOperator(sHash);
+			break;
+		}
+	}
 
-			OBASSERT(ExpectedArgTypes[i] != kTypeNone,"Invalid arg expectation");
-			switch(ExpectedArgTypes[i])
-			{
-				case kTypeInt:
-					{
-						if(!o.IsInt())
-							goto argError;
+	//////////////////////////////////////////////////////////////////////////
+	// Operand
+	for(int i = 0; i < NumExpectedOperands; ++i)
+	{
+		if(_thread->GetNumParams() <= NextArg+i)
+		{
+			err << "expected " << ArgTypeNames[ExpectedArgTypes[i]] << " operand" << std::endl;
+			return false;
+		}
+		gmVariable o = _thread->Param(NextArg+i);
 
-						_criteria.m_Operand[i] = obUserData(o.GetInt());
-						break;
-					}
-				case kTypeFloat:
-					{
-						if(!o.IsFloat())
-							goto argError;
+		OBASSERT(ExpectedArgTypes[i] != kTypeNone,"Invalid arg expectation");
+		switch(ExpectedArgTypes[i])
+		{
+			case kTypeInt:
+				{
+					if(!o.IsInt())
+						goto argError;
 
-						_criteria.m_Operand[i] = obUserData(o.GetFloat());
-						break;
-					}
-				case kTypeNum:
-					{
-						if(!o.IsNumber())
-							goto argError;
+					_criteria.m_Operand[i] = obUserData(o.GetInt());
+					break;
+				}
+			case kTypeFloat:
+				{
+					if(!o.IsFloat())
+						goto argError;
 
-						_criteria.m_Operand[i] = obUserData(o.GetFloatSafe());
-						break;
-					}
-				case kTypeVector:
-					{
-						if(!o.IsVector())
-							goto argError;
+					_criteria.m_Operand[i] = obUserData(o.GetFloat());
+					break;
+				}
+			case kTypeNum:
+				{
+					if(!o.IsNumber())
+						goto argError;
 
-						Vector3f v;
-						o.GetVector(v);
-						_criteria.m_Operand[i] = obUserData(v.x,v.y,v.z);
-						break;
-					}
-				case kTypeEntity:
-					{
-						if(!o.IsEntity())
-							goto argError;
+					_criteria.m_Operand[i] = obUserData(o.GetFloatSafe());
+					break;
+				}
+			case kTypeVector:
+				{
+					if(!o.IsVector())
+						goto argError;
 
-						GameEntity e;
-						e.FromInt(o.GetEntity());
-						_criteria.m_Operand[i].SetEntity(e);
-						break;
-					}
-				case kTypeMapGoal:
+					Vector3f v;
+					o.GetVector(v);
+					_criteria.m_Operand[i] = obUserData(v.x,v.y,v.z);
+					break;
+				}
+			case kTypeEntity:
+				{
+					if(!o.IsEntity())
+						goto argError;
+
+					GameEntity e;
+					e.FromInt(o.GetEntity());
+					_criteria.m_Operand[i].SetEntity(e);
+					break;
+				}
+			case kTypeMapGoal:
+				{
+					if(o.IsString())
 					{
-						if(o.IsString())
+						const char * goalName = o.GetCStringSafe(0);
+						MapGoalPtr mg = GoalManager::GetInstance()->GetGoal(goalName);
+						if(mg)
 						{
-							const char * goalName = o.GetCStringSafe(0);
-							MapGoalPtr mg = GoalManager::GetInstance()->GetGoal(goalName);
-							if(mg)
-							{
-								_criteria.m_Operand[i] = obUserData(mg->GetSerialNum());
-							}
-							else
-							{
-								err << "unknown map goal '" << goalName << "'" << std::endl;
-								return false;
-							}
+							_criteria.m_Operand[i] = obUserData(mg->GetSerialNum());
 						}
 						else
 						{
-							MapGoal *Mg = 0;
-							if(gmBind2::Class<MapGoal>::FromVar(_thread,o,Mg) && Mg)
-							{
-								_criteria.m_Operand[i] = Mg->GetSerialNum();
-								return true;
-							}
-							else
-								goto argError;
+							err << "unknown map goal '" << goalName << "'" << std::endl;
+							return false;
 						}
-						break;
 					}
-				default:
-					OBASSERT(false,"bad");
+					else
+					{
+						MapGoal *Mg = 0;
+						if(gmBind2::Class<MapGoal>::FromVar(_thread,o,Mg) && Mg)
+						{
+							_criteria.m_Operand[i] = Mg->GetSerialNum();
+							return true;
+						}
+						else
+							goto argError;
+					}
 					break;
-			}
-			continue;
-argError:
-			const char * gotType = _thread->GetMachine()->GetTypeName(o.m_type);
-			err << "expected " << ArgTypeNames[ExpectedArgTypes[i]] << "got " << gotType << std::endl;
-			return false;
+				}
+			default:
+				OBASSERT(false,"bad");
+				break;
 		}
+		continue;
+argError:
+		const char * gotType = _thread->GetMachine()->GetTypeName(o.m_type);
+		err << "expected " << ArgTypeNames[ExpectedArgTypes[i]] << " got " << gotType << std::endl;
+		return false;
 	}
 	return true;
 }

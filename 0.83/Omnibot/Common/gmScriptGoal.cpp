@@ -991,7 +991,7 @@ int gmScriptGoal::gmfMarkInUse(gmThread *a_thread)
 int gmScriptGoal::gmfAddFinishCriteria(gmThread *a_thread)
 {
 	CHECK_THIS_SGOAL();
-		
+	GM_CHECK_NUM_PARAMS(2);
 	CheckCriteria c;
 	StringStr err;
 	if(IGameManager::GetInstance()->GetGame()->CreateCriteria(a_thread,c,err))
