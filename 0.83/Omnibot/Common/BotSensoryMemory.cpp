@@ -262,10 +262,6 @@ namespace AiState
 		_record.MarkUpdated();
 
 		TargetInfo &ti = _record.m_TargetInfo;
-
-		const bool bIsStatic = ti.m_EntityCategory.CheckFlag(ENT_CAT_STATIC);
-		const bool bShootable = ti.m_EntityCategory.CheckFlag(ENT_CAT_SHOOTABLE);
-
 		GameEntity ent = _record.GetEntity();
 
 		//////////////////////////////////////////////////////////////////////////
@@ -299,6 +295,9 @@ namespace AiState
 			return false;
 		if(!InterfaceFuncs::GetEntityCategory(ent, ti.m_EntityCategory))
 			return false;
+
+		const bool bIsStatic = ti.m_EntityCategory.CheckFlag(ENT_CAT_STATIC);
+		const bool bShootable = ti.m_EntityCategory.CheckFlag(ENT_CAT_SHOOTABLE);
 
 		//////////////////////////////////////////////////////////////////////////
 		Vector3f vTracePosition = vNewPosition;
@@ -409,7 +408,7 @@ namespace AiState
 		Prof(QueryMemory);
 		for(int i = 0; i < NumRecords; ++i)
 		{
-			if(m_Records[i].GetEntity().IsValid())
+			if(m_Records[i].GetEntity().IsValid() && UpdateRecord(m_Records[i]))
 				_filter.Check(i, m_Records[i]);
 		}
 		_filter.PostQuery();
@@ -417,13 +416,14 @@ namespace AiState
 
 	const TargetInfo *SensoryMemory::GetTargetInfo(const GameEntity _ent)
 	{
-		for(int i = 0; i < NumRecords; ++i)
-		{
-			if(m_Records[i].GetEntity().IsValid() && m_Records[i].GetEntity() == _ent)
+		if(_ent.IsValid())
+			for(int i = 0; i < NumRecords; ++i)
 			{
-				return &m_Records[i].m_TargetInfo;
+				if(m_Records[i].GetEntity() == _ent)
+				{
+					return &m_Records[i].m_TargetInfo;
+				}
 			}
-		}
 		return NULL;
 	}
 

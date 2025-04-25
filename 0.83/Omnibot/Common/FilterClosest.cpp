@@ -113,11 +113,19 @@ void FilterClosest::Check(int _index, const MemoryRecord &_record)
 				return;
 		}
 
-		// Get the distance to this person.		
-		if(CheckEx(_record))
+		// Breakables and mounted MG42
+		if(!CheckEx(_record))
+			return;
+		
+		if(g_EngineFuncs->IDFromEntity(_record.GetEntity()) == -1)
 		{
-			m_BestDistanceSq = fDistanceSq;
-			m_BestEntity = _record.GetEntity();
-		}			
+#ifdef _DEBUG
+			EngineFuncs::ConsoleError("Invalid entity in bot sensory memory");
+#endif
+			return;
+		}
+
+		m_BestDistanceSq = fDistanceSq;
+		m_BestEntity = _record.GetEntity();
 	}
 }
