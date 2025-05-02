@@ -6,6 +6,7 @@
 #include "gmSchemaLib.h"
 #include "gmBot.h"
 #include "gmBotLibrary.h"
+#include "gmAABB.h"
 
 #ifdef ENABLE_DEBUG_WINDOW
 #include <guichan.hpp>
@@ -102,6 +103,8 @@ void MapGoal::CopyFrom(MapGoal *_other)
 	m_RolePriorityBonus = _other->m_RolePriorityBonus;
 	m_RandomUsePoint = _other->m_RandomUsePoint;
 	m_Range = _other->m_Range;
+	m_HasRangeAABB = _other->m_HasRangeAABB;
+	if(m_HasRangeAABB) m_RangeAABB = _other->m_RangeAABB;
 
 	m_AvailableTeams = _other->m_AvailableTeams;
 
@@ -168,6 +171,7 @@ void MapGoal::_Init()
 	m_RolePriorityBonus = 0.f;
 	m_RandomUsePoint = 0;
 	m_Range = 0;
+	m_HasRangeAABB = false;
 
 	m_SerialNum = GetMapGoalSerial();
 
@@ -666,14 +670,36 @@ Vec3 MapGoal::GetPosition_Script()
 	return Vec3(GetPosition());
 }
 
-void MapGoal::SetRange_Script(const int &_range)
+void MapGoal::SetRangeAABB(const AABB &_aabb)
 {
-	m_Range = _range;
-}
+	m_RangeAABB = _aabb;
+	m_HasRangeAABB = !_aabb.IsZero();
+};
 
-int MapGoal::GetRange_Script()
+static int gmfSetRange(gmThread *a_thread)
 {
-	return GetRange();
+	MapGoal *NativePtr = 0;
+	if(!gmBind2::Class<MapGoal>::FromThis(a_thread,NativePtr) || !NativePtr)
+	{
+		GM_EXCEPTION_MSG("Script Function on NULL MapGoal"); 
+		return GM_EXCEPTION;
+	}
+	GM_CHECK_NUM_PARAMS(1);
+	
+	if(a_thread->ParamType(0) == GM_INT)
+	{
+		NativePtr->SetRange(a_thread->ParamInt(0));
+	}
+	else if(a_thread->ParamType(0) == gmAABB::GetType())
+	{
+		NativePtr->SetRangeAABB(*gmAABB::GetNative(reinterpret_cast<gmUserObject*>(a_thread->ParamRef(0))));
+	}
+	else
+	{
+		GM_EXCEPTION_MSG("expecting param 0 as int or AABB, got %s", a_thread->GetMachine()->GetTypeName(a_thread->ParamType(0)));
+		return GM_EXCEPTION;
+	}
+	return GM_OK;
 }
 
 void MapGoal::SetFacing(const Vector3f &_facing)
@@ -686,7 +712,6 @@ void MapGoal::SetFacing_Script(const Vec3 &_facing)
 	Vector3f facing(_facing.x,_facing.y,_facing.z);
 	SetFacing(facing);
 }
-
 
 Vector3f MapGoal::GetFacing()
 {
@@ -1121,9 +1146,12 @@ void MapGoal::RenderDefault()
 		int range = GetRange();
 		if ( range > 0 )
 		{
-			txtOut += "Range: ";
-			txtOut += String(va("%i", range));
-			txtOut += "\n";
+			txtOut += va("Range: %i\n", range);
+		}
+		if (HasRangeAABB())
+		{
+			const AABB &a = GetRangeAABB();
+			txtOut += va("Range: (%.0f,%.0f,%.0f,%.0f,%.0f,%.0f)\n", a.m_Mins[0],a.m_Mins[1],a.m_Mins[2],a.m_Maxs[0],a.m_Maxs[1],a.m_Maxs[2]);
 		}
 	}
 
@@ -2335,8 +2363,8 @@ void MapGoal::Bind(gmMachine *_m)
 		.func(&MapGoal::GetDisabled,		"IsDisabled","Get whether the goal is currently disabled.")
 		.func(&MapGoal::SetDisabled,		"DisableGoal","Set whether the goal is currently disabled.")
 
-		.func(&MapGoal::GetRange_Script,	"GetRange","Get current range limit for the goal")
-		.func(&MapGoal::SetRange_Script,	"SetRange","Set the current range limit for the goal")
+		.func(&MapGoal::GetRange,	"GetRange","Get current range limit for the goal")
+		.func(gmfSetRange,	"SetRange","Set the current range limit for the goal")
 
 		//.func(&MapGoal::GetWorldBounds,	"GetBounds")
 		//.func(&MapGoal::GetLocalBounds,	"GetLocalBounds")

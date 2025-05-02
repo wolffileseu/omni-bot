@@ -406,6 +406,9 @@ public:
 
 	int GetRange() const { return m_Range; };
 	void SetRange(int _range) { m_Range = _range; };
+	bool HasRangeAABB() const { return m_HasRangeAABB; };
+	const AABB &GetRangeAABB() const { return m_RangeAABB; };
+	void SetRangeAABB(const AABB &_aabb);
 
 #ifdef ENABLE_DEBUG_WINDOW
 	// action listener
@@ -498,6 +501,8 @@ private:
 
 	int			m_RandomUsePoint; // randomly select a usepoint to use?
 	int			m_Range;  // distance limited
+	bool m_HasRangeAABB; // false if m_RangeAABB is ZERO
+	AABB m_RangeAABB; // limited to bots within a box
 
 #ifdef Prof_ENABLED
 	Prof_Zone					*m_ProfZone;
@@ -521,9 +526,6 @@ private:
 	Vec3 GetFacing_Script();
 	void SetBounds_Script(const Vec3 &_mins, const Vec3 &_maxs);
 	Vec3 GetBoundsCenter_Script();
-
-	void SetRange_Script(const int &_range);
-	int GetRange_Script();
 
 	MapGoalWPtr	m_WeakPtr;
 

@@ -363,11 +363,11 @@ bool GoalManager::Query::CheckForMatch(MapGoalPtr & mg)
 	// cs: do this after bb delay check to throttle distance calculations
 	if(m_CheckRangeProperty && m_Client)
 	{
-		float range = (float)mg->GetRange();
-		if(range > 0 && (m_Client->GetPosition() - mg->GetPosition()).SquaredLength() > Mathf::Sqr(range))
-		{
+		if(mg->GetRange() > 0 && (m_Client->GetPosition() - mg->GetPosition()).SquaredLength() > Mathf::Sqr((float)mg->GetRange()))
 			return false;
-		}
+
+		if(mg->HasRangeAABB() && !mg->GetRangeAABB().Contains(m_Client->GetPosition()))
+			return false;
 	}
 
 	return true;
