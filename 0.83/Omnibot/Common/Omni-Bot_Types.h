@@ -1141,6 +1141,11 @@ typedef enum ePlayerState
 	S_PLAYER_PLAYING			// Player is good to go, and fully joined.
 } PlayerState;
 
+typedef enum eRole
+{
+	ROLE_INFILTRATOR = 3,
+} Role;
+
 // enumerations: FlagState
 //		S_FLAG_NOT_A_FLAG - The entity isn't a flag. Typically an error condition.
 //		S_FLAG_AT_BASE - The flag is at its base position.

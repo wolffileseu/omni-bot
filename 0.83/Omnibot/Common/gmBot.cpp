@@ -2086,7 +2086,7 @@ int gmBot::gmfClearRoles(gmThread *a_thread)
 	for(int p = 0; p < a_thread->GetNumParams(); ++p)
 	{
 		GM_CHECK_INT_PARAM(r,p);
-		if(r==3 && native->IsInfiltrator() && !native->HasEntityFlag(ENT_FLAG_DEAD)) lostDisguise = true;
+		if(r==ROLE_INFILTRATOR && native->IsInfiltrator() && !native->HasEntityFlag(ENT_FLAG_DEAD)) lostDisguise = true;
 		rolemask.SetFlag(r,false);
 	}
 	native->SetRoleMask(rolemask);
