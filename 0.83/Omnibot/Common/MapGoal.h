@@ -312,6 +312,7 @@ public:
 	Vector3f GetWorldUsePoint(obint32 _index = -1);
 	Vec3 GetWorldUsePoint_Script(obint32 _index);
 	void GetAllUsePoints(Vector3List &_pv);
+	void ClearUsePoints();
 
 	bool AddRoute_Script(const std::string &_start, const std::string &_end, float _weight);
 	bool AddRoute(const MapGoalPtr &_routeStart, const MapGoalPtr &_midpt, float _weight);

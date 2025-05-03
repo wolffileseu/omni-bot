@@ -833,6 +833,12 @@ void MapGoal::GetAllUsePoints(Vector3List &_pv)
 	}
 }
 
+void MapGoal::ClearUsePoints()
+{
+	m_LocalUsePoints.clear();
+	m_RelativeUsePoints.clear();
+}
+
 bool MapGoal::AddRoute_Script(const std::string &_start, const std::string &_end, float _weight)
 {
 	MapGoalPtr mgStart = GoalManager::GetInstance()->GetGoal(_start);
@@ -2382,6 +2388,7 @@ void MapGoal::Bind(gmMachine *_m)
 		.func(gmfAddUsePoint,				"AddUsePoint","Adds a 'use' point to the goal.")
 		.func(&MapGoal::GetWorldUsePoint_Script, "GetUsePoint", "Gets a use point in world space, by index.")
 		.func(&MapGoal::GetNumUsePoints,	"GetNumUsePoint","Gets the number of use points currently defined.")
+		.func(&MapGoal::ClearUsePoints,	"ClearUsePoints", "Clears all use points for this goal.")
 
 		.func(gmfSetRoles,					"SetRoles","Sets the roles that are allowed to use this goal.")
 		.func(gmfClearRoles,				"ClearRoles","Removes the given roles from this goal.")
