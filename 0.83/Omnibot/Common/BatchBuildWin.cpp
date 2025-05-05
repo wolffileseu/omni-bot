@@ -96,9 +96,7 @@ duDebugDraw * gDDraw = 0;
 #include "gmWeapon.cpp"
 
 #include "StateMachine.cpp"
-#include "BotGlobalStates.cpp"
 //#include "BotBaseStates.cpp"
-#include "BotBaseStates_GM.cpp"
 #include "BotSteeringSystem.cpp"
 //#include "BotWeaponSystem.cpp"
 #include "FilterAllType.cpp"

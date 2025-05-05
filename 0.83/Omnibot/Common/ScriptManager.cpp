@@ -260,7 +260,6 @@ void ScriptManager::Init()
 	LOG("+ TriggerInfo Library Bound.");
 	gmTimer::Initialise(m_ScriptEngine, false);
 	LOG("+ Timer Library Bound.");
-	//BindAABB(m_ScriptEngine);
 	gmAABB::Initialise(m_ScriptEngine, false);
 
 	LOG("+ AABB Library Bound.");	

@@ -1749,9 +1749,9 @@ static int gmfGetEntityOwner(gmThread *a_thread)
 //		<int> - The gameId for the entity to use
 //
 // Returns:
-//		int - team of the owner of this entity
+//		int - team of the entity
 //		- OR -
-//		null - If no owner.
+//		null - If no team
 static int gmfGetEntityTeam(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(1);
@@ -1780,9 +1780,9 @@ static int gmfGetEntityTeam(gmThread *a_thread)
 //		<int> - The gameId for the entity to use
 //
 // Returns:
-//		int - team of the owner of this entity
+//		int - class of the entity
 //		- OR -
-//		null - If no owner.
+//		null - If no class
 static int gmfGetEntityClass(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(1);
@@ -1854,18 +1854,18 @@ static int gmfGetWeaponIdFromClassId(gmThread *a_thread)
 //////////////////////////////////////////////////////////////////////////
 
 // function: GetEntCategory
-//		This function gets the current category of this entity. 
+//		This function gets categories of this entity.
 //
 // Parameters:
 //
 //		<GameEntity> - The entity to use
 //		- OR - 
 //		<int> - The gameId for the entity to use
+//		<int> - category to check for
+//		... - Any number of additional categories to check for
 //
 // Returns:
-//		int - category of the entity, as a bitmask.
-//		- OR -
-//		null - If no owner.
+//		int - true if the entity has ANY category passed
 static int gmfGetEntCategory(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(1);
@@ -1905,7 +1905,7 @@ static int gmfGetEntCategory(gmThread *a_thread)
 // Returns:
 //		int - weapon id
 //		- OR -
-//		null - If no owner.
+//		null - If entity is invalid or has no weapon
 static int gmfGetEntEquippedWeapon(gmThread *a_thread)
 {
 	GM_CHECK_NUM_PARAMS(1);

@@ -318,9 +318,6 @@
     <ClCompile Include="..\..\..\Common\BotBaseStates.cpp">
       <Filter>Core\States\States</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\BotBaseStates_GM.cpp">
-      <Filter>Core\States\States</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\BotSensoryMemory.cpp">
       <Filter>Core\States\States</Filter>
     </ClCompile>
@@ -350,9 +347,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\FilterSensory.cpp">
       <Filter>Core\States\States\SensoryFilters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\BotGlobalStates.cpp">
-      <Filter>Core\States\Global</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\Weapon.cpp">
       <Filter>Core\Weapons</Filter>
@@ -1067,9 +1061,6 @@
     <ClInclude Include="..\..\..\Common\FilterSensory.h">
       <Filter>Core\States\States\SensoryFilters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\BotGlobalStates.h">
-      <Filter>Core\States\Global</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\Weapon.h">
       <Filter>Core\Weapons</Filter>
     </ClInclude>
@@ -1661,7 +1652,6 @@
       <Filter>3rdParty\WildMagic\Math</Filter>
     </None>
     <None Include="..\..\..\Common\Jamfile" />
-    <None Include="..\..\..\Common\Omni-Bot_Common_TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Common.rc">

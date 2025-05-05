@@ -7,7 +7,6 @@
 #include "MapGoalDatabase.h"
 #include "IGame.h"
 #include "BotBaseStates.h"
-#include "BotGlobalStates.h"
 #include "BotSteeringSystem.h"
 #include "ScriptGoal.h"
 
@@ -102,14 +101,6 @@ bool IGame::Init()
 	// Reset the global blackboard.
 	g_Blackboard.RemoveAllBBRecords(bbk_All);
 
-	//////////////////////////////////////////////////////////////////////////
-	/*m_StateRoot = new AiState::GlobalRoot;
-	m_StateRoot->FixRoot();
-	InitGlobalStates();
-	m_StateRoot->FixRoot();
-	m_StateRoot->InitializeStates();*/
-	//////////////////////////////////////////////////////////////////////////
-	
 	return true;
 }
 
