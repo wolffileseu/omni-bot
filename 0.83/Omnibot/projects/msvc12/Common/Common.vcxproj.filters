@@ -426,9 +426,6 @@
     <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\7zCrc.c">
       <Filter>3rdParty\physfs\lzma</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\7zCrcT8.c">
-      <Filter>3rdParty\physfs\lzma</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\Alloc.c">
       <Filter>3rdParty\physfs\lzma</Filter>
     </ClCompile>
@@ -469,15 +466,6 @@
       <Filter>3rdParty\physfs\lzma\Compress\Branch</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\Compress\Lzma\LzmaDecode.c">
-      <Filter>3rdParty\physfs\lzma\Compress\Lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\Compress\Lzma\LzmaStateDecode.c">
-      <Filter>3rdParty\physfs\lzma\Compress\Lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\Compress\Lzma\LzmaStateTest.c">
-      <Filter>3rdParty\physfs\lzma\Compress\Lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\dependencies\physfs\lzma\C\Compress\Lzma\LzmaTest.c">
       <Filter>3rdParty\physfs\lzma\Compress\Lzma</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\dependencies\physfs\platform\windows.c">

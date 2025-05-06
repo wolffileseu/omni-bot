@@ -21,6 +21,10 @@
 
 #include "LzmaDecode.h"
 
+#if defined(_MSC_VER)
+#pragma warning( disable: 4456 )
+#endif
+
 #define kNumTopBits 24
 #define kTopValue ((UInt32)1 << kNumTopBits)
 

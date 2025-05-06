@@ -989,7 +989,6 @@ SZ_RESULT SzReadHeader2(
 
   for (;;)
   {
-    UInt64 type;
     UInt64 size;
     RINOK(SzReadID(sd, &type));
     if (type == k7zIdEnd)

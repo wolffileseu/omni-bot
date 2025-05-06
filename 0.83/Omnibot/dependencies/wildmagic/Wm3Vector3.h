@@ -14,6 +14,11 @@
 #include "Wm3Math.h"
 #include "Wm3Vector2.h"
 
+#if defined(_MSC_VER)
+#pragma warning( disable: 4512 )
+#endif
+
+
 namespace Wm3
 {
 

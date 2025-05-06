@@ -1490,6 +1490,10 @@ int __PHYSFS_platformSetDefaultAllocator(PHYSFS_Allocator *a);
 }
 #endif
 
+#ifdef _MSC_VER
+#pragma warning( disable: 4100 4127 4244 4267 4456 4701 4996 )
+#endif
+
 #endif
 
 /* end of physfs_internal.h ... */

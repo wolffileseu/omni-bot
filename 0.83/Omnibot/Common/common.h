@@ -6,13 +6,12 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-//#include "CodeAnalysis.h"
-
 // Disable some compiler warnings.
 #ifdef _MSC_VER
-#pragma warning(   error: 4002 )	// Too many actual parameters for macro: promoted to be an error
+#pragma warning( error: 4002 )	// Too many actual parameters for macro: promoted to be an error
+
 //#pragma warning( disable: 4097 )	// typedef-name '...' used as synonym for class-name '...'
-#pragma warning( disable: 4100 )	// unreferenced formal parameter
+//#pragma warning( disable: 4100 )	// unreferenced formal parameter
 //#pragma warning( disable: 4127 )	// conditional expression is constant
 //#pragma warning( disable: 4206 )	// nonstandard extension used : translation unit is empty
 //#pragma warning( disable: 4505 )	// 'function' : unreferenced local function has been removed
@@ -30,14 +29,9 @@
 //#pragma warning( disable: 6384 )	// Dividing sizeof a pointer by another value
 
 // Enable some useful ones that are disabled by default
-// http://msdn2.microsoft.com/en-us/library/23k5d385(VS.80).aspx
 #pragma warning( default: 4062)		// enumerator 'identifier' in switch of enum 'enumeration' is not handled
 #pragma warning( default: 4265)		// class has virtual functions, but destructor is not virtual
 #pragma warning( default: 4431)		// missing type specifier - int assumed. Note: C no longer supports default-int
-
-// Disable if these get annoying.
-#pragma warning( default: 4710 )	// function '...' not inlined
-#pragma warning( default: 4711 )	// function '...' selected for automatic inline expansion
 #endif // _MSC_VER
 
 #define _UNUSED(x) ((void)x) // cs: for gcc warnings
@@ -103,12 +97,10 @@ namespace stdext
 #endif // boost lib <= 1_44_0
 #endif // vs2010
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning( push )
-// stfu boost
-#pragma warning( disable: 4244 )
-#pragma warning( disable: 4265 )
-#endif //_WIN32
+#pragma warning( disable: 4100 4244 4265 )
+#endif
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -128,9 +120,13 @@ namespace stdext
 #include <boost/thread.hpp>
 #endif
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning( pop )
-#endif // _WIN32
+
+// Disable if these get annoying.
+#pragma warning( default: 4710 )	// function '...' not inlined
+#pragma warning( default: 4711 )	// function '...' selected for automatic inline expansion
+#endif
 
 namespace fs = boost::filesystem;
 
@@ -150,8 +146,6 @@ typedef boost::try_mutex TryMutex;
 #include "WildMagic3Distance.h"
 #include "WildMagic3Containment.h"
 using namespace Wm3;
-
-#include "Bezier.h"
 
 // General purpose stuff.
 #include "Functor.h"

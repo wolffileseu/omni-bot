@@ -33,9 +33,8 @@
 
 #include "zconf.h"
 
-#ifdef _WIN32
-#pragma warning( disable: 4127 )
-#pragma warning( disable: 4131 )
+#if defined(_MSC_VER) && defined(ZLIB_INTERNAL)
+#pragma warning( disable: 4127 4131 4244 4456 )
 #endif
 
 #ifdef __cplusplus

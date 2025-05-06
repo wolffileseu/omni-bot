@@ -4,6 +4,10 @@
 
 #include "../../Alloc.h"
 
+#if defined(_MSC_VER)
+#pragma warning( disable: 4456 )
+#endif
+
 #ifdef _LZMA_PROB32
 #define CProb UInt32
 #else
