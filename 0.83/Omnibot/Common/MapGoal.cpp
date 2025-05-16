@@ -893,7 +893,8 @@ bool MapGoal::RouteTo(Client *_bot, DestinationVector &_dest, float _minradius)
 			// Most maps have all routes enabled for all teams, 
 			// that's why it's better to check availability after checking radius.
 			r.m_End->IsAvailable(_bot->GetTeam()) &&
-			r.m_Start->IsAvailable(_bot->GetTeam()) )
+			r.m_Start->IsAvailable(_bot->GetTeam()) &&
+			r.m_End->m_ClassPriority.Priorities[_bot->GetTeam()-1][_bot->GetClass()-1] != 0)
 		{
 			routes.push_back(r);
 			fTotalWeight += r.m_Weight;
