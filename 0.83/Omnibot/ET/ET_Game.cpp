@@ -131,6 +131,7 @@ bool ET_Game::Init()
 	AiState::SensoryMemory::SetEntityVisDistanceCallback(ET_Game::ET_GetEntityVisDistance);
 	AiState::SensoryMemory::SetCanSensoreEntityCallback(ET_Game::ET_CanSensoreEntity);
 	AiState::SensoryMemory::m_pfnAddSensorCategory = ET_Game::ET_AddSensorCategory;
+	AiState::WeaponSystem::m_pfnReleaseWeapon = ET_Game::ET_ReleaseWeapon;
 
 	InitWeaponEnum();
 
@@ -697,6 +698,11 @@ const bool ET_Game::ET_CanSensoreEntity(const EntityInstance &_ent)
 	return c<ET_CLASS_ANY || (c!=ET_CLASSEX_GPG40_GRENADE && c!=ET_CLASSEX_M7_GRENADE && 
 		c!=ET_CLASSEX_ARTY && c!=ET_CLASSEX_SMOKEBOMB && c!=ET_CLASSEX_FLAMECHUNK && c!=ET_CLASSEX_ROCKET &&
 		(c!=ET_CLASSEX_MINE || m_WatchForMines));
+}
+
+void ET_Game::ET_ReleaseWeapon(int &weaponId)
+{
+	if(weaponId == ET_WP_MOBILE_MG42_SET) weaponId = ET_WP_MOBILE_MG42;
 }
 
 void ET_Game::ClientJoined(const Event_SystemClientConnected *_msg)

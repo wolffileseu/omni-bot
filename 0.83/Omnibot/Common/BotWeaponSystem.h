@@ -57,7 +57,6 @@ namespace AiState
 
 			void Reset();
 			WeaponRequest();
-		private:
 		};
 
 		bool AddWeaponRequest(Priority::ePriority _prio, obuint32 _owner, int _weaponId);
@@ -217,6 +216,9 @@ namespace AiState
 		void GetDebugString(StringStr &out);
 
 		const WeaponRequest &GetHighestWeaponRequest();
+
+		typedef void(*pfnReleaseWeapon)(int &weaponId);
+		static pfnReleaseWeapon m_pfnReleaseWeapon;
 
 		WeaponSystem();
 		virtual ~WeaponSystem();

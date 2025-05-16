@@ -619,9 +619,12 @@ namespace AiState
 		AddWeaponRequest(Priority::Idle, GetNameHash(), m_DefaultWeapon);
 	}
 
+	WeaponSystem::pfnReleaseWeapon WeaponSystem::m_pfnReleaseWeapon = 0;
+
 	void WeaponSystem::Exit()
 	{
 		ReleaseWeaponRequest(GetNameHash());
+		if(m_pfnReleaseWeapon) m_pfnReleaseWeapon(m_DesiredWeaponID);
 	}
 
 	void WeaponSystem::Initialize()
@@ -642,8 +645,12 @@ namespace AiState
 
 			// Update the preferred weapon.
 			const WeaponRequest &bestWpn = GetHighestWeaponRequest();
-			m_DesiredWeaponID = bestWpn.m_WeaponId;
-			m_CurrentRequestOwner = bestWpn.m_Owner;
+			// Don't change weapon immediately after revive, because it would break mobile mg42 facing
+			if(IGame::GetTime() > GetClient()->m_RevivedTime + 3000 || bestWpn.m_Priority > Priority::Idle) 
+			{
+				m_DesiredWeaponID = bestWpn.m_WeaponId;
+				m_CurrentRequestOwner = bestWpn.m_Owner;
+			}
 
 			_UpdateCurrentWeapon(Primary);
 		}
