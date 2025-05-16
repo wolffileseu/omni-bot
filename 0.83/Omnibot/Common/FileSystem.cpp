@@ -620,25 +620,13 @@ obuint32 File::Write(const void *_buffer, obuint32 _size, obuint32 _numitems /*=
 
 bool File::WriteString(const String &_str)
 {
-	if(m_pFile->m_pPrivate)
-	{
-		if(m_TextMode)
-		{
-			obuint32 len = (obuint32)_str.length();
-			if(!Write(_str.c_str(), len, 1)) return false;
-		}
-		else
-		{
-			obuint32 len = (obuint32)_str.length();
-			if(!WriteInt32(len)) return false;
-			if(len > 0)
-			{
-				if(!Write(_str.c_str(), len, 1)) return false;
-			}
-		}
-		return true;
-	}
-	return false;
+	if (!m_pFile->m_pPrivate) return false;
+	obuint32 len = (obuint32)_str.length();
+	if (!m_TextMode)
+		if(!WriteInt32(len)) return false;
+	if (len > 0)
+		if(!Write(_str.c_str(), len, 1)) return false;
+	return true;
 }
 
 bool File::WriteIntPk(obuint32 i)
