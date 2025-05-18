@@ -14,6 +14,10 @@ namespace AiState
 	class TargetingSystem;
 	class WeaponSystem;
 	class SteeringSystem;
+	class HighLevel;
+	class LowLevel;
+	class FollowPath;
+	class Aimer;
 }
 
 class gmThread;
@@ -155,10 +159,14 @@ public:
 	inline float GetAimTolerance() const					{ return m_AimTolerance; }
 	inline void SetAimTolerance(float _tolerance)			{ m_AimTolerance = _tolerance; }
 
-	AiState::SensoryMemory		*GetSensoryMemory();
-	AiState::SteeringSystem		*GetSteeringSystem();
-	AiState::WeaponSystem		*GetWeaponSystem();
-	AiState::TargetingSystem	*GetTargetingSystem();
+	AiState::SensoryMemory *GetSensoryMemory() const { return m_SensoryMemory; }
+	AiState::SteeringSystem *GetSteeringSystem() const { return m_SteeringSystem; }
+	AiState::WeaponSystem *GetWeaponSystem() const { return m_WeaponSystem; }
+	AiState::TargetingSystem *GetTargetingSystem() const { return m_TargetingSystem; }
+	AiState::HighLevel *GetHighLevel() const { return m_HighLevel; }
+	AiState::LowLevel *GetLowLevel() const { return m_LowLevel; }
+	AiState::FollowPath *GetFollowPath() const { return m_FollowPath; }
+	AiState::Aimer *GetAimer() const { return m_Aimer; }
 
 	inline int GetCurrentHealth() const					{ return m_HealthArmor.m_CurrentHealth; }
 	inline int GetMaxHealth() const						{ return m_HealthArmor.m_MaxHealth; }
@@ -338,6 +346,15 @@ private:
 	BitFlag32		m_DebugFlags;
 
 	NamePtr			m_NameReference;
+
+	AiState::SensoryMemory *m_SensoryMemory;
+	AiState::SteeringSystem *m_SteeringSystem;
+	AiState::WeaponSystem *m_WeaponSystem;
+	AiState::TargetingSystem *m_TargetingSystem;
+	AiState::HighLevel *m_HighLevel;
+	AiState::LowLevel *m_LowLevel;
+	AiState::FollowPath *m_FollowPath;
+	AiState::Aimer *m_Aimer;
 
 	//int				m_SoundSubscriber;
 };

@@ -352,12 +352,9 @@ int gmBot::gmfIsStuck(gmThread *a_thread)
 
 	bool Stuck = false;
 
-	using namespace AiState;
-	FINDSTATE(fp,FollowPath,native->GetStateRoot());
-	if(fp != NULL && fp->IsActive())
+	if(native->GetFollowPath()->IsActive())
 	{
-		int iStuckTime = Utils::SecondsToMilliseconds(stuckTime);
-		Stuck = native->GetStuckTime() >= iStuckTime;
+		Stuck = native->GetStuckTime() >= Utils::SecondsToMilliseconds(stuckTime);
 	}
 	a_thread->PushInt(Stuck?1:0);
 	return GM_OK;
@@ -1726,7 +1723,7 @@ int gmBot::gmfHasAnyWeapon(gmThread *a_thread)
 	GM_TABLE_PARAM(params,1,0);
 	GM_TABLE_PARAM(weaponlist,2,0);
 
-	FINDSTATE(ws,WeaponSystem,native->GetStateRoot());
+	WeaponSystem *ws = native->GetWeaponSystem();
 
 	//////////////////////////////////////////////////////////////////////////
 	bool CheckAmmo = true;
@@ -1795,8 +1792,7 @@ int gmBot::gmfHasTarget(gmThread *a_thread)
 {
 	CHECK_THIS_BOT();
 
-	FINDSTATE(ts,TargetingSystem,native->GetStateRoot());
-	a_thread->PushInt(ts != NULL && ts->HasTarget() ? 1 : 0);
+	a_thread->PushInt(native->GetTargetingSystem()->HasTarget() ? 1 : 0);
 	return GM_OK;
 }
 
@@ -2027,10 +2023,9 @@ int gmBot::gmfGetStat(gmThread *a_thread)
 int gmBot::gmfGetHighLevelGoalName(gmThread *a_thread)
 {
 	CHECK_THIS_BOT();
-	using namespace AiState;
-	FINDSTATE(hl,HighLevel,native->GetStateRoot());
-	if(hl != NULL && hl->GetActiveState())
-		a_thread->PushNewString(hl->GetActiveState()->GetName().c_str());
+	State *state = native->GetHighLevel()->GetActiveState();
+	if(state)
+		a_thread->PushNewString(state->GetName().c_str());
 	else
 		a_thread->PushNull();
 
@@ -2040,19 +2035,14 @@ int gmBot::gmfGetHighLevelGoalName(gmThread *a_thread)
 int gmBot::gmfGetMapGoalName(gmThread *a_thread)
 {
 	CHECK_THIS_BOT();
-	using namespace AiState;
-	FINDSTATE(hl,HighLevel,native->GetStateRoot());
-	if(hl != NULL)
+	State *state = native->GetHighLevel()->GetActiveState();
+	if(state)
 	{
-		State *state = hl->GetActiveState();
-		if(state)
+		MapGoal *g = state->GetMapGoalPtr();
+		if(g)
 		{
-			MapGoal *g = state->GetMapGoalPtr();
-			if(g)
-			{
-				a_thread->PushNewString(g->GetName().c_str());
-				return GM_OK;
-			}
+			a_thread->PushNewString(g->GetName().c_str());
+			return GM_OK;
 		}
 	}
 	a_thread->PushNull();

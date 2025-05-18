@@ -17,52 +17,44 @@ namespace AiState
 		}
 		obReal GetPriority()
 		{
-			FINDSTATE(tsys, TargetingSystem, GetParent()->GetParent());
-			if(!tsys || tsys->HasTarget() || GetClient()->CheckUserFlag(Client::FL_USINGMOUNTEDWEAPON))
+			if(GetClient()->GetTargetingSystem()->HasTarget() || GetClient()->CheckUserFlag(Client::FL_USINGMOUNTEDWEAPON))
 				return 0.f;
 
-			FINDSTATE(wsys, WeaponSystem, GetParent());
-			if(wsys)
+			int wpn = GetClient()->GetWeaponSystem()->GetWeaponNeedingReload();
+			if(wpn!=m_WeaponNeedsReloading)
 			{
-				int wpn = wsys->GetWeaponNeedingReload();
-				if(wpn!=m_WeaponNeedsReloading)
-				{
-					if(wpn) {
-						if(!GetClient()->GetVelocity().IsZero()) {
-							FINDSTATE(hl, HighLevel, GetRootState());
-							if(hl) {
-								State *state = hl->GetActiveState();
-								if(state) {
-									MapGoal *g = state->GetMapGoalPtr();
-									if(g) {
-										//don't reload near some goals
-										obuint32 h = g->GetGoalTypeHash();
-										if((h==0x2086cdf0 /* REVIVE */ || h==0xbbcae592 /* PLANT */ || h==0xc39bf2a3 /* BUILD */
-											|| h==0x1899efc7 /* DEFUSE */ || h==0xe1a2b09c /* MOUNTMG42 */ || h==0x6c166aba /* MOUNT */)
-											&& (g->GetPosition() - GetClient()->GetPosition()).SquaredLength() < 250000)
-											return 0;
-									}
-								}
+				if(wpn) {
+					if(!GetClient()->GetVelocity().IsZero()) {
+						State *state = GetClient()->GetHighLevel()->GetActiveState();
+						if(state) {
+							MapGoal *g = state->GetMapGoalPtr();
+							if(g) {
+								//don't reload near some goals
+								obuint32 h = g->GetGoalTypeHash();
+								if((h==0x2086cdf0 /* REVIVE */ || h==0xbbcae592 /* PLANT */ || h==0xc39bf2a3 /* BUILD */
+									|| h==0x1899efc7 /* DEFUSE */ || h==0xe1a2b09c /* MOUNTMG42 */ || h==0x6c166aba /* MOUNT */)
+									&& (g->GetPosition() - GetClient()->GetPosition()).SquaredLength() < 250000)
+									return 0;
 							}
 						}
-
-						if(m_WeaponNeedsReloading){
-							wsys->UpdateWeaponRequest(GetNameHash(), wpn);	
-						}
 					}
-					m_WeaponNeedsReloading = wpn;
+
+					if(m_WeaponNeedsReloading){
+						GetClient()->GetWeaponSystem()->UpdateWeaponRequest(GetNameHash(), wpn);	
+					}
 				}
+				m_WeaponNeedsReloading = wpn;
 			}
 			return m_WeaponNeedsReloading ? 1.f : 0.f;
 		}
 		void Enter()
 		{
-			FINDSTATEIF(WeaponSystem, GetParent(), AddWeaponRequest(Priority::Low, GetNameHash(), m_WeaponNeedsReloading));
+			GetClient()->GetWeaponSystem()->AddWeaponRequest(Priority::Low, GetNameHash(), m_WeaponNeedsReloading);
 		}
 		void Exit()
 		{
 			m_WeaponNeedsReloading = 0;
-			FINDSTATEIF(WeaponSystem, GetParent(), ReleaseWeaponRequest(GetNameHash()));
+			GetClient()->GetWeaponSystem()->ReleaseWeaponRequest(GetNameHash());
 		}
 		StateStatus Update(float fDt)
 		{
@@ -70,8 +62,8 @@ namespace AiState
 			{
 				Prof(Update);
 
-				FINDSTATE(wsys, WeaponSystem, GetParent());
-				if(wsys && wsys->GetCurrentRequestOwner() == GetNameHash())
+				WeaponSystem *wsys = GetClient()->GetWeaponSystem();
+				if(wsys->GetCurrentRequestOwner() == GetNameHash())
 				{
 					if(wsys->CurrentWeaponIs(m_WeaponNeedsReloading))
 						wsys->GetCurrentWeapon()->ReloadWeapon();
@@ -136,14 +128,13 @@ namespace AiState
 	}
 	void AttackTarget::Enter()
 	{
-		//FINDSTATEIF(Aimer, GetRootState(), AddAimRequest(Priority::LowMed, this, GetNameHash()));
 	}
 	void AttackTarget::Exit()
 	{
 		m_ShootTheBastard = false;
 		m_CurrentWeaponHash = 0;
-		FINDSTATEIF(Aimer, GetRootState(), ReleaseAimRequest(GetNameHash()));
-		FINDSTATEIF(WeaponSystem, GetParent(), ReleaseWeaponRequest(GetNameHash()));
+		GetClient()->GetAimer()->ReleaseAimRequest(GetNameHash());
+		GetClient()->GetWeaponSystem()->ReleaseWeaponRequest(GetNameHash());
 	}
 	State::StateStatus AttackTarget::Update(float fDt)
 	{
@@ -156,12 +147,10 @@ namespace AiState
 				return State_Finished;
 
 			// Add the aim request when reaction time has been met
-			FINDSTATE(wsys, WeaponSystem, GetParent());
-			if( wsys != NULL && 
-				(pRecord->GetTimeTargetHasBeenVisible() >= wsys->GetReactionTime()) &&
-				(pRecord->IsShootable() || (pRecord->GetTimeHasBeenOutOfView() < wsys->GetAimPersistance())))
+			if( pRecord->GetTimeTargetHasBeenVisible() >= GetClient()->GetWeaponSystem()->GetReactionTime() &&
+				(pRecord->IsShootable() || (pRecord->GetTimeHasBeenOutOfView() < GetClient()->GetWeaponSystem()->GetAimPersistance())))
 			{
-				FINDSTATEIF(Aimer, GetRootState(), AddAimRequest(Priority::LowMed, this, GetNameHash()));
+				GetClient()->GetAimer()->AddAimRequest(Priority::LowMed, this, GetNameHash());
 			}
 
 			return State_Busy;
@@ -181,49 +170,45 @@ namespace AiState
 		const GameEntity vTargetEnt = pRecord->GetEntity();
 		const TargetInfo &targetInfo = pRecord->m_TargetInfo;
 
-		FINDSTATE(wsys, WeaponSystem, GetParent());
-		if(wsys)
+		WeaponPtr wpn = GetClient()->GetWeaponSystem()->GetCurrentWeapon();
+		if(wpn)
 		{
-			WeaponPtr wpn = wsys->GetCurrentWeapon();
-			if(wpn)
-			{
-				m_CurrentWeaponHash = wpn->GetWeaponNameHash();
+			m_CurrentWeaponHash = wpn->GetWeaponNameHash();
 
-				m_FireMode = wpn->GetBestFireMode(targetInfo);
-				if(m_FireMode == InvalidFireMode){
-					m_FireMode = Primary;
-					m_ShootTheBastard = false;
-				}
-
-				// Calculate the position the bot will aim at, the weapon itself should account
-				// for any leading that may need to take place 
-				m_AimPosition = wpn->GetAimPoint(m_FireMode, vTargetEnt, targetInfo);
-				wpn->AddAimError(m_FireMode, m_AimPosition, targetInfo);
-				_aimpos = m_AimPosition;
-
-				// Check limits
-				m_TargetExceedsWeaponLimits = false;
-				if(InterfaceFuncs::GetWeaponLimits(GetClient(), wpn->GetWeaponID(), m_WeaponLimits)
-					&& m_WeaponLimits.m_Limited==True)
-				{
-					Vector3f vGunCenter(m_WeaponLimits.m_CenterFacing);
-					Vector3f vAimVector(Normalize(_aimpos-GetClient()->GetEyePosition()));
-
-					const float fGunHeading = vGunCenter.XYHeading();
-					const float fAimHeading = vAimVector.XYHeading();
-
-					const float fGunPitch = vGunCenter.GetPitch();
-					const float fAimPitch = vAimVector.GetPitch();
-
-					float fHeadingDiff = Mathf::RadToDeg(Mathf::UnitCircleNormalize(fAimHeading-fGunHeading));
-					float fPitchDiff = Mathf::RadToDeg(fAimPitch-fGunPitch);
-					if(fHeadingDiff < m_WeaponLimits.m_MinYaw || fHeadingDiff > m_WeaponLimits.m_MaxYaw)
-						m_TargetExceedsWeaponLimits = true;
-					if(fPitchDiff < m_WeaponLimits.m_MinPitch || fPitchDiff > m_WeaponLimits.m_MaxPitch)
-						m_TargetExceedsWeaponLimits = true;
-				}
-				return true;
+			m_FireMode = wpn->GetBestFireMode(targetInfo);
+			if(m_FireMode == InvalidFireMode){
+				m_FireMode = Primary;
+				m_ShootTheBastard = false;
 			}
+
+			// Calculate the position the bot will aim at, the weapon itself should account
+			// for any leading that may need to take place 
+			m_AimPosition = wpn->GetAimPoint(m_FireMode, vTargetEnt, targetInfo);
+			wpn->AddAimError(m_FireMode, m_AimPosition, targetInfo);
+			_aimpos = m_AimPosition;
+
+			// Check limits
+			m_TargetExceedsWeaponLimits = false;
+			if(InterfaceFuncs::GetWeaponLimits(GetClient(), wpn->GetWeaponID(), m_WeaponLimits)
+				&& m_WeaponLimits.m_Limited==True)
+			{
+				Vector3f vGunCenter(m_WeaponLimits.m_CenterFacing);
+				Vector3f vAimVector(Normalize(_aimpos-GetClient()->GetEyePosition()));
+
+				const float fGunHeading = vGunCenter.XYHeading();
+				const float fAimHeading = vAimVector.XYHeading();
+
+				const float fGunPitch = vGunCenter.GetPitch();
+				const float fAimPitch = vAimVector.GetPitch();
+
+				float fHeadingDiff = Mathf::RadToDeg(Mathf::UnitCircleNormalize(fAimHeading-fGunHeading));
+				float fPitchDiff = Mathf::RadToDeg(fAimPitch-fGunPitch);
+				if(fHeadingDiff < m_WeaponLimits.m_MinYaw || fHeadingDiff > m_WeaponLimits.m_MaxYaw)
+					m_TargetExceedsWeaponLimits = true;
+				if(fPitchDiff < m_WeaponLimits.m_MinPitch || fPitchDiff > m_WeaponLimits.m_MaxPitch)
+					m_TargetExceedsWeaponLimits = true;
+			}
+			return true;
 		}
 		_aimpos = m_AimPosition = pRecord->GetLastSensedPosition();
 		return false;
@@ -233,8 +218,8 @@ namespace AiState
 		if(!m_ShootTheBastard)
 			return;
 
-		FINDSTATE(wsys, WeaponSystem, GetParent());
-		if(wsys != NULL && wsys->CurrentWeaponIsAttackReady())
+		WeaponSystem *wsys = GetClient()->GetWeaponSystem();
+		if(wsys->CurrentWeaponIsAttackReady())
 		{
 			WeaponPtr wpn = wsys->GetCurrentWeapon();
 			if(wpn && !GetClient()->CheckUserFlag(Client::FL_SHOOTINGDISABLED))

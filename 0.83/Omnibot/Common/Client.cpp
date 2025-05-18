@@ -72,8 +72,6 @@ void Client::Update()
 {
 	Prof(ClientUpdate);
 
-	using namespace AiState;
-
 	// Set dirty flags to invalidate caches.
 	m_InternalFlags.SetFlag(FL_DIRTYEYEPOS);
 
@@ -250,19 +248,14 @@ void Client::ProcessEvent(const MessageHelper &_message, CallbackParameters &_cb
 		}		
 		HANDLER(MESSAGE_DEATH)
 		{
-			using namespace AiState;
-			FINDSTATE(hl,HighLevel,GetStateRoot());
-			if(hl != NULL)
+			State *state = GetHighLevel()->GetActiveState();
+			if(state)
 			{
-				State *state = hl->GetActiveState();
-				if(state)
+				MapGoal *g = state->GetMapGoalPtr();
+				if(g)
 				{
-					MapGoal *g = state->GetMapGoalPtr();
-					if(g)
-					{
-						m_PreviousGoal = g;
-						m_PreviousGoalTime = IGame::GetTime();
-					}
+					m_PreviousGoal = g;
+					m_PreviousGoalTime = IGame::GetTime();
 				}
 			}
 
@@ -320,11 +313,9 @@ void Client::ProcessEvent(const MessageHelper &_message, CallbackParameters &_cb
 			{
 				StringStr strOutString;
 
-				using namespace AiState;
-				FINDSTATE(hl,HighLevel,GetStateRoot());
-				if(hl != NULL && hl->GetActiveState())
+				State *ActiveState = GetHighLevel()->GetActiveState();
+				if(ActiveState)
 				{
-					State *ActiveState = hl->GetActiveState();
 					while(ActiveState->GetActiveState())
 						ActiveState = ActiveState->GetActiveState();
 
@@ -973,37 +964,8 @@ bool Client::CanGetPowerUp(obint32 _powerup) const
 
 //////////////////////////////////////////////////////////////////////////
 
-AiState::WeaponSystem *Client::GetWeaponSystem()
-{
-	using namespace AiState;
-
-	FINDSTATE(weaponsys, WeaponSystem, GetStateRoot());
-	return weaponsys;
-}
-
-AiState::TargetingSystem *Client::GetTargetingSystem()
-{
-	using namespace AiState;
-
-	FINDSTATE(targetsys, TargetingSystem, GetStateRoot());
-	return targetsys;
-}
-
-AiState::SteeringSystem *Client::GetSteeringSystem()
-{
-	using namespace AiState;
-
-	FINDSTATE(steersys, SteeringSystem, GetStateRoot());
-	return steersys;
-}
-
-AiState::SensoryMemory *Client::GetSensoryMemory()
-{
-	using namespace AiState;
-
-	FINDSTATE(sensory, SensoryMemory, GetStateRoot());
-	return sensory;
-}
+#define INITSTATE(statename) \
+	m_##statename = static_cast<statename*>(m_StateRoot->FindState(#statename)); OBASSERT(m_##statename, #statename " Not Found" );
 
 void Client::InitBehaviorTree()
 {
@@ -1012,6 +974,17 @@ void Client::InitBehaviorTree()
 	SetupBehaviorTree();
 	m_StateRoot->FixRoot();
 	m_StateRoot->SetClient(this);
+
+	using namespace AiState;
+	INITSTATE(SensoryMemory);
+	INITSTATE(SteeringSystem);
+	INITSTATE(WeaponSystem);
+	INITSTATE(TargetingSystem);
+	INITSTATE(HighLevel);
+	INITSTATE(LowLevel);
+	INITSTATE(FollowPath);
+	INITSTATE(Aimer);
+
 	m_StateRoot->InitializeStates();
 }
 

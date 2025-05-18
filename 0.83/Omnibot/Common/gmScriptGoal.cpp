@@ -664,8 +664,6 @@ int gmScriptGoal::gmfAddAimRequest(gmThread *a_thread)
 	GM_STRING_PARAM(aimtype, 1, NULL);
 	GM_VECTOR_PARAM(v, 2, 0.f, 0.f, 0.f);
 
-	using namespace AiState;
-
 	Aimer::AimType eAimType = Aimer::WorldPosition;
 	if(!aimtype || !_gmstricmp(aimtype, "position"))
 		eAimType = Aimer::WorldPosition;
@@ -692,10 +690,7 @@ int gmScriptGoal::gmfReleaseAimRequest(gmThread *a_thread)
 {
 	CHECK_THIS_SGOAL();
 
-	using namespace AiState;
-	FINDSTATE(aim, Aimer, native->GetClient()->GetStateRoot());
-	if(aim)
-		aim->ReleaseAimRequest(native->GetNameHash());
+	native->GetClient()->GetAimer()->ReleaseAimRequest(native->GetNameHash());
 	return GM_OK;
 }
 
@@ -706,16 +701,8 @@ int gmScriptGoal::gmfAddWeaponRequest(gmThread *a_thread)
 	GM_CHECK_INT_PARAM(priority, 0);
 	GM_CHECK_INT_PARAM(weaponId, 1);
 
-	bool bSuccess = false;
-
-	using namespace AiState;
-
 	Priority::ePriority prio = (Priority::ePriority)priority;
-	FINDSTATE(weapsys, WeaponSystem, native->GetClient()->GetStateRoot());
-	if(weapsys)
-		bSuccess = weapsys->AddWeaponRequest(prio, native->GetNameHash(), weaponId);
-
-	if(!bSuccess)
+	if(!native->GetClient()->GetWeaponSystem()->AddWeaponRequest(prio, native->GetNameHash(), weaponId))
 	{
 		GM_EXCEPTION_MSG("Unable to add weapon request. Too many!");
 		return GM_EXCEPTION;
@@ -727,10 +714,7 @@ int gmScriptGoal::gmfReleaseWeaponRequest(gmThread *a_thread)
 {
 	CHECK_THIS_SGOAL();
 
-	using namespace AiState;
-	FINDSTATE(weapsys, WeaponSystem, native->GetClient()->GetStateRoot());
-	if(weapsys)
-		weapsys->ReleaseWeaponRequest(native->GetNameHash());
+	native->GetClient()->GetWeaponSystem()->ReleaseWeaponRequest(native->GetNameHash());
 	return GM_OK;
 }
 
@@ -740,14 +724,7 @@ int gmScriptGoal::gmfUpdateWeaponRequest(gmThread *a_thread)
 	GM_CHECK_NUM_PARAMS(1);
 	GM_CHECK_INT_PARAM(weaponId, 0);
 
-	bool bSuccess = false;
-
-	using namespace AiState;
-	FINDSTATE(weapsys, WeaponSystem, native->GetClient()->GetStateRoot());
-	if(weapsys)
-		bSuccess = weapsys->UpdateWeaponRequest(native->GetNameHash(), weaponId);
-
-	if(!bSuccess)
+	if(!native->GetClient()->GetWeaponSystem()->UpdateWeaponRequest(native->GetNameHash(), weaponId))
 	{
 		GM_EXCEPTION_MSG("Unable to update weapon request. Not Found!");
 		return GM_EXCEPTION;

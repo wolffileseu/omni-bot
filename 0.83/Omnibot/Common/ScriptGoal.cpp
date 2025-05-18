@@ -234,10 +234,7 @@ namespace AiState
 		m_MinRadius = options.Radius;
 
 		SetSourceThread(options.ThreadId);
-		FINDSTATE(fp, FollowPath, GetRootState());
-		if(fp)
-			return fp->Goto(this, _pos, options.Radius, options.Mode);
-		return false;
+		return GetClient()->GetFollowPath()->Goto(this, _pos, options.Radius, options.Mode);
 	}
 
 	bool ScriptGoal::Goto(const Vector3List &_vectors, const MoveOptions &options)
@@ -246,8 +243,7 @@ namespace AiState
 		m_MinRadius = options.Radius;
 
 		SetSourceThread(options.ThreadId);
-		FINDSTATE(fp, FollowPath, GetRootState());
-		return fp && fp->Goto(this, _vectors, options.Radius, options.Mode);
+		return GetClient()->GetFollowPath()->Goto(this, _vectors, options.Radius, options.Mode);
 	}
 
 	bool ScriptGoal::GotoRandom(const MoveOptions &options)
@@ -256,19 +252,14 @@ namespace AiState
 		m_MinRadius = options.Radius;
 
 		SetSourceThread(options.ThreadId);
-		FINDSTATE(fp, FollowPath, GetRootState());
-		if(fp)
-		{
-			PathPlannerBase *pPathPlanner = IGameManager::GetInstance()->GetNavSystem();
-			Vector3f vDestination = pPathPlanner->GetRandomDestination(GetClient(),GetClient()->GetPosition(),GetClient()->GetTeamFlag());
-			return fp->Goto(this, vDestination, options.Radius, options.Mode);
-		}
-		return false;
+		PathPlannerBase *pPathPlanner = IGameManager::GetInstance()->GetNavSystem();
+		Vector3f vDestination = pPathPlanner->GetRandomDestination(GetClient(),GetClient()->GetPosition(),GetClient()->GetTeamFlag());
+		return GetClient()->GetFollowPath()->Goto(this, vDestination, options.Radius, options.Mode);
 	}
 
 	void ScriptGoal::Stop()
 	{
-		FINDSTATEIF(FollowPath, GetRootState(), Stop());
+		GetClient()->GetFollowPath()->Stop();
 	}
 
 	bool ScriptGoal::RouteTo(MapGoalPtr mg, const MoveOptions &options)
@@ -279,9 +270,7 @@ namespace AiState
 			m_MinRadius = options.Radius;
 
 			SetSourceThread(options.ThreadId);
-			FINDSTATE(fp, FollowPath, GetRootState());
-			if(fp)
-				return fp->Goto(this, options.Mode, m_SkipLastWp);
+			return GetClient()->GetFollowPath()->Goto(this, options.Mode, m_SkipLastWp);
 		}
 		return false;
 	}
@@ -561,17 +550,11 @@ namespace AiState
 			// Automatically release requests on exit.
 			if(AutoReleaseAim())
 			{
-				using namespace AiState;
-				FINDSTATE(aim, Aimer, GetClient()->GetStateRoot());
-				if(aim)
-					aim->ReleaseAimRequest(GetNameHash());
+				GetClient()->GetAimer()->ReleaseAimRequest(GetNameHash());
 			}
 			if(AutoReleaseWeapon())
 			{
-				using namespace AiState;
-				FINDSTATE(weapsys, WeaponSystem, GetClient()->GetStateRoot());
-				if(weapsys)
-					weapsys->ReleaseWeaponRequest(GetNameHash());
+				GetClient()->GetWeaponSystem()->ReleaseWeaponRequest(GetNameHash());
 			}
 			if(AutoReleaseTracker())
 			{
@@ -583,7 +566,7 @@ namespace AiState
 
 			if(GetParent() && GetParent()->GetNameHash() == 0xd9c27485 /* HighLevel */)
 			{
-				FINDSTATEIF(FollowPath, GetRootState(), Stop(true));
+				GetClient()->GetFollowPath()->Stop(true);
 			}
 		}
 	}
@@ -683,15 +666,10 @@ namespace AiState
 	{
 		m_ScriptAimType = _type;
 		m_AimVector = _v;
-		FINDSTATE(aim,Aimer,GetRootState());
-		if(aim)
-		{
-			if(_type==Aimer::MoveDirection)
-				return aim->AddAimMoveDirRequest(_prio,GetNameHash());
-			else 
-				return aim->AddAimRequest(_prio,this,GetNameHash());
-		}
-		return false;
+		if(_type==Aimer::MoveDirection)
+			return GetClient()->GetAimer()->AddAimMoveDirRequest(_prio,GetNameHash());
+		else 
+			return GetClient()->GetAimer()->AddAimRequest(_prio,this,GetNameHash());
 	}
 
 	bool ScriptGoal::AddFinishCriteria(const CheckCriteria &_crit)

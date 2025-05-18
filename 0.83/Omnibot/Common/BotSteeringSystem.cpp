@@ -114,7 +114,7 @@ namespace AiState
 	{
 		m_TargetVector = GetClient()->GetPosition();
 		GetClient()->SetMovementVector(Vector3f::ZERO);
-		FINDSTATEIF(FollowPath,GetRootState(),Stop());
+		GetClient()->GetFollowPath()->Stop();
 	}
 
 	State::StateStatus SteeringSystem::Update(float fDt)

@@ -352,26 +352,16 @@ bool RTCW_Client::GetSniperWeapon(int &nonscoped, int &scoped)
 
 float RTCW_Client::NavCallback(const NavFlags &_flag, Waypoint *from, Waypoint *to) 
 {
-	using namespace AiState;
-	String gn;
-
 	if(_flag & F_RTCW_NAV_USEPATH)
 	{
-		const PropertyMap::ValueMap &pm = to->GetPropertyMap().GetProperties();
-		PropertyMap::ValueMap::const_iterator cIt = pm.begin();
-		FINDSTATE(hl,HighLevel,this->GetStateRoot());
-		
-		if(hl && hl->GetActiveState())
+		State *activeState = GetHighLevel()->GetActiveState();
+		if(activeState)
 		{
-			gn = Utils::StringToLower(hl->GetActiveState()->GetName());
-
-			//EngineFuncs::ConsoleMessage("current goal: %s", gn.c_str());
-			
+			String gn = Utils::StringToLower(activeState->GetName());
+			const PropertyMap::ValueMap &pm = to->GetPropertyMap().GetProperties();
+			PropertyMap::ValueMap::const_iterator cIt = pm.begin();
 			for(; cIt != pm.end(); ++cIt)
 			{
-			//	EngineFuncs::ConsoleMessage("property: %s = %s", 
-			//		(*cIt).first.c_str(), (*cIt).second.c_str());
-
 				if ( gn == (*cIt).first && (*cIt).second == "true" )
 					return 1.0f;
 			}
@@ -385,7 +375,6 @@ float RTCW_Client::NavCallback(const NavFlags &_flag, Waypoint *from, Waypoint *
 
 void RTCW_Client::SetupBehaviorTree()
 {
-	using namespace AiState;
 	delete GetStateRoot()->ReplaceState("Dead", new Limbo);
 	GetStateRoot()->InsertAfter("Limbo", new Incapacitated);
 }

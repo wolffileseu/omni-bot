@@ -32,14 +32,13 @@ namespace AiState
 
 	void Roam::Exit()
 	{
-		FINDSTATEIF(FollowPath, GetRootState(), Stop(true));
+		GetClient()->GetFollowPath()->Stop(true);
 	}
 
 	State::StateStatus Roam::Update(float fDt)
 	{
-		FINDSTATE(follow, FollowPath, GetRootState());
-		if(follow != NULL && !follow->IsActive())
-			follow->GotoRandomPt(this);
+		if(!GetClient()->GetFollowPath()->IsActive())
+			GetClient()->GetFollowPath()->GotoRandomPt(this);
 		return State_Busy;
 	}
 
@@ -127,15 +126,15 @@ namespace AiState
 	void FollowPath::Enter()
 	{
 		m_LookAheadPt = GetClient()->GetEyePosition() + GetClient()->GetFacingVector() * 512.f;
-		FINDSTATEIF(Aimer, GetParent(), AddAimRequest(Priority::Idle, this, GetNameHash()));
+		GetClient()->GetAimer()->AddAimRequest(Priority::Idle, this, GetNameHash());
 	}
 
 	void FollowPath::Exit()
 	{
 		Stop();
 
-		FINDSTATEIF(SteeringSystem, GetRootState(), SetTarget(GetClient()->GetPosition()));
-		FINDSTATEIF(Aimer, GetParent(), ReleaseAimRequest(GetNameHash()));
+		GetClient()->GetSteeringSystem()->SetTarget(GetClient()->GetPosition());
+		GetClient()->GetAimer()->ReleaseAimRequest(GetNameHash());
 	}
 
 	void FollowPath::Stop(bool _clearuser)
@@ -178,14 +177,9 @@ namespace AiState
 		// always want to do this, if state active or not
 		if(m_PassThroughState)
 		{
-			FINDSTATE(ll,LowLevel,GetRootState());
-			if ( ll != NULL ) {
-				State *pPathThrough = ll->FindState(m_PassThroughState);
-				if(pPathThrough)
-				{
-					pPathThrough->EndPathThrough();
-				}
-			}
+			State *pPathThrough = GetClient()->GetLowLevel()->FindState(m_PassThroughState);
+			if(pPathThrough)
+				pPathThrough->EndPathThrough();
 			m_PassThroughState = 0;
 		}
 	}
@@ -206,7 +200,6 @@ namespace AiState
 		{
 			HANDLER(MESSAGE_DYNAMIC_PATHS_CHANGED)
 			{
-				using namespace AiState;			
 				const Event_DynamicPathsChanged *m = _message.Get<Event_DynamicPathsChanged>();
 				if(m != NULL && (m->m_TeamMask & 1<<GetClient()->GetTeam()))
 				{
@@ -349,16 +342,12 @@ namespace AiState
 		if(GetClient()->IsDebugEnabled(BOT_DEBUG_PLANNER))
 		{
 			String mgn;
-			FINDSTATE(hl,HighLevel,GetRootState());
-			if(hl != NULL)
-			{
-				State *state = hl->GetActiveState();
-				if(!state) mgn="not active";
-				else {
-					MapGoal *g = state->GetMapGoalPtr();
-					if(g) mgn = g->GetName();
-					else mgn = state->GetName();
-				}
+			State *state = GetClient()->GetHighLevel()->GetActiveState();
+			if(!state) mgn="not active";
+			else {
+				MapGoal *g = state->GetMapGoalPtr();
+				if(g) mgn = g->GetName();
+				else mgn = state->GetName();
 			}
 			const Vector3f &pos = GetClient()->GetPosition();
 			EngineFuncs::ConsoleMessage(va("Path planner: time %.2f, position (%.0f,%.0f,%.0f), %s, %s %s", 
@@ -402,15 +391,12 @@ namespace AiState
 		{
 			//path not found
 			if(!m_IgnorePathNotFound) {
-				FINDSTATE(hl, HighLevel, GetRootState());
-				if(hl) {
-					State *state = hl->GetActiveState();
-					if(state) {
-						MapGoal *g = state->GetMapGoalPtr();
-						if(g) {
-							const Vector3f &pos = GetClient()->GetPosition();
-							MapDebugPrint(va("Path not found from (%.0f,%.0f,%.0f) to %s", pos.x, pos.y, pos.z, g->GetName().c_str()));
-						}
+				State *state = GetClient()->GetHighLevel()->GetActiveState();
+				if(state) {
+					MapGoal *g = state->GetMapGoalPtr();
+					if(g) {
+						const Vector3f &pos = GetClient()->GetPosition();
+						MapDebugPrint(va("Path not found from (%.0f,%.0f,%.0f) to %s", pos.x, pos.y, pos.z, g->GetName().c_str()));
 					}
 				}
 			}
@@ -553,40 +539,37 @@ namespace AiState
 		// always want to do this, if state active or not
 		if(m_PassThroughState)
 		{
-			FINDSTATE(ll,LowLevel,GetRootState());
-			if ( ll ) {
-				State *pPathThrough = ll->FindState(m_PassThroughState);
-				if(!pPathThrough || (!pPathThrough->IsActive() && pPathThrough->GetLastPriority()<Mathf::EPSILON))
+			State *pPathThrough = GetClient()->GetLowLevel()->FindState(m_PassThroughState);
+			if(!pPathThrough || (!pPathThrough->IsActive() && pPathThrough->GetLastPriority()<Mathf::EPSILON))
+			{
+				// paththrough state finished
+				if(m_Query.m_User && m_Query.m_User->GetFollowUserName() == m_PassThroughState)
 				{
-					// paththrough state finished
-					if(m_Query.m_User && m_Query.m_User->GetFollowUserName() == m_PassThroughState)
-					{
-						m_PassThroughState = 0;
+					m_PassThroughState = 0;
 
-						if(m_SavedQuery.m_User)
-						{
-							// find new path to the current HighLevel goal
-							RestoreQuery();
-							Repath();
-						}
-						else
-						{
-							Stop(false);
-							m_Query.m_User = 0;
-						}
+					if(m_SavedQuery.m_User)
+					{
+						// find new path to the current HighLevel goal
+						RestoreQuery();
+						Repath();
 					}
 					else
 					{
-						m_PassThroughState = 0;
+						Stop(false);
+						m_Query.m_User = 0;
+					}
+				}
+				else
+				{
+					m_PassThroughState = 0;
 
-						if(m_CurrentPath.GetCurrentPtIndex() != m_PathThroughPtIndex + 1)
+					if(m_CurrentPath.GetCurrentPtIndex() != m_PathThroughPtIndex + 1)
+					{
+						// repath if the previous waypoint has paththrough which has been skipped
+						Path::PathPoint ptPrev;
+						if(m_CurrentPath.GetPreviousPt(ptPrev) && ptPrev.m_OnPathThrough && ptPrev.m_OnPathThroughParam)
 						{
-							// repath if the previous waypoint has paththrough which has been skipped
-							Path::PathPoint ptPrev;
-							if(m_CurrentPath.GetPreviousPt(ptPrev) && ptPrev.m_OnPathThrough && ptPrev.m_OnPathThroughParam)
-							{
-								Repath();
-							}
+							Repath();
 						}
 					}
 				}
@@ -692,8 +675,7 @@ namespace AiState
 				//////////////////////////////////////////////////////////////////////////
 				if(!m_PassThroughState && pt.m_OnPathThrough && pt.m_OnPathThroughParam)
 				{
-					FINDSTATE(ll,LowLevel,GetRootState());
-					State *pPathThrough = ll->FindState(pt.m_OnPathThrough);
+					State *pPathThrough = GetClient()->GetLowLevel()->FindState(pt.m_OnPathThrough);
 					if(pPathThrough)
 					{
 						String s = Utils::HashToString(pt.m_OnPathThroughParam);
@@ -722,7 +704,7 @@ namespace AiState
 						}
 					}
 
-					FINDSTATEIF(SteeringSystem, GetRootState(), SetTarget(vPos));
+					GetClient()->GetSteeringSystem()->SetTarget(vPos);
 					NotifyUserSuccess();
 					m_PathStatus = PathFinished;
 					return State_Finished;
@@ -741,17 +723,16 @@ namespace AiState
 					if(Repath()) return State_Busy;
 				}
 				// "pathfailed" error
-				FINDSTATEIF(SteeringSystem, GetRootState(), SetTarget(vPos));
+				GetClient()->GetSteeringSystem()->SetTarget(vPos);
 				NotifyUserFailed(FollowPathUser::Blocked);
 				m_PathStatus = PathFinished;
 				return State_Finished;
 			}
 			
-			FINDSTATEIF(SteeringSystem, GetRootState(), 
-				SetTarget(vGotoTarget,
+			GetClient()->GetSteeringSystem()->SetTarget(vGotoTarget,
 				pt.m_Radius,
 				m_Query.m_MoveMode,
-				b3dMovement));
+				b3dMovement);
 
 			//if(pt.m_NavFlags & F_NAV_UNDERWATER)
 			//{
@@ -1194,20 +1175,15 @@ namespace AiState
 				}
 			case MoveDirection:
 				{
-					FINDSTATE(fp, FollowPath, GetRootState());
-					if(fp != NULL && fp->IsActive())
+					if(GetClient()->GetFollowPath()->IsActive())
 					{
-						curAim->m_AimVector = fp->GetLookAheadPt();
+						curAim->m_AimVector = GetClient()->GetFollowPath()->GetLookAheadPt();
 						GetClient()->TurnTowardPosition(curAim->m_AimVector);
 						break;
 					}
-					FINDSTATE(steer, SteeringSystem, GetParent());
-					if(steer)
-					{
-						curAim->m_AimVector = steer->GetTarget();
-						curAim->m_AimVector.z = GetClient()->GetEyePosition().z;
-						GetClient()->TurnTowardPosition(curAim->m_AimVector);
-					}
+					curAim->m_AimVector = GetClient()->GetSteeringSystem()->GetTarget();
+					curAim->m_AimVector.z = GetClient()->GetEyePosition().z;
+					GetClient()->TurnTowardPosition(curAim->m_AimVector);
 					break;
 				}
 			case UserCallback:
@@ -1249,16 +1225,13 @@ namespace AiState
 	{
 		if(IGame::GetTime() > m_NextLookTime)
 		{
-			FINDSTATE(fp,FollowPath,GetParent());
-			if(fp)
+			FollowPath *fp = GetClient()->GetFollowPath();
+			Path::PathPoint pp;
+			if(fp->IsMoving() && fp->GetCurrentPath().GetCurrentPt(pp) && 
+				(pp.m_NavFlags & (F_NAV_CLIMB|F_NAV_DOOR) ))
 			{
-				Path::PathPoint pp;
-				if(fp->IsMoving() && fp->GetCurrentPath().GetCurrentPt(pp) && 
-					(pp.m_NavFlags & (F_NAV_CLIMB|F_NAV_DOOR) ))
-				{
-					m_NextLookTime = GetNextLookTime();
-					return 0.f;
-				}
+				m_NextLookTime = GetNextLookTime();
+				return 0.f;
 			}
 			return 1.f;
 		}
@@ -1269,14 +1242,12 @@ namespace AiState
 	{
 		//Quaternionf q(Vector3f::UNIT_Z, Mathf::IntervalRandom(-Mathf::PI, Mathf::PI));
 		//Vector3f vStartAim = q.Rotate(GetClient()->GetFacingVector());
-		FINDSTATE(aim, Aimer, GetParent());
-		if(aim)
-			aim->AddAimFacingRequest(Priority::VeryLow, GetNameHash(), -GetClient()->GetFacingVector());
+		GetClient()->GetAimer()->AddAimFacingRequest(Priority::VeryLow, GetNameHash(), -GetClient()->GetFacingVector());
 	}
 
 	void LookAround::Exit()
 	{
-		FINDSTATEIF(Aimer, GetParent(), ReleaseAimRequest(GetNameHash()));
+		GetClient()->GetAimer()->ReleaseAimRequest(GetNameHash());
 		m_NextLookTime = GetNextLookTime();
 	}
 

@@ -499,9 +499,6 @@ bool ET_Client::GetSkills(gmMachine *machine, gmTableObject *tbl)
 
 float ET_Client::NavCallback(const NavFlags &_flag, Waypoint *from, Waypoint *to) 
 {
-	using namespace AiState;
-	String gn;
-	
 	if(_flag & F_ET_NAV_DISGUISE)
 	{
 		if(HasEntityFlag(ET_ENT_FLAG_DISGUISED))
@@ -511,13 +508,12 @@ float ET_Client::NavCallback(const NavFlags &_flag, Waypoint *from, Waypoint *to
 
 	if(_flag & F_ET_NAV_USEPATH)
 	{		
-		const PropertyMap::ValueMap &pm = to->GetPropertyMap().GetProperties();
-		PropertyMap::ValueMap::const_iterator cIt = pm.begin();
-		FINDSTATE(hl,HighLevel,this->GetStateRoot());
-		
-		if(hl != NULL && hl->GetActiveState())
+		State *activeState = GetHighLevel()->GetActiveState();
+		if(activeState)
 		{
-			gn = Utils::StringToLower(hl->GetActiveState()->GetName());
+			String gn = Utils::StringToLower(activeState->GetName());
+			const PropertyMap::ValueMap &pm = to->GetPropertyMap().GetProperties();
+			PropertyMap::ValueMap::const_iterator cIt = pm.begin();
 			for(; cIt != pm.end(); ++cIt)
 			{
 				if ( gn == (*cIt).first && (*cIt).second == "true" )
@@ -533,25 +529,6 @@ float ET_Client::NavCallback(const NavFlags &_flag, Waypoint *from, Waypoint *to
 
 void ET_Client::SetupBehaviorTree()
 {
-	using namespace AiState;
 	delete GetStateRoot()->ReplaceState("Dead", new Limbo);
 	GetStateRoot()->InsertAfter("Limbo", new Incapacitated);
-
-	//GetStateRoot()->AppendTo("HighLevel", new BuildConstruction);
-	//GetStateRoot()->AppendTo("HighLevel", new PlantExplosive);
-	//GetStateRoot()->AppendTo("HighLevel", new MountMg42);
-	//GetStateRoot()->AppendTo("HighLevel", new RepairMg42);
-	//GetStateRoot()->AppendTo("HighLevel", new TakeCheckPoint);
-	//GetStateRoot()->AppendTo("HighLevel", new MobileMg42);
-	//GetStateRoot()->AppendTo("HighLevel", new MobileMortar);
-	//GetStateRoot()->AppendTo("HighLevel", new ReviveTeammate);
-	//GetStateRoot()->AppendTo("HighLevel", new DefuseDynamite);
-	//GetStateRoot()->AppendTo("HighLevel", new PlantMine);
-	//GetStateRoot()->AppendTo("HighLevel", new CallArtillery);
-	//GetStateRoot()->AppendTo("HighLevel", new UseCabinet);
-	//GetStateRoot()->AppendTo("HighLevel", new Flamethrower);
-	//GetStateRoot()->AppendTo("HighLevel", new Panzer);
-
-	//FINDSTATEIF(Flamethrower,GetStateRoot(),LimitToClass().SetFlag(ET_CLASS_SOLDIER));
-	//FINDSTATEIF(Panzer,GetStateRoot(),LimitToClass().SetFlag(ET_CLASS_SOLDIER));
 }

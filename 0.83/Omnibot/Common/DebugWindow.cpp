@@ -2381,8 +2381,7 @@ void PathPlannerWaypoint::RenderToMapViewPort(gcn::Widget *widget, gcn::Graphics
 
 				//if(m_DrawBotPaths->value())
 				{
-					using namespace AiState;
-					FINDSTATE(follow, FollowPath, c->GetStateRoot());
+					AiState::FollowPath *follow = c->GetFollowPath();
 					if(follow)
 					{
 						Vector3f vLastPosition = c->GetPosition();
@@ -2610,8 +2609,7 @@ void PathPlannerNavMesh::RenderToMapViewPort(gcn::Widget *widget, gcn::Graphics 
 
 				//if(m_DrawBotPaths->value())
 				{
-					using namespace AiState;
-					FINDSTATE(follow, FollowPath, c->GetStateRoot());
+					AiState::FollowPath *follow = c->GetFollowPath();
 					if(follow)
 					{
 						Vector3f vLastPosition = c->GetPosition();
@@ -2793,7 +2791,7 @@ public:
 		ClientPtr bot = GetSelectedClient();
 		if(bot)
 		{
-			FINDSTATE(ws,WeaponSystem,bot->GetStateRoot());
+			WeaponSystem *ws = bot->GetWeaponSystem();
 			if(ws)
 				return ws->GetWeaponList().size();
 		}
@@ -2807,7 +2805,7 @@ public:
 		ClientPtr bot = GetSelectedClient();
 		if(!bot) return "";
 
-		FINDSTATE(ws,WeaponSystem,bot->GetStateRoot());
+		WeaponSystem *ws = bot->GetWeaponSystem();
 		if ( ws != NULL ) {
 			WeaponPtr wpn = ws->GetWeaponByIndex(i);
 			if(wpn)
@@ -2967,7 +2965,7 @@ public:
 		ClientPtr bot = GetSelectedClient();
 		if(bot)
 		{
-			FINDSTATE(sm,SensoryMemory,bot->GetStateRoot());
+			SensoryMemory *sm = bot->GetSensoryMemory();
 			if(sm)
 				return sm->GetAllRecords(mRecords,SensoryMemory::NumRecords);
 		}
@@ -3127,7 +3125,7 @@ public:
 		ClientPtr bot = GetSelectedClient();
 		if(bot)
 		{
-			FINDSTATE(aim,Aimer,bot->GetStateRoot());
+			Aimer *aim = bot->GetAimer();
 			if(aim)
 			{
 				int iNum = aim->GetAllRequests(mAimRequests,Aimer::MaxAimRequests);

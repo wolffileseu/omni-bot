@@ -1308,8 +1308,6 @@ void IGame::cmdDebugBot(const StringVector &_args)
 			{
 				for(obuint32 i = 2; i < _args.size(); ++i)
 				{
-					using namespace AiState;
-
 					std::string strDebugType = _args[i];
 					int flag = -1;
 					if(strDebugType == "log") flag = BOT_DEBUG_LOG;

@@ -337,16 +337,4 @@ enum MoveMode
 	bShowAssert = Utils::SoftAssertFunction(Utils::FireAlways, (bool)((f)!=0), #f, __FILE__, __LINE__, __VA_ARGS__); \
 	} }
 
-#define FINDSTATE(var, statename, parent) \
-	statename *var = static_cast<statename*>(parent->FindState(#statename)); OBASSERT(var, #statename " Not Found" );
-
-#define FINDSTATEIF(statename, parent, exp) { \
-	statename *st = static_cast<statename*>(parent->FindState(#statename));	if(st) st->exp; else OBASSERT(0, #statename " Not Found" ); }
-
-#define FINDSTATE_OPT(var, statename, parent) \
-	statename *var = static_cast<statename*>(parent->FindState(#statename));
-
-#define FINDSTATEIF_OPT(statename, parent, exp) { \
-	statename *st = static_cast<statename*>(parent->FindState(#statename));	if(st) st->exp; }
-
 #endif
