@@ -1447,19 +1447,26 @@ void IGame::cmdDrawBlockableTests(const StringVector &_args)
 
 void IGame::cmdPrintFileSystem(const StringVector &_args)
 {
-	String pth = "";
+	String pth = "user";
 	String ex = ".*";
-
+	if(_args.size() > 1)
+	{
+		pth = _args[1]; //nav, scripts, global_scripts, user
+		if(_args.size() > 2)
+		{
+			ex = _args[2]; //regular expression
+		}
+	}
 	DirectoryList dlist;
 	FileSystem::FindAllFiles(pth, dlist, ex);
 
 	EngineFuncs::ConsoleMessage("------------------------------------");
-	EngineFuncs::ConsoleMessage(va("%d Files %s, in %s", dlist.size(), ex.c_str(), pth.c_str()));
 	for(obuint32 i = 0; i < dlist.size(); ++i)
 	{
 		EngineFuncs::ConsoleMessage(dlist[i].string().c_str());		
 	}
 	EngineFuncs::ConsoleMessage("------------------------------------");
+	EngineFuncs::ConsoleMessage(va("%d Files %s, in %s", dlist.size(), ex.c_str(), pth.c_str()));
 }
 
 void IGame::cmdReloadWeaponDatabase(const StringVector &_args)
