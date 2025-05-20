@@ -66,8 +66,10 @@ public:
 	inline PathPlannerBase *GetNavSystem()	{ return m_PathPlanner; }
 	inline int GetInterfaceVersionNum()	{ return m_InterfaceVersionNum; }
 
+#if ENABLE_PATH_PLANNERS
 	bool AddUpdateFunction(const String &_name, FunctorPtr _func);
 	bool RemoveUpdateFunction(const String &_name);
+#endif
 
 	void SyncRemoteDelete( int entityHandle );
 	
@@ -82,7 +84,9 @@ protected:
 	IGame								*m_Game;
 	int	m_InterfaceVersionNum;
 
+#if ENABLE_PATH_PLANNERS
 	FunctorMap							m_UpdateMap;
+#endif
 
 #ifdef ENABLE_REMOTE_DEBUGGING
 	RemoteLib::ConnectionManagerServer	m_Remote;

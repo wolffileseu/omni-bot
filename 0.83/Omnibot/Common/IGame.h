@@ -87,7 +87,7 @@ public:
 	virtual const char *GetNavSubfolder() const = 0;
 	virtual const char *GetScriptSubfolder() const = 0;
 	virtual const char *GetGameDatabaseAbbrev() const = 0;
-	virtual eNavigatorID GetDefaultNavigator() const { return NAVID_RECAST; }
+	virtual eNavigatorID GetDefaultNavigator() const { return NAVID_NONE; }
 
 	virtual bool ReadyForDebugWindow() const { return true; }
 	virtual const char *IsDebugDrawSupported() const { return NULL; }

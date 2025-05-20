@@ -28,15 +28,6 @@
     <Filter Include="Core\Navigation\PathPlannerWaypoint">
       <UniqueIdentifier>{de9b9d42-bb78-4b36-afbb-fc0ded6cb480}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Navigation\PathPlannerNavMesh">
-      <UniqueIdentifier>{cdcb2388-dbbb-4e0b-81d6-4981f5e0c189}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Navigation\PathPlannerFloodFill">
-      <UniqueIdentifier>{fb07009c-6868-4ed9-8803-a9c3239512b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Navigation\PathPlannerRecast">
-      <UniqueIdentifier>{7a41cc71-e2e2-4385-b080-cef98ff36387}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Scripting">
       <UniqueIdentifier>{e9c89e9c-4b71-4d9a-98f5-e3b1bc08b5b8}</UniqueIdentifier>
     </Filter>
@@ -233,39 +224,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\WaypointSerializer_V9.cpp">
       <Filter>Core\Navigation\PathPlannerWaypoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerNavMesh.cpp">
-      <Filter>Core\Navigation\PathPlannerNavMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerNavMeshBuilder.cpp">
-      <Filter>Core\Navigation\PathPlannerNavMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerNavMeshCmds.cpp">
-      <Filter>Core\Navigation\PathPlannerNavMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerNavMeshScript.cpp">
-      <Filter>Core\Navigation\PathPlannerNavMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerFloodFill.cpp">
-      <Filter>Core\Navigation\PathPlannerFloodFill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerFloodFillBuilder.cpp">
-      <Filter>Core\Navigation\PathPlannerFloodFill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerFloodFillCmds.cpp">
-      <Filter>Core\Navigation\PathPlannerFloodFill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerFloodFillScript.cpp">
-      <Filter>Core\Navigation\PathPlannerFloodFill</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerRecast.cpp">
-      <Filter>Core\Navigation\PathPlannerRecast</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerRecastCmds.cpp">
-      <Filter>Core\Navigation\PathPlannerRecast</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\PathPlannerRecastScript.cpp">
-      <Filter>Core\Navigation\PathPlannerRecast</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\gmAABB.cpp">
       <Filter>Core\Scripting</Filter>
@@ -955,15 +913,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\WaypointSerializerImp.h">
       <Filter>Core\Navigation\PathPlannerWaypoint</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\PathPlannerNavMesh.h">
-      <Filter>Core\Navigation\PathPlannerNavMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\PathPlannerFloodFill.h">
-      <Filter>Core\Navigation\PathPlannerFloodFill</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\PathPlannerRecast.h">
-      <Filter>Core\Navigation\PathPlannerRecast</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\gmAABB.h">
       <Filter>Core\Scripting</Filter>

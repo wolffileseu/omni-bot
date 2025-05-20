@@ -760,12 +760,14 @@ typedef enum eNavigatorID
 {
 	NAVID_NONE,	
 	NAVID_WP,	
+#if ENABLE_PATH_PLANNERS
 	NAVID_NAVMESH,
 	NAVID_FLOODFILL,
 	NAVID_RECAST,
 
 	// THIS MUST BE LAST
 	NAVID_MAX
+#endif
 } NavigatorID;
 
 // enumerations: TraceMasks

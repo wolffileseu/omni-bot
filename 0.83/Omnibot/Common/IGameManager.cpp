@@ -253,6 +253,7 @@ void IGameManager::UpdateGame()
 		m_GoalManager->Update();
 		TriggerManager::GetInstance()->Update();
 
+#if ENABLE_PATH_PLANNERS
 		{
 			Prof(Processes);
 
@@ -268,6 +269,7 @@ void IGameManager::UpdateGame()
 					++it;
 			}
 		}
+#endif
 
 #ifdef ENABLE_REMOTE_DEBUGGING
 		{
@@ -333,11 +335,13 @@ void IGameManager::Shutdown()
 	m_Game->Shutdown();
 	g_Blackboard.RemoveAllBBRecords();
 
+#if ENABLE_PATH_PLANNERS
 	while(!m_UpdateMap.empty())
 		RemoveUpdateFunction((*m_UpdateMap.begin()).first);
+#endif
 
 	LOGFUNCBLOCK;
-    
+
 	// Get rid of the path planner.
 	NavigationManager::DeleteInstance();	
 	m_PathPlanner = 0;
@@ -386,12 +390,14 @@ void IGameManager::InitCommands()
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdVersion)));
 	Set("revision", "Prints out the bot version number.",
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdVersion)));
+#if ENABLE_PATH_PLANNERS
 	Set("stopprocess", "Stops a process by its name.",
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdStopProcess)));
 	Set("showprocesses", "Shows current proccesses.", 
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdShowProcesses)));
 	Set("navsystem", "Creates a navigation system of a specified type.", 
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdNavSystem)));
+#endif
 	Set("printfs", "Prints the whole file system.", 
 		CommandFunctorPtr(new CommandFunctorT<IGameManager>(this, &IGameManager::cmdPrintAllFiles)));
 
@@ -417,6 +423,7 @@ void IGameManager::cmdVersion(const StringVector &_args)
 	}
 }
 
+#if ENABLE_PATH_PLANNERS
 void IGameManager::cmdShowProcesses(const StringVector &_args)
 {
 	EngineFuncs::ConsoleMessage(va("# Processes: %d!", m_UpdateMap.size()));
@@ -477,6 +484,7 @@ void IGameManager::cmdNavSystem(const StringVector &_args)
 		}
 	}
 }
+#endif
 
 void IGameManager::cmdPrintAllFiles(const StringVector &_args)
 {
@@ -507,6 +515,7 @@ void IGameManager::cmdUpdateAllNavFiles(const StringVector &_args)
 
 //////////////////////////////////////////////////////////////////////////
 
+#if ENABLE_PATH_PLANNERS
 bool IGameManager::AddUpdateFunction(const String &_name, FunctorPtr _func)
 {
 	if(m_UpdateMap.find(_name) != m_UpdateMap.end())
@@ -530,6 +539,7 @@ bool IGameManager::RemoveUpdateFunction(const String &_name)
 	}
 	return false;
 }
+#endif
 
 void IGameManager::SyncRemoteDelete( int entityHandle ) 
 {

@@ -78,7 +78,6 @@ const char *ET_Game::GetScriptSubfolder() const
 
 eNavigatorID ET_Game::GetDefaultNavigator() const 
 {
-	//return NAVID_RECAST;
 	return NAVID_WP; 
 }
 
