@@ -162,7 +162,6 @@ void MapGoal::_Init()
 	m_Position = Vector3f::ZERO;
 	m_InterfacePosition = Vector3f::ZERO;
 	SetMatrix(Matrix3f::IDENTITY);
-	m_LocalBounds = AABB(Vector3f::ZERO, Vector3f::ZERO);
 	m_Radius = 0.f;
 	m_MinRadius = 0.f;
 	m_NavFlags = 0;
@@ -547,26 +546,15 @@ void MapGoal::InternalInitEntityState()
 	// cache the values.
 	if(GetEntity().IsValid())
 	{
-		AABB worldbounds;
-		bool b1 = EngineFuncs::EntityWorldAABB(GetEntity(), worldbounds);
 		bool b2 = EngineFuncs::EntityPosition(GetEntity(), m_Position);
-
 		// cache the auto detected position
 		if(b2) m_InterfacePosition = m_Position;
-
-		worldbounds.UnTranslate(m_Position);
-		if(b1) m_LocalBounds = worldbounds;
 
 		Vector3f vFwd, vRight, vUp;
 		bool b3 = EngineFuncs::EntityOrientation(GetEntity(), vFwd, vRight, vUp);
 		if(b3) SetMatrix(Matrix3f(vRight, vFwd, vUp, true));
 
-		OBASSERT(b1&&b2&&b3,"Lost Entity!");
-	}
-
-	if(m_LocalBounds.IsZero())
-	{
-		m_LocalBounds.Expand(5.f);
+		OBASSERT(b2&&b3,"Lost Entity!");
 	}
 }
 
@@ -762,20 +750,6 @@ Matrix3f MapGoal::GetMatrix()
 	return m_Orientation;
 }
 
-void MapGoal::SetGoalBounds(const AABB &_bounds)
-{
-	m_LocalBounds = _bounds;
-}
-
-void MapGoal::SetBounds_Script(const Vec3 &_mins, const Vec3 &_maxs)
-{
-	for(int i = 0; i < 3; ++i)
-	{
-		m_LocalBounds.m_Mins[i] = _mins[i];
-		m_LocalBounds.m_Maxs[i] = _maxs[i];
-	}
-}
-
 Vec3 MapGoal::GetBoundsCenter_Script()
 {
 	Box3f box = GetWorldBounds();
@@ -790,11 +764,6 @@ Box3f MapGoal::GetWorldBounds()
 	EngineFuncs::EntityOrientation(GetEntity(), obb.Axis[0], obb.Axis[1], obb.Axis[2]);
 	EngineFuncs::EntityWorldOBB( GetEntity(), obb );
 	return obb;
-}
-
-const AABB &MapGoal::GetLocalBounds() const
-{
-	return m_LocalBounds;
 }
 
 void MapGoal::AddUsePoint(const Vector3f &_pos, bool _relative)
@@ -2390,9 +2359,6 @@ void MapGoal::Bind(gmMachine *_m)
 		.func(gmfGetRangeAABB,	"GetRangeAABB", "Get current AABB range limit for the goal")
 
 		//.func(&MapGoal::GetWorldBounds,	"GetBounds")
-		//.func(&MapGoal::GetLocalBounds,	"GetLocalBounds")
-		//.func(&MapGoal::SetGoalBounds,	"SetBounds")
-		.func(&MapGoal::SetBounds_Script,	"SetBounds","Set the object space bounding box of the goal.")
 		.func(&MapGoal::GetBoundsCenter_Script,	"GetCenterBounds","Get the center of the bounding box.")
 		//.func(&MapGoal::GetMatrix,		"GetMatrix")
 		//.func(&MapGoal::SetMatrix,		"SetMatrix")

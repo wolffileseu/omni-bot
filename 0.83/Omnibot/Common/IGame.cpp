@@ -690,7 +690,6 @@ void IGame::SyncEntity( const EntityInstance & ent, EntitySnapShot & snapShot, R
 		const int entClass = InterfaceFuncs::GetEntityClass( ent.m_Entity );
 		const String entName = EngineFuncs::EntityName( ent.m_Entity );
 		//Box3f worldBounds;
-		AABB localBounds;
 		EngineFuncs::EntityOrientation( ent.m_Entity, facingVector, rightVector, upVector );
 
 		newSnapShot.Sync( "name", entName.c_str(), localBuffer );

@@ -209,17 +209,9 @@ public:
 	//		Gets the matrix of this goal
 	Matrix3f GetMatrix();
 
-	// function: SetGoalBounds
-	//		Sets the bounds of the goal.
-	void SetGoalBounds(const AABB &_bounds);
-
-	// function: GetGoalBounds
+	// function: GetWorldBounds
 	//		Gets the bounds of the goal in world space.
 	Box3f GetWorldBounds();
-
-	// function: GetGoalBounds
-	//		Gets the bounds of the goal.
-	const AABB &GetLocalBounds() const;
 
 	// function: SetRadius
 	//		Sets the radius of this goal
@@ -445,8 +437,6 @@ private:
 	Vector3f		m_InterfacePosition; //cache the auto detected position
 	Matrix3f		m_Orientation;
 	Vector3f		m_Euler;
-	AABB			m_LocalBounds; // deprecated
-	//BoundingBox	m_Bounds;
 
 	LimitWeapons	m_LimitWeapon;
 
@@ -525,7 +515,6 @@ private:
 	void SetFacing_Script(const Vec3 &_pos);
 	Vec3 GetPosition_Script();
 	Vec3 GetFacing_Script();
-	void SetBounds_Script(const Vec3 &_mins, const Vec3 &_maxs);
 	Vec3 GetBoundsCenter_Script();
 
 	MapGoalWPtr	m_WeakPtr;
