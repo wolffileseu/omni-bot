@@ -4,11 +4,6 @@
 #include "gmBotLibrary.h"
 
 const obReal ROAM_GOAL_PRIORITY = 0.05f;
-const obReal CTF_PRIORITY = 0.55f;
-const obReal RETURN_FLAG_PRIORITY = 0.35f;
-const obReal SNIPE_PRIORITY = 0.7f;
-const obReal ATTACK_GOAL_PRIORITY = 0.5f;
-const obReal DEFEND_GOAL_PRIORITY = 0.5f;
 
 const float MIN_RENDER_TIME = 0.05f;
 

@@ -940,7 +940,6 @@ State::StateStatus StateSimultaneous::UpdateState(float fDt)
 {
 	OBASSERT(!IsDisabled(), "State Disabled, UpdateState called!");
 
-	State *pLastState = NULL;
 	for(State *pState = m_FirstChild; pState; pState = pState->m_Sibling)
 	{
 		bool bWantsActive = !pState->IsDisabled() ? pState->InternalGetPriority() > 0.0 : false;
@@ -949,12 +948,6 @@ State::StateStatus StateSimultaneous::UpdateState(float fDt)
 		if(pState->IsActive() && (!bWantsActive || pState->IsDisabled()))
 		{
 			pState->InternalExit(); // call internal version
-			if(!bWantsActive && pState->CheckFlag(State_DeleteOnFinished))
-			{
-				if(pLastState)
-					pLastState = pState->m_Sibling;
-				delete pState;
-			}
 			continue;
 		}
 
@@ -966,7 +959,6 @@ State::StateStatus StateSimultaneous::UpdateState(float fDt)
 			if(pState->InternalUpdateState() == State_Finished)
 				pState->InternalExit();
 		}
-		pLastState = pState;
 	}
 	Update(fDt);
 	return State_Busy;

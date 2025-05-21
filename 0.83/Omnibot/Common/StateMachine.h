@@ -54,10 +54,7 @@ public:
 
 	enum StateFlags
 	{
-		State_InActive,				// Sate currently not running.
 		State_Active,				// State currently running.
-		State_WantsActive,			// State wants to run.
-		State_DeleteOnFinished,		// State should be deleted when it exits.
 		State_UserDisabled,			// State has been disabled by the user.
 		State_UnSelectable,			// State not available for activation(class filter, etc).
 
@@ -71,8 +68,6 @@ public:
 
 		State_DontAutoAdd,
 		State_ScriptGoal,			// This state is a script goal.
-
-		State_StartUser = 24,
 	};
 
 	void AppendState(CHECK_PARAM_VALID State *_state);
@@ -155,8 +150,8 @@ public:
 	inline void SetAutoAdd(bool _b) { m_StateFlags.SetFlag(State_DontAutoAdd, !_b); }
 	inline void SetUserDisabled(bool _b) { m_StateFlags.SetFlag(State_UserDisabled, _b); }
 
-	inline bool CheckFlag(obint32 _flag) { return m_StateFlags.CheckFlag(_flag); }
-	inline void SetFlag(obint32 _flag) { m_StateFlags.SetFlag(_flag); }
+	//inline bool CheckFlag(obint32 _flag) { return m_StateFlags.CheckFlag(_flag); }
+	//inline void SetFlag(obint32 _flag) { m_StateFlags.SetFlag(_flag); }
 
 	virtual void SetSelectable(bool _selectable);
 	virtual void SetEnable(bool _enable, const char *_error = 0);
