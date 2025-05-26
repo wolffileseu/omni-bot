@@ -54,7 +54,6 @@ this.UpgradeVersion = function(Props)
 		Props.MaxCampTime = this.DefaultMaxCampTime;
 
 		this.SetPosition(this.GetPosition() + Util.WaypointGoalOffset);
-		this.SetBounds(Vec3(-5,-5,0),Vec3(5,5,96));
 	}
 	else if(Props.Version == this.Version)
 	{
@@ -164,10 +163,7 @@ this.SetProperty = function(property, value)
 };
 
 //////////////////////////////////////////////////////////////////////////
-global CreateGui = function(object, guidef)
-{
-};
-//////////////////////////////////////////////////////////////////////////
+
 this.HudDisplay = function(window)
 {
 	this.CreateGuiFromSchema(this.Schema);

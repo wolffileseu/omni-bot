@@ -22,7 +22,7 @@ this.Enter = function()
 
 this.Update = function()
 {
-	while(1) {
+	for(;;) {
 		if (this.Debug) { this.Bot.Say("injured: update"); }
 
 		if ( this.CheckForTapout() ) {

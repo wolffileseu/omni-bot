@@ -44,7 +44,7 @@ this.OnSpawn = function()
 
 this.Update = function()
 {
-	while(1) {
+	for(;;) {
 		this.CheckSoldierWeapon();
 		sleep(1);
 	}

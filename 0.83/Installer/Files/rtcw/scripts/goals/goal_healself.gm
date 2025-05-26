@@ -18,7 +18,7 @@ this.Update = function()
 		this.Finished();
 	}
 
-	this.AddWeaponRequest(Priority.High, WEAPON.MEDKIT);
+	this.AddWeaponRequest(WEAPON.MEDKIT);
 	this.BlockForWeaponChange(WEAPON.MEDKIT);
 
 	if ( this.Bot.GetVelocity().IsZero() )
@@ -38,13 +38,13 @@ this.Update = function()
 
 this.Events[EVENT.FEEL_PAIN] = function(Inflictor, PreviousHealth, CurrentHealth)
 {
-	if(CurrentHealth < this.HealthThreshold && this.Priority == 0)
+	if(CurrentHealth < this.HealthThreshold && this.Priority == 0 && this.Bot)
 	{
 		this.Priority = 1;
 	}
 };
 
-this.Events[EVENT.WEAPON_FIRE] = function(weaponId, projectileEntity)
+this.Events[EVENT.WEAPON_FIRE] = function(weaponId)
 {
 	if(weaponId == WEAPON.MEDKIT && this.Bot )
 	{

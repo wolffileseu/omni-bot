@@ -1,16 +1,14 @@
 // This script is for testing events
-
 this.Name = "TestEvents";
 this.Parent = "LowLevel";
-
 this.AutoAdd = false;
-this.AlwaysRecieveEvents = this.AutoAdd;	// Recieve events even when not active. Normally events are only called when goal is active.
+this.AlwaysRecieveEvents = true; // Recieve events even when not active
 
 this.Initialize = function()
 {
 	this.RunTests = true;
 
-	if ( this.RunTests == true )
+	if (this.RunTests == true)
 	{
 		//set to false if you want to select individual events below
 		this.TestAll = false;
@@ -48,9 +46,9 @@ this.Initialize = function()
 
 this.Events[EVENT.SPECTATED] = function(who)
 {
-	if ( this.TestAll == true || this.TestSpectated == true )
+	if (this.TestAll == true || this.TestSpectated == true)
 	{
-		print( this.Bot.Name, " is being spectated by ", GetEntityName(who));
+		print(this.Bot.Name, " is being spectated by ", GetEntityName(who));
 	}
 };
 
@@ -58,9 +56,9 @@ this.Events[EVENT.SPECTATED] = function(who)
 
 this.Events[EVENT.REVIVED] = function(whoDoneIt)
 {
-	if ( this.TestAll == true || this.TestRevived == true )
+	if (this.TestAll == true || this.TestRevived == true)
 	{
-		print( GetEntityName(whoDoneIt), " REVIVED ", this.Bot.Name );
+		print(GetEntityName(whoDoneIt), " REVIVED ", this.Bot.Name);
 	}
 };
 
@@ -68,9 +66,9 @@ this.Events[EVENT.REVIVED] = function(whoDoneIt)
 
 this.Events[EVENT.RESETWEAPONS] = function(weap)
 {
-	if ( this.TestAll == true || this.TestResetWeapons == true )
+	if (this.TestAll == true || this.TestResetWeapons == true)
 	{
-		print( this.Bot.Name, " reset weapons ", weap );
+		print(this.Bot.Name, " reset weapons ", weap);
 	}
 };
 
@@ -78,9 +76,9 @@ this.Events[EVENT.RESETWEAPONS] = function(weap)
 
 this.Events[EVENT.SPAWNED] = function()
 {
-	if ( this.TestAll == true || this.TestSpawnEvent == true )
+	if (this.TestAll == true || this.TestSpawnEvent == true)
 	{
-		print( this.Bot.Name, " spawned " );
+		print(this.Bot.Name, " spawned ");
 	}
 };
 
@@ -89,9 +87,9 @@ this.Events[EVENT.SPAWNED] = function()
 // untested
 this.Events[EVENT.TEAM_VOICE] = function(whosaidit, id)
 {
-	if ( this.TestAll == true || this.TestTeamVoice == true )
+	if (this.TestAll == true || this.TestTeamVoice == true)
 	{
-		print( this.Bot.Name, " heard ", GetEntityName(whosaidit), " use team voice macro ", id );
+		print(this.Bot.Name, " heard ", GetEntityName(whosaidit), " use team voice macro ", id);
 	}
 };
 
@@ -99,9 +97,9 @@ this.Events[EVENT.TEAM_VOICE] = function(whosaidit, id)
 
 this.Events[EVENT.PRIVATE_VOICE] = function(whosaidit, id)
 {
-	if ( this.TestAll == true || this.TestPrivateVoice == true )
+	if (this.TestAll == true || this.TestPrivateVoice == true)
 	{
-		print( this.Bot.Name, " heard private voice", Util.GetTableKey(VOICE,id),  "from ", GetEntName(whosaidit) );
+		print(this.Bot.Name, " heard private voice", Util.GetTableKey(VOICE,id),  "from ", GetEntName(whosaidit));
 	}
 };
 
@@ -109,10 +107,10 @@ this.Events[EVENT.PRIVATE_VOICE] = function(whosaidit, id)
 
 this.Events[EVENT.GLOBAL_CHAT_MSG] = function(whosaidit, whattheysaid)
 {
-	if ( this.TestAll == true || this.TestGlobalChatMessage == true )
+	if (this.TestAll == true || this.TestGlobalChatMessage == true)
 	{
-		print( this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
-			whattheysaid, " in global chat" );
+		print(this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
+			whattheysaid, " in global chat");
 	}
 };
 
@@ -121,10 +119,10 @@ this.Events[EVENT.GLOBAL_CHAT_MSG] = function(whosaidit, whattheysaid)
 
 this.Events[EVENT.TEAM_CHAT_MSG] = function(whosaidit, whattheysaid)
 {
-	if ( this.TestAll == true || this.TestTeamChatMessage == true )
+	if (this.TestAll == true || this.TestTeamChatMessage == true)
 	{
-		print( this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
-			whattheysaid, " in a team chat message" );
+		print(this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
+			whattheysaid, " in a team chat message");
 	}
 };
 
@@ -132,10 +130,10 @@ this.Events[EVENT.TEAM_CHAT_MSG] = function(whosaidit, whattheysaid)
 
 this.Events[EVENT.PRIV_CHAT_MSG] = function(whosaidit, whattheysaid)
 {
-	if ( this.TestAll == true || this.TestPrivateChatMessage == true )
+	if (this.TestAll == true || this.TestPrivateChatMessage == true)
 	{
-		print( this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
-			whattheysaid, " in a private chat message" );
+		print(this.Bot.Name, " heard ", GetEntityName(whosaidit), " say ",
+			whattheysaid, " in a private chat message");
 	}
 };
 
@@ -143,9 +141,9 @@ this.Events[EVENT.PRIV_CHAT_MSG] = function(whosaidit, whattheysaid)
 
 this.Events[EVENT.KILLEDSOMEONE] = function(victim, mod)
 {
-	if ( this.TestAll == true || this.TestKilled == true )
+	if (this.TestAll == true || this.TestKilled == true)
 	{
-		print( this.Bot.Name, " killed ", GetEntityName(victim), " with ", mod );
+		print(this.Bot.Name, " killed ", GetEntityName(victim), " with ", mod);
 	}
 };
 
@@ -153,9 +151,9 @@ this.Events[EVENT.KILLEDSOMEONE] = function(victim, mod)
 
 this.Events[EVENT.DEATH] = function(attacker, mod)
 {
-	if ( this.TestAll == true || this.TestDeath == true )
+	if (this.TestAll == true || this.TestDeath == true)
 	{
-		print( this.Bot.Name, " was killed by ", GetEntityName(attacker), " with ", mod );
+		print(this.Bot.Name, " was killed by ", GetEntityName(attacker), " with ", mod);
 	}
 };
 
@@ -163,18 +161,18 @@ this.Events[EVENT.DEATH] = function(attacker, mod)
 
 this.Events[EVENT.HEALED] = function(whoDoneIt)
 {
-	if ( this.TestAll == true || this.TestHealed == true )
+	if (this.TestAll == true || this.TestHealed == true)
 	{
-		print( GetEntityName(whoDoneIt), " HEALED ", this.Bot.Name );
+		print(GetEntityName(whoDoneIt), " HEALED ", this.Bot.Name);
 	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
 this.Events[EVENT.AMMO_RECIEVED] = function(whoDoneIt)
 {
-	if ( this.TestAll == true || this.TestAmmo== true )
+	if (this.TestAll == true || this.TestAmmo== true)
 	{
-		print( GetEntityName(whoDoneIt), " gave ammo to ", this.Bot.Name );
+		print(GetEntityName(whoDoneIt), " gave ammo to ", this.Bot.Name);
 	}
 };
 
@@ -182,9 +180,9 @@ this.Events[EVENT.AMMO_RECIEVED] = function(whoDoneIt)
 
 this.Events[EVENT.FEEL_PAIN] = function(Inflictor, PreviousHealth, CurrentHealth)
 {
-	if ( this.TestAll == true || this.TestFeelPain == true )
+	if (this.TestAll == true || this.TestFeelPain == true)
 	{
-		print(GetEntityName(Inflictor), " HURT ", this.Bot.Name, " with ", PreviousHealth - CurrentHealth, " damage" );
+		print(GetEntityName(Inflictor), " HURT ", this.Bot.Name, " with ", PreviousHealth - CurrentHealth, " damage");
 	}
 };
 
@@ -192,7 +190,7 @@ this.Events[EVENT.FEEL_PAIN] = function(Inflictor, PreviousHealth, CurrentHealth
 
 this.Events[EVENT.WEAPON_FIRE] = function(weaponId, projectileEntity)
 {
-	if ( this.TestAll == true || this.TestWeaponFire == true )
+	if (this.TestAll == true || this.TestWeaponFire == true)
 	{
 		print(this.Bot.Name, " WEAPON FIRE ", Util.WeaponName(weaponId), projectileEntity);
 	}
@@ -202,7 +200,7 @@ this.Events[EVENT.WEAPON_FIRE] = function(weaponId, projectileEntity)
 
 this.Events[EVENT.CHANGETEAM] = function(team)
 {
-	if ( this.TestAll == true || this.TestChangeTeam == true )
+	if (this.TestAll == true || this.TestChangeTeam == true)
 	{
 		print(this.Bot.Name, " changed team to", Util.TeamName(team));
 	}
@@ -212,7 +210,7 @@ this.Events[EVENT.CHANGETEAM] = function(team)
 
 this.Events[EVENT.SCRIPTMSG] = function(msg, data1, data2, data3)
 {
-	if ( this.TestAll || this.TestScriptMsg )
+	if (this.TestAll || this.TestScriptMsg)
 	{
 		print(this.Bot.Name, " script messsage", msg, data1, data2, data3);
 	}
@@ -222,7 +220,7 @@ this.Events[EVENT.SCRIPTMSG] = function(msg, data1, data2, data3)
 
 this.Events[EVENT.DISCONNECTED] = function()
 {
-	if ( this.TestAll || this.TestDisconnected )
+	if (this.TestAll || this.TestDisconnected)
 	{
 		print(this.Bot.Name, " EVENT.DISCONNECTED");
 	}
@@ -232,7 +230,7 @@ this.Events[EVENT.DISCONNECTED] = function()
 
 this.Events[EVENT.CHANGECLASS] = function(newclass)
 {
-	if ( this.TestAll || this.TestChangeClass )
+	if (this.TestAll || this.TestChangeClass)
 	{
 		print(this.Bot.Name, " changed class to", Util.ClassName(newclass));
 	}
@@ -242,7 +240,7 @@ this.Events[EVENT.CHANGECLASS] = function(newclass)
 
 this.Events[EVENT.WEAPON_CHANGE] = function(weapon)
 {
-	if ( this.TestAll || this.TestWeaponChange )
+	if (this.TestAll || this.TestWeaponChange)
 	{
 		print(this.Bot.Name, " changed weapon", Util.WeaponName(weapon));
 	}

@@ -47,7 +47,7 @@ global Map =
 			},
 			navigate = function(_this) {
 				_this.Bot.HoldButton(BTN.FORWARD, 3);
-				_this.AddWeaponRequest(Priority.High, WEAPON.KNIFE);
+				_this.AddWeaponRequest(WEAPON.KNIFE);
 				_this.BlockForWeaponChange(WEAPON.KNIFE);
 				for(j=0; j<20; j+=1){
 					tr = TraceLine(Vector3(-1471.776, 796.875, 170.125), Vector3(-1474.088, 835.312, 170.125), null, TRACE.SOLID, 0, true);

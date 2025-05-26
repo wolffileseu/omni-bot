@@ -19,17 +19,17 @@ this.Initialize = function()
 this.QueryReviveGoals = function(range, skipGoal)
 {
 	bestGoal = null;
-	if ( this.QueryGoals(Util.QueryTable,0x2086cdf0 /* REVIVE */) )
+	if (this.QueryGoals(Util.QueryTable,0x2086cdf0 /* REVIVE */))
 	{
 		closest = range + 1;
-		foreach ( goal in Util.QueryTable )
+		foreach (goal in Util.QueryTable)
 		{
-			if ( skipGoal && goal == skipGoal ) {
+			if (skipGoal && goal == skipGoal) {
 				continue;
 			}
 
 			dist = this.Bot.DistanceTo(goal.GetPosition());
-			if ( dist < closest ) {
+			if (dist < closest) {
 				bestGoal = goal;
 				closest = dist;
 			}
@@ -41,14 +41,14 @@ this.QueryReviveGoals = function(range, skipGoal)
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		this.Priority = 0;
-		if ( this.Bot.HasAmmo(WEAPON.SYRINGE) ) {
+		if (this.Bot.HasAmmo(WEAPON.SYRINGE)) {
 			this.MapGoal = this.QueryReviveGoals(this.RangeForRevive);
-			if ( this.MapGoal ) {
+			if (this.MapGoal) {
 				p = this.MapGoal.GetGoalPriority(this.Bot);
-				if ( this.GoalDistance < this.RangeForPriority) { 
+				if (this.GoalDistance < this.RangeForPriority) { 
 					//REVIVE priority is 1.0, CAPPOINT priority is 1.1
 					p += 0.2;
 				}
@@ -71,10 +71,10 @@ this.Enter = function()
 
 this.LookForCloserReviveGoals = function()
 {
-	while(1) {
+	for(;;) {
 		sleep(this.CheckReviveTimer);
 		goal = this.QueryReviveGoals(this.RangeForRevive);
-		if ( !goal || goal != this.MapGoal ) {
+		if (!goal || goal != this.MapGoal) {
 			this.Finished();
 		}
 	}
@@ -82,15 +82,15 @@ this.LookForCloserReviveGoals = function()
 
 this.EvalDeliverSupplies = function()
 {
-	if ( this.Bot.GetTarget() != null ) {
-		if ( this.Debug ) {
+	if (this.Bot.GetTarget() != null) {
+		if (this.Debug) {
 			this.Bot.Say("skipping deliver supplies, have target");
 		}
 		return false;
 	}
 
 	goal = this.QueryReviveGoals(this.RangeForNearby, this.MapGoal);
-	if ( this.Debug && goal ) {
+	if (this.Debug && goal) {
 		this.Bot.Say("skipping deliver supplies, nearby revive");
 	}
 
@@ -99,7 +99,7 @@ this.EvalDeliverSupplies = function()
 
 this.Exit = function()
 {
-	if ( this.LookForCloserReviveGoalsThread ) {
+	if (this.LookForCloserReviveGoalsThread) {
 		this.KillThread(this.LookForCloserReviveGoalsThread);
 		this.LookForCloserReviveGoalsThread = null;
 	}
@@ -113,21 +113,21 @@ this.Exit = function()
 this.Update = function()
 {
 	this.AutoFinishOnUnAvailable = true;
-	if ( !this.LookForCloserReviveGoalsThread ) {
+	if (!this.LookForCloserReviveGoalsThread) {
 		this.LookForCloserReviveGoalsThread = this.ForkThread(this.LookForCloserReviveGoals);
 	}
 
-	if ( this.RouteTo(this.MapGoal, 32.f) != EVENT.PATH_FAILED ) {
+	if (this.RouteTo(this.MapGoal, 32) != EVENT.PATH_FAILED) {
 		this.KillThread(this.LookForCloserReviveGoalsThread);
 		this.LookForCloserReviveGoalsThread = null;
 
 		this.AddAimRequest(Priority.High, "position",GetEntPosition(this.TargetEntity));
-		this.AddWeaponRequest(Priority.High, WEAPON.SYRINGE);
+		this.AddWeaponRequest(WEAPON.SYRINGE);
 		this.BlockForWeaponChange(WEAPON.SYRINGE);
 
 		this.AutoFinishOnUnAvailable = false; //REVIVE goal can be removed before signal to deliver supplies
 		health = 0;
-		for (timeout = 12; timeout > 0; timeout -= 1) { // 3 seconds
+		for (timeout = 12; timeout > 0; --timeout) { // 3 seconds
 			health = Util.GetEntHealth(this.TargetEntity);
 			if (health > 0) { break; }
 
@@ -138,7 +138,7 @@ this.Update = function()
 
 				eyePos = GetEntEyePosition(this.Bot.GetGameEntity());
 				heightDiff = pos.z - eyePos.z;
-				if ( heightDiff > 20.f ) {
+				if (heightDiff > 20.f) {
 					this.Bot.PressButton(BTN.JUMP);
 				}
 				else {
@@ -160,7 +160,7 @@ this.Update = function()
 			if (health < 100 && this.EvalDeliverSupplies()) { //skilled medic can revive to full health
 				// activate deliver supplies goal.
 				this.Bot.RevivedTargetEnt = this.TargetEntity;
-				signal( this.Bot.Name + "_deliversupplies" );
+				signal(this.Bot.Name + "_deliversupplies");
 				sleep(1);
 			}
 		}

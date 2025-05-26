@@ -361,7 +361,7 @@ global Map =
 	door_trigger = function( trigger )
 	{
 		// disable it immediately. the other triggers will set availability appropriately
-		SetAvailableMapGoals( 0, false, "SWITCH_officegate" );
+		Util.DisableGoal( "SWITCH_officegate" );
 	},
 
 	door_closed = function( trigger )
@@ -376,7 +376,7 @@ global Map =
 	{
 		Map.DoorStatus = 2;
 
-		SetAvailableMapGoals( 0, false, "SWITCH_officegate" );
+		Util.DisableGoal( "SWITCH_officegate" );
 
 		Util.EnableGoal( "ROUTE_bunkerwall" );
 

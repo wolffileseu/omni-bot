@@ -52,7 +52,7 @@ this.UpgradeVersion = function(Props)
 
 this.Render = function(editMode)
 {
-	if (this.TraceEntity && EntityIsValid(this.TraceEntity))
+	if (EntityIsValid(this.TraceEntity))
 	{
 		tracePos = GetEntPosition(this.TraceEntity);
 		goalPos = this.GetPosition();
@@ -67,7 +67,7 @@ this.Render = function(editMode)
 		if(this.ExtraDebugText==null)
 		{
 			this.ExtraDebugText = "";
-			if (this.TraceEntity && EntityIsValid(this.TraceEntity))
+			if (EntityIsValid(this.TraceEntity))
 			{
 				this.ExtraDebugText += format("TraceEnt: %d\n",this.TraceEntity);
 			}
@@ -79,7 +79,7 @@ this.Render = function(editMode)
 		{
 			DrawArrow(goalPos,tracePos,COLOR.YELLOW,2);
 		}
-		else if (this.TraceEntity && EntityIsValid(this.TraceEntity))
+		else if (EntityIsValid(this.TraceEntity))
 		{
 			tracePos = GetEntPosition(this.TraceEntity);
 			goalPos = this.GetPosition();
@@ -369,7 +369,7 @@ this.SetProperty = function(property, value)
 // give it some time to find it since some games spawn ents late
 this.Update = function()
 {
-	while(1)
+	for(;;)
 	{
 		sleep(1);
 		if ( !this.TraceInfo || tableCount(this.TraceInfo) < 1 )

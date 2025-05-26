@@ -39,7 +39,7 @@ this.DynamicGoto = function()
 this.Update = function()
 {
 	pos = this.MapGoal.GetPosition();
-	if( DistanceBetween(pos,this.TargetPosition) > 100)
+	if(DistanceBetween(pos,this.TargetPosition) > 100)
 	{
 		this.TargetPosition = pos;
 		this.KillThread(this.DynamicGotoThread);

@@ -81,8 +81,6 @@ this.UpgradeVersion = function(Props)
 		// offset instead
 		this.SetPosition(this.GetPosition() + Util.WaypointGoalOffset);
 
-		this.SetBounds(Vec3(-5,-5,0),Vec3(5,5,96));
-
 		return;
 	}
 
@@ -97,8 +95,6 @@ this.UpgradeVersion = function(Props)
 
 		// cs: can't do this since it is unreliable. constructable bridges for example
 		//this.SetPosition( GroundPoint(this.GetPosition()) );
-
-		this.SetBounds(Vec3(-5,-5,0),Vec3(5,5,96));
 	}
 	else if(Props.Version == this.Version)
 	{
@@ -361,10 +357,7 @@ this.SetProperty = function(property, value)
 };
 
 //////////////////////////////////////////////////////////////////////////
-global CreateGui = function(object, guidef)
-{
-};
-//////////////////////////////////////////////////////////////////////////
+
 
 this.HudDisplay = function(window)
 {

@@ -1,4 +1,4 @@
-// This script contains functionality to allow bots to toss airstrikes from given waypoints
+// This script contains functionality to allow fieldops to toss airstrikes from given position
 
 this.Name = "AIRSTRIKE";
 this.Parent = "HighLevel";
@@ -29,7 +29,7 @@ this.Update = function()
 
 	this.AddAimRequest(Priority.High, "facing", Util.GetRandomTableValue(this.MapGoal.AimVectors));
 
-	this.AddWeaponRequest(Priority.High, WEAPON.SMOKE_GRENADE );
+	this.AddWeaponRequest(WEAPON.SMOKE_GRENADE );
 	this.BlockForWeaponChange( WEAPON.SMOKE_GRENADE );
 	this.Bot.HoldButton(BTN.ATTACK1, 0.5 );
 	sleep(1);

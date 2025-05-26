@@ -10,10 +10,7 @@ this.GetPriority = function()
 	Util.GetPriority(this, this.query);
 };
 
-this.Enter = function()
-{
-	this.MarkInProgress();
-};
+this.Enter = this.MarkInProgress;
 
 this.Exit = function()
 {

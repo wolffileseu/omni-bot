@@ -9,7 +9,7 @@ this.CARRYING_TO_CAP = 2;
 this.Initialize = function()
 {
 	// check for flag status so we can finish if another player grabs it or if dropped flag is returned
-	this.LimitTo( this.CheckFlagState, 1, true );
+	this.LimitTo(this.CheckFlagState, 1, true);
 };
 
 this.CheckFlagState = function()
@@ -30,7 +30,7 @@ this.CheckFlagState = function()
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		this.Priority = 0;
 		if (this.Bot.IsCarryingFlag())
@@ -44,9 +44,9 @@ this.GetPriority = function()
 			state = this.GETTING_FLAG;
 		}
 
-		if ( this.QueryGoals(Util.QueryTable, query) )
+		if (this.QueryGoals(Util.QueryTable, query))
 		{
-			foreach ( goal in Util.QueryTable )
+			foreach (goal in Util.QueryTable)
 			{
 				if (state == this.GETTING_FLAG) {
 					ent = goal.GetEntity();
@@ -65,10 +65,7 @@ this.GetPriority = function()
 	}
 };
 
-this.Enter = function()
-{
-	this.MarkInProgress();
-};
+this.Enter = this.MarkInProgress;
 
 this.Exit = function()
 {
@@ -82,11 +79,11 @@ this.Update = function()
 	pos = this.MapGoal.GetPosition();
 	this.AddAimRequest(Priority.High, "position", pos);
 
-	for(timeout = 100; this.CheckFlagState(); timeout -= 1)
+	for (timeout = 100; this.CheckFlagState(); --timeout)
 	{
 		this.Bot.MoveTowards(pos);
 		yield();
-		if ( timeout < 0 ) {
+		if (timeout < 0) {
 			this.BlackboardDelay(10);
 			Util.ScriptDebugPrint(this.MapGoal.GetName(), "timedout");
 			break;

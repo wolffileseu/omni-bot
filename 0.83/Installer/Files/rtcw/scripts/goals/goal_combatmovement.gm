@@ -33,7 +33,7 @@ this.Initialize = function()
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		if (this.Bot.moveskill < 1 || this.Bot.moveskill > 3 )
 			{ block(0); }

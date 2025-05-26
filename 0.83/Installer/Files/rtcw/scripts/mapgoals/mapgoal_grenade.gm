@@ -63,7 +63,7 @@ this.Render = function(editMode)
 	offset2 = Vector3(0,0,64);
 	stanceOffset = Vector3(0,0,0);
 
-	if (this.TraceEntity && EntityIsValid(this.TraceEntity))
+	if (EntityIsValid(this.TraceEntity))
 	{
 		entPos = GetEntPosition(this.TraceEntity);
 	}
@@ -130,7 +130,7 @@ this.Render = function(editMode)
 		{
 			DrawArrow(goalPos,entPos,COLOR.YELLOW,2);
 		}
-		else if (this.TraceEntity && EntityIsValid(this.TraceEntity))
+		else if (EntityIsValid(this.TraceEntity))
 		{
 			entPos = GetEntPosition(this.TraceEntity);
 		}
@@ -265,7 +265,7 @@ this.Update = function()
 		block(0);
 	}
 
-	while(1)
+	for(;;)
 	{
 		sleep(1);
 
@@ -295,10 +295,7 @@ this.Update = function()
 };
 
 //////////////////////////////////////////////////////////////////////////
-global CreateGui = function(object, guidef)
-{
-};
-//////////////////////////////////////////////////////////////////////////
+
 this.HudDisplay = function(window)
 {
 	this.CreateGuiFromSchema(this.Schema);

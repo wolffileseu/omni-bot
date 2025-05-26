@@ -2,17 +2,17 @@
 this.Name = "CALLARTILLERY";
 this.Parent = "HighLevel";
 this.SkipGetPriorityWhenActive = true;
-this.LimitToWeapon( WEAPON.BINOCULARS );
+this.LimitToWeapon(WEAPON.BINOCULARS);
 
 this.TargetGoalsTable = {};
 this.PlayersTable = {};
 
 this.FindTargetGoal = function(startPos, query)
 {
-	if ( this.QueryGoals(this.TargetGoalsTable, query) )
+	if (this.QueryGoals(this.TargetGoalsTable, query))
 	{
 		botEnt = this.Bot.GetGameEntity();
-		foreach ( goal in this.TargetGoalsTable )
+		foreach (goal in this.TargetGoalsTable)
 		{
 			pos = goal.GetPosition();
 			tr = TraceLine(startPos, Vec3(pos.x, pos.y, pos.z + 20) , null, TRACE.SHOT|TRACE.SMOKEBOMB, botEnt, true);
@@ -26,14 +26,14 @@ this.FindTargetGoal = function(startPos, query)
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		this.Priority = 0;
-		if ( this.Bot.IsWeaponCharged(WEAPON.BINOCULARS))
+		if (this.Bot.IsWeaponCharged(WEAPON.BINOCULARS))
 		{
-			if ( this.QueryGoals(Util.QueryTable,0x312ad48d /* CALLARTILLERY */) )
+			if (this.QueryGoals(Util.QueryTable,0x312ad48d /* CALLARTILLERY */))
 			{
-				foreach ( goal in Util.QueryTable )
+				foreach (goal in Util.QueryTable)
 				{
 					vSource = goal.GetPosition() + Vec3(0,0,60);
 
@@ -76,14 +76,14 @@ this.CallArty = function()
 
 	this.AddAimRequest(Priority.High, "position");
 	this.AimVector = this.TargetGoal.GetPosition();
-	this.AddWeaponRequest(Priority.High, WEAPON.BINOCULARS );
+	this.AddWeaponRequest(WEAPON.BINOCULARS);
 	block(EVENT.AIM_SUCCESS);
-	this.BlockForWeaponChange( WEAPON.BINOCULARS );
+	this.BlockForWeaponChange(WEAPON.BINOCULARS);
 
 	this.CallingArty = true;
 	sleep(0.35); //wait for zoom
 
-	for(i=40; i>0; i-=1)
+	for(i=40; i>0; --i)
 	{
 		this.Bot.PressButton(BTN.AIM);
 		this.Bot.FireWeapon();
@@ -150,7 +150,7 @@ this.Exit = function()
 	this.CallingArty = false;
 };
 
-this.Events[EVENT.WEAPON_FIRE] = function(weaponId, projectileEntity)
+this.Events[EVENT.WEAPON_FIRE] = function()
 {
 	if (this.CallingArty)
 	{

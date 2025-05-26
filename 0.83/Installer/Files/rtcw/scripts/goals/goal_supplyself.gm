@@ -9,7 +9,7 @@ this.DelayBetweenCalls = 15.0;
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		this.Bot.GetMostDesiredAmmo(Util.DesireTable);
 
@@ -29,7 +29,7 @@ this.Update = function()
 		this.Finished();
 	}
 
-	this.AddWeaponRequest(Priority.High, WEAPON.AMMO_PACK);
+	this.AddWeaponRequest(WEAPON.AMMO_PACK);
 	this.BlockForWeaponChange(WEAPON.AMMO_PACK);
 
 	if ( this.Bot.GetVelocity().IsZero() )

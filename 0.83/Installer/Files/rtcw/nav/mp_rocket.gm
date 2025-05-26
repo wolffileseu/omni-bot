@@ -58,12 +58,12 @@ global Map =
 					this.Bot.ReleaseButton(BTN.SPRINT);
 					if (this.Bot.IsWeaponCharged(WEAPON.PANZERFAUST, 0)) {
 						this.AddAimRequest(Priority.High, "facing", Vec3(0,-1,0));
-						this.AddWeaponRequest(Priority.High, WEAPON.PANZERFAUST);
+						this.AddWeaponRequest(WEAPON.PANZERFAUST);
 						this.BlockForWeaponChange(WEAPON.PANZERFAUST);
 						sleep(0.3); // make sure its ready to fire
 						this.Bot.HoldButton(BTN.ATTACK1, 2);
 						sleep(2);
-						this.AddWeaponRequest(Priority.High, WEAPON.AXIS_GRENADE);
+						this.AddWeaponRequest(WEAPON.AXIS_GRENADE);
 						this.Bot.HoldButton(BTN.ATTACK1, 3);
 						this.BlockForWeaponChange(WEAPON.AXIS_GRENADE);
 						sleep(3);
@@ -271,7 +271,10 @@ global OnMapLoad = function()
 	Util.DisableGoal({ "ROUTE_keydel[45]", "ROUTE_westelevator", "ROUTE_eastelevator", "ROUTE_tunnel" });
 	Util.MapDebugPrint("OnMapLoad");
 
-	sleep(35);
+	sleep(22);
+	SetAvailableMapGoals(TEAM.AXIS, false, "DEFEND_flag_[23]");
+	SetAvailableMapGoals(TEAM.AXIS, false, "DEFEND_spawn_[34]");
+	sleep(8);
 	if (!Map.KeyStatus)
 	{
 		SetAvailableMapGoals(TEAM.AXIS, true, "DEFEND_key.*");

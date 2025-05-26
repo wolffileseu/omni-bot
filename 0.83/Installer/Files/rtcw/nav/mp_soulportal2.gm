@@ -186,7 +186,7 @@ global Map =
 					if ( _this.Goto(wpTable.position) == EVENT.PATH_SUCCESS )
 					{
 						_this.AddAimRequest(Priority.High, "facing", wpTable.facing);
-						_this.AddWeaponRequest(Priority.High, WEAPON.ALLY_GRENADE );
+						_this.AddWeaponRequest( WEAPON.ALLY_GRENADE );
 						_this.BlockForWeaponChange( WEAPON.ALLY_GRENADE );
 						_this.Bot.HoldButton(BTN.ATTACK1, 0.5);
 						sleep(3);
@@ -303,14 +303,14 @@ global Map =
 
 	midflag_Axis_Captured = function( trigger )
 	{
-		Util.ClearRoleForGoals( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // allies should focus on it
+		ClearGoalRole( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // allies should focus on it
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SNIPE_alliedroof.*" );
 		Util.MapDebugPrint( "midflag_Axis_Captured" );
 	},
 
 	midflag_Allies_Captured = function( trigger )
 	{
-		Util.SetRoleForGoals( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // limited bots will go for it
+		SetGoalRole( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // limited bots will go for it
 		SetAvailableMapGoals( TEAM.ALLIES, true, "SNIPE_alliedroof.*" );
 		Util.MapDebugPrint( "midflag_Allies_Captured" );
 	},
@@ -468,7 +468,7 @@ global OnMapLoad = function()
 	Util.SetMaxUsers( 1, "PLANT_Guardhouse_Door" );
 	Util.SetMaxUsers( 1, "MOUNTMG42_tr_mg" );
 
-	Util.SetRoleForGoals( "CHECKPOINT_.*", ROLE.ATTACKER2 );
+	SetGoalRole( "CHECKPOINT_.*", ROLE.ATTACKER2 );
 
 	Util.EnableGoal("CHECKPOINT.*", true);
 	SetAvailableMapGoals( TEAM.ALLIES, true, {

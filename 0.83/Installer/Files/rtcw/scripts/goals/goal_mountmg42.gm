@@ -51,7 +51,7 @@ this.Update = function()
 	this.LimitTo(null);
 
 	// wait while the mg42 is mounted by enemy
-	for(timeout = 0; ;timeout+=1)
+	for(timeout = 0; ;++timeout)
 	{
 		owner = this.Bot.GetMountedPlayerOnMG42(this.GoalEnt);
 		if (!owner){ break; }
@@ -116,7 +116,7 @@ this.Update = function()
 			}
 		}
 
-		timeout += 1;
+		++timeout;
 		sleep(1);
 	}
 

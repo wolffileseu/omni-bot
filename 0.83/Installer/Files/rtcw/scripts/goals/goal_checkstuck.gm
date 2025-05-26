@@ -1,7 +1,6 @@
 // This script contains functionality to jump or kill stucked bot
 this.Name = "CheckStuck";
 this.Parent = "LowLevel";
-this.AutoAdd = true;
 this.KillWhenStuck = true;
 this.LogStuckage = false;
 this.Interval = 0.6;
@@ -16,7 +15,7 @@ this.GetPriority = function()
 	stuckPos = null;
 	stucktime = 0;
 
-	while(1)
+	for(;;)
 	{
 		if ( this.JustSpawned ) {
 			for (i = 0; i < 3; i += 1) {
@@ -45,11 +44,11 @@ this.GetPriority = function()
 
 			// is the bot blocked by a player?
 			nearestPlayer = this.Bot.GetNearest(CAT.PLAYER);
-			if ( nearestPlayer && this.Bot.DistanceTo(nearestPlayer) < 65 && this.Bot.InFieldOfView(GetEntPosition(nearestPlayer), 180.0) && stucktime < this.SidestepTimeout)
+			if (nearestPlayer && this.Bot.DistanceTo(nearestPlayer) < 65 && this.Bot.InFieldOfView(GetEntPosition(nearestPlayer), 180) && stucktime < this.SidestepTimeout)
 			{
 				if ( this.Debug ) {
-					DrawEntityAABB(nearestPlayer, 30.0, COLOR.RED);
-					DrawEntityAABB(this.Bot.GetGameEntity(), 30.0, COLOR.BLUE);
+					DrawEntityAABB(nearestPlayer, 30, COLOR.RED);
+					DrawEntityAABB(this.Bot.GetGameEntity(), 30, COLOR.BLUE);
 				}
 					this.Bot.HoldButton(BTN.STRAFE_L, 0.5);
 
@@ -75,11 +74,9 @@ this.GetPriority = function()
 			{
 				//if (this.Bot.Name=="testbot"){ return; }
 
-				if ( this.LogStuckage ) {
-					// write it to the omni-bot log
-					pos = this.Bot.GetPosition();
-					yield();
-					this.StuckageLog(pos);
+				if (this.LogStuckage) {
+					// write it to the log
+					this.StuckageLog();
 				}
 
 				yield();
@@ -91,7 +88,7 @@ this.GetPriority = function()
 			if ( jumpAttempts < this.JumpLimit)
 			{
 				this.Bot.PressButton(BTN.JUMP);
-				jumpAttempts += 1;
+				++jumpAttempts;
 			}
 		}
 		else
@@ -112,21 +109,13 @@ this.OnSpawn = function()
 };
 
 // Note: this will write to ~/omni-bot/et/user. the file will need to be copied to ~/omni-bot/et/scripts
-this.StuckageLog = function(pos)
+this.StuckageLog = function()
 {
 	gmfile = File();
-	fileName = GetMapName() + "_stuckages.gm";
-
-	if ( !System.FileExists(fileName) ) {
-		assert( gmfile.Open( fileName, "text", false ) );
-		head = "global Stuckages = {};";
-		assert( gmfile.Write( head, System.NewLine ) );
+	assert(gmfile.Open(GetMapName() + "_stuckages.gm", "text", false, true));
+	if (gmfile.FileSize() == 0) {
+		assert(gmfile.Write("global Stuckages = {};", System.NewLine));
 	}
-	else {
-		assert( gmfile.Open( fileName, "text", false, true ) );
-	}
-
-	str = "Stuckages[ tableCount(Stuckages) ] = Vector3("+pos.x +","+pos.y+","+pos.z+");";
-	assert( gmfile.Write( str, System.NewLine ) );
+	assert(gmfile.Write("Stuckages[tableCount(Stuckages)] = Vec3" + this.Bot.GetPosition() + ";", System.NewLine));
 	gmfile.Close();
 };

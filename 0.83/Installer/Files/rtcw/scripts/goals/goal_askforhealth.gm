@@ -33,11 +33,10 @@ this.Initialize = function()
 
 this.Enter = function()
 {
-	bbRecord = {
+	Blackboard.PostRecord(BB.PICKUPHEALTH, {
 		Owner = this.BlackboardId,
 		Target = this.BlackboardId,
-	};
-	Blackboard.PostRecord(BB.PICKUPHEALTH, bbRecord);
+	});
 
 	this.AddFinishCriteria(this.Pack, "deleted");
 	this.AddFinishCriteria(this.Bot.GetGameEntity(), "health greaterthan", this.HealthThreshold);
@@ -46,14 +45,13 @@ this.Enter = function()
 this.Exit = function()
 {
 	this.Pack = null;
-	this.ReleaseAimRequest();
 };
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
-		this.Counter += 1;
+		++this.Counter;
 
 		if( (this.Bot.Health < this.HealthThreshold && this.Bot.Health > 0) || this.Debug )
 		{

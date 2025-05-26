@@ -119,9 +119,9 @@ this.UpdateDynamite = function()
 	coverTimeout = 25; // note: if it takes >= 5 seconds to get to the cover spot, this will not be reached.
 	goalPriority = this.Priority;
 
-	while(1)
+	for(;;)
 	{
-		if ( !this.GoalEntity || !EntityIsValid(this.GoalEntity) || this.Bot.GetDestroyableState(this.GoalEntity) < 1 )
+		if ( !EntityIsValid(this.GoalEntity) || this.Bot.GetDestroyableState(this.GoalEntity) < 1 )
 		{
 			this.Finished();
 		}
@@ -141,7 +141,7 @@ this.UpdateDynamite = function()
 						state = this.Bot.GetExplosiveState(ent);
 						if (state == 1) { break; }
 						if (state == 0) {
-							activeDyno += 1;
+							++activeDyno;
 							if (!this.ExplosiveEntity) {
 								this.ExplosiveEntity = ent;
 							}
@@ -180,7 +180,7 @@ this.UpdateDynamite = function()
 
 				goalPos = this.MapGoal.GetPosition();
 				this.AddAimRequest(Priority.High, "position", Vector3(goalPos.x, goalPos.y, this.Bot.GetPosition().z - 30));
-				this.AddWeaponRequest(Priority.High, WEAPON.DYNAMITE );
+				this.AddWeaponRequest(WEAPON.DYNAMITE );
 				this.BlockForWeaponChange( WEAPON.DYNAMITE );
 				sleep(0.2);
 				this.Bot.PressButton(BTN.ATTACK1);
@@ -200,7 +200,7 @@ this.UpdateDynamite = function()
 					this.Bot.HoldButton(BTN.CROUCH, 99);
 				}
 
-				this.AddWeaponRequest(Priority.High, WEAPON.PLIERS );
+				this.AddWeaponRequest(WEAPON.PLIERS );
 				this.BlockForWeaponChange( WEAPON.PLIERS );
 
 				while ( EntityIsValid(this.ExplosiveEntity) && this.Bot.GetExplosiveState(this.ExplosiveEntity) == 1 )
@@ -221,7 +221,7 @@ this.UpdateDynamite = function()
 			}
 			case this.COVER_DYNAMITE:
 			{
-				if ( !this.ExplosiveEntity || !EntityIsValid(this.ExplosiveEntity) || this.Bot.GetExplosiveState(this.ExplosiveEntity) != 0 )
+				if ( !EntityIsValid(this.ExplosiveEntity) || this.Bot.GetExplosiveState(this.ExplosiveEntity) != 0 )
 				{
 					this.Finished();
 				}
@@ -285,7 +285,7 @@ this.UpdateDynamite = function()
 
 				sleep(1);
 
-				coverTimeout -= 1;
+				--coverTimeout;
 				if ( coverTimeout <= 0 ) {
 					if ( delay > 0) {
 						this.BlackboardDelay(delay);

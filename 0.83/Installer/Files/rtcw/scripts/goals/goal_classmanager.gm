@@ -2,7 +2,6 @@
 
 this.Name = "ClassManager";
 this.Parent = "LowLevel";
-this.AutoAdd = true;
 this.AlwaysRecieveEvents = false;
 this.OnlyWhileDead = true; // if set to false, they will /kill for class changes
 this.Interval = 6; // time between checks (when OnlyWhileDead is false)
@@ -10,7 +9,7 @@ this.CanActivate = false; // delay activation even with maxbots -1
 
 this.GetPriority = function()
 {
-	if ( TestMapOn || DisableClassManager || TestBot || Server.CountedPlayers < Server.MaxBots || !this.CanActivate ) {
+	if (TestMapOn || DisableClassManager || TestBot || Server.CountedPlayers < Server.MaxBots || !this.CanActivate) {
 		sleep(this.Interval);
 		this.CanActivate = true;
 		return;
@@ -25,10 +24,10 @@ this.GetPriority = function()
 
 this.Update = function()
 {
-	while(1)
+	for(;;)
 	{
 		// cs: let them /kill in warmup so transitions from snipe or panzer maps wont take forever for correct classes to be used
-		if ( !this.OnlyWhileDead || GetGameState() != "Playing" ) {
+		if (!this.OnlyWhileDead || GetGameState() != "Playing") {
 			this.CheckForClassChange();
 		}
 		
@@ -38,7 +37,7 @@ this.Update = function()
 
 this.Exit = function()
 {
-	if ( this.OnlyWhileDead && GetGameState() == "Playing" ) {
+	if (this.OnlyWhileDead && GetGameState() == "Playing") {
 		this.CheckForClassChange();
 	}
 };
@@ -46,7 +45,7 @@ this.Exit = function()
 this.CheckForClassChange = function()
 {
 	// cs: added temp test for timestamp to limit repeated /kills reported by blindman
-	if (this.Bot.crucialClass || (this.Bot.classChangeTime && GetTime() - this.Bot.classChangeTime < 20) ) {
+	if (this.Bot.crucialClass || (this.Bot.classChangeTime && GetTime() - this.Bot.classChangeTime < 20)) {
 		// don't change crucial class which has been set by role manager
 		return;
 	}

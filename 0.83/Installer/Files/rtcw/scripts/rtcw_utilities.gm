@@ -10,7 +10,7 @@ Util.PlayerClassTable =
 };
 
 // offset for converted waypoint goals
-Util.WaypointGoalOffset = Vector3(0,0,-24);
+Util.WaypointGoalOffset = Vec3(0,0,-24);
 
 Util.AllTeams = ( 1 << TEAM.AXIS ) | ( 1 << TEAM.ALLIES );
 
@@ -126,7 +126,7 @@ member CountClass = function( team, class )
 	foreach( bot in BotTable )
 	{
 		if ( bot.GetTeam() == team && bot.GetClass() == class ) {
-			count += 1;
+			++count;
 		}
 	}
 
@@ -149,7 +149,7 @@ member ChangeClass = function( team, originalclass, newclass, revert, maxbots )
 
 			if ( bot.PrimaryClass == originalclass && !revert && !bot.ClassChanged ) {
 				if ( numbots < maxbots ) {
-					numbots += 1;
+					++numbots;
 					bot.ClassChanged = true;
 					bot.ChangeClass( newclass );
 				}
@@ -205,9 +205,9 @@ member SetPrimaryGoals = function( priority )
 	Map.Debug = 0;
 	global DEBUG_MAP_SCRIPTS = false;
 	SetGoalPriority( "CAPPOINT_.*", priority );
-	SetGoalPriority( "PLANT_.*", priority - 0.08f );
-	SetGoalPriority( "CHECKPOINT_.*", priority - 0.1f );
-	SetGoalPriority( "FLAG_.*", priority - 0.15f, 0, 0, true );
+	SetGoalPriority( "PLANT_.*", priority - 0.08 );
+	SetGoalPriority( "CHECKPOINT_.*", priority - 0.1 );
+	SetGoalPriority( "FLAG_.*", priority - 0.15, 0, 0, true );
 	SetGoalPriority( "FLAGRETURN_.*", 1.0, 0, 0, true  );
 	Map.Debug = oldDebug;
 	global DEBUG_MAP_SCRIPTS = oldScripts;
@@ -246,7 +246,7 @@ member ChangeSpawn = function( team, spawn, numbots )
 			bot.ChangeSpawnPoint( spawn );
 			bot.ChangedSpawn = true;
 
-			c += 1;
+			++c;
 			if ( numbots && c >= numbots ) {
 				return;
 			}
@@ -269,7 +269,7 @@ member ChangeSpawnNoDefenders = function( team, spawn, numbots )
 			bot.ChangeSpawnPoint( spawn );
 			bot.ChangedSpawn = true;
 
-			c += 1;
+			++c;
 			if ( numbots && c >= numbots ) {
 				return;
 			}
@@ -411,11 +411,11 @@ member IsTeamDead = function( team, minbots, class )
 {
 	numalive = 0;
 	// loop through the reserved player ents since there is no team table stored
-	for ( i = 0; i < 64; i = i + 1 )
+	for ( i = 0; i < 64; ++i )
 	{
 		if ( EntityIsValid(i) && GetEntTeam( i ) == team && !GetEntFlags( i, ENTFLAG.DEAD, ENTFLAG.LIMBO )
 			 && (!class || GetEntClass(i)==class) ) {
-			numalive += 1;
+			++numalive;
 			if ( !minbots ) {
 				return false;
 			}
@@ -443,8 +443,8 @@ member TraceArty = function( usePlayer )
 	playerEnt = GetLocalEntity();
 	playerPos = GetEntPosition(playerEnt);
 	foundGoal = null;
-	sourceOffset = Vector3(0,0,60); // 60 is what the CALLARTILLERY goal uses
-	targetOffset = Vector3(0,0,20);
+	sourceOffset = Vec3(0,0,60); // 60 is what the CALLARTILLERY goal uses
+	targetOffset = Vec3(0,0,20);
 
 	if ( !usePlayer )
 	{
@@ -470,7 +470,7 @@ member TraceArty = function( usePlayer )
 		else
 		{
 			print("RTCWUtil.TraceArty: Tracing from", GetEntName(playerEnt), "^2");
-			sourcePos = playerPos - Vector3(0,0,24);
+			sourcePos = playerPos - Vec3(0,0,24);
 		}
 
 		targets = Util.GoalTable("ARTILLERY.*");
@@ -513,14 +513,14 @@ member KillEntities = function(ents)
 	x = 0;
 	foreach ( obj in ents ) {
 		if ( IsTable(obj) ) {
-			for ( i = obj[0]; i <= obj[1]; i += 1 ) {
+			for ( i = obj[0]; i <= obj[1]; ++i ) {
 				EntityKill(i);
-				x += 1;
+				++x;
 			}
 		}
 		else {
 			EntityKill(obj);
-			x += 1;
+			++x;
 		}
 	}
 
@@ -534,7 +534,7 @@ member ToggleFlag = function( goal, time )
 	count = 1;
 	while ( 1 )
 	{
-		count += 1;
+		++count;
 		if ( count % time == 0 )
 		{
 			SetAvailableMapGoals( TEAM.ALLIES, Map.FlagStatus != TEAM.ALLIES, goal );
@@ -572,7 +572,7 @@ member GetClosestAlly = function (bot, class, distLimit)
 		rtn.dist = distLimit;
 	}
 
-	for ( i = 0; i < 64; i += 1 ) {
+	for ( i = 0; i < 64; ++i ) {
 		ent = GetGameEntityFromId(i);
 		if ( ent && GetEntTeam(ent) == botTeam && ent != bot.GetGameEntity() && !GetEntFlags(ent, ENTFLAG.DEAD) ) {
 			if ( !class || GetEntClass(i) == class ) {

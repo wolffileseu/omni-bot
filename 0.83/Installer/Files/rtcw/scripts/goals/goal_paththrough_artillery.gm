@@ -84,7 +84,7 @@ this.FindTarget = function()
 		}
 
 		temp[ i ] = mg;
-		i += 1;
+		++i;
 	}
 
 	tc = tableCount( temp );
@@ -162,14 +162,14 @@ this.Update = function()
 
 	// call the artillery
 	this.AddAimRequest( Priority.High, "position", this.TargetGoalPosition );
-	this.AddWeaponRequest( Priority.High, WEAPON.BINOCULARS );
+	this.AddWeaponRequest(WEAPON.BINOCULARS);
 	this.BlockForWeaponChange( WEAPON.BINOCULARS );
 
 	timeout = 21;
 	this.Bot.HoldButton( BTN.AIM, 1.1 ); // 20 fps
 	while ( timeout > 0 && this.Bot.IsWeaponCharged( WEAPON.BINOCULARS ) )
 	{
-		timeout -= 1;
+		--timeout;
 
 		// keep trying every 3 frames
 		if ( timeout % 3 == 0 ) {
@@ -192,4 +192,3 @@ this.Update = function()
 	// Finish the state.
 	this.Finished();
 };
-

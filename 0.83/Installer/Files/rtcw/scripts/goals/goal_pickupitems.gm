@@ -3,7 +3,6 @@
 this.Name = "PickupItems";
 this.Parent = "HighLevel";
 this.AlwaysRecieveEvents = true;
-this.AutoAdd = true;
 this.PickupPriority = 0.9;
 this.Range = 200;
 this.Frequency = 7; // 1 to 10, 0 to disable
@@ -12,7 +11,7 @@ this.LimitToNoEntityFlag(ENTFLAG.INWATER, ENTFLAG.UNDERWATER);
 
 this.Initialize = function()
 {
-	watchParams = {
+	this.WatchForEntityCategory({
 		Radius = this.Range,
 		Category = CAT.PICKUP,
 		
@@ -20,10 +19,7 @@ this.Initialize = function()
 		// it's reasonable since this is limited to a 200 radius. this should
 		// improve the deliver supplies goal success rate.
 		//RequireLOS = TRACE.VISIBLE,
-	};
-	this.WatchForEntityCategory(watchParams);
-
-	Util.ScriptDebugPrint(this.Name, "initialized");
+	});
 };
 
 this.Enter = function()
@@ -111,15 +107,15 @@ this.NeedsAmmo = function(ent, entCat)
 
 this.GetPickupCategory = function(ent)
 {
-	if ( GetEntCategory(ent, CAT.PICKUP_HEALTH) == 1 ) {
+	if (GetEntCategory(ent, CAT.PICKUP_HEALTH)) {
 		return CAT.PICKUP_HEALTH;
 	}
 
-	if ( GetEntCategory(ent, CAT.PICKUP_WEAPON) == 1 ) {
+	if (GetEntCategory(ent, CAT.PICKUP_WEAPON)) {
 		return CAT.PICKUP_WEAPON;
 	}
 
-	if ( GetEntCategory(ent, CAT.PICKUP_AMMO) == 1 ) {
+	if (GetEntCategory(ent, CAT.PICKUP_AMMO)) {
 		return CAT.PICKUP_AMMO;
 	}
 

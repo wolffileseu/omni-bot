@@ -42,7 +42,7 @@ this.EvaluateBotEngineer = function(ent)
 
 this.GetPriority = function()
 {
-	while(1)
+	for(;;)
 	{
 		engineer = this.Bot.GetNearestAlly(CAT.PLAYER, CLASS.ENGINEER);
 
@@ -68,7 +68,7 @@ this.Enter = function()
 
 this.Update = function()
 {
-	while(1)
+	for(;;)
 	{
 		switch(this.State)
 		{

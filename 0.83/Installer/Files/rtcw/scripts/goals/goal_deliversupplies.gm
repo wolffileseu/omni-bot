@@ -97,7 +97,7 @@ this.Exit = function()
 
 this.DynamicGoto = function()
 {
-	if(this.Goto(this.TargetPosition, 128.f) == EVENT.PATH_SUCCESS)
+	if(this.Goto(this.TargetPosition, 128) == EVENT.PATH_SUCCESS)
 	{
 		this.OnTarget = true;
 	}
@@ -111,7 +111,7 @@ this.Update = function()
 {
 	counter = 0;
 
-	while(1)
+	for(;;)
 	{
 		entPos = GetEntPosition(this.TargetEntity);
 
@@ -169,7 +169,7 @@ this.Update = function()
 			}
 
 			this.TimeOnTarget = 0;
-			while(1)
+			for(;;)
 			{
 				switch(this.State)
 				{
@@ -240,7 +240,7 @@ this.UpdateDeliverPacks = function()
 			this.Bot.MoveTowards(pos);
 			if ( this.Bot.GetCurrentWeapon() != this.Supply )
 			{
-				this.AddWeaponRequest(Priority.High, this.Supply);
+				this.AddWeaponRequest(this.Supply);
 			}
 			else
 			{
@@ -311,7 +311,7 @@ this.UpdateKillTarget = function()
 
 this.UpdateSwitchToSyringe = function()
 {
-	this.AddWeaponRequest(Priority.High, WEAPON.SYRINGE);
+	this.AddWeaponRequest(WEAPON.SYRINGE);
 	this.BlockForWeaponChange(WEAPON.SYRINGE);
 	this.State = this.REVIVE_TARGET;
 };

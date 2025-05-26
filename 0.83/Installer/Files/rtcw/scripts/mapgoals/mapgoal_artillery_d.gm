@@ -20,7 +20,6 @@ this.UpgradeVersion = function(Props)
 		Props.Version = 1;
 
 		this.SetPosition(this.GetPosition() + Util.WaypointGoalOffset);
-		this.SetBounds(Vec3(-5,-5,0),Vec3(5,5,96));
 	}
 	else if(Props.Version == this.Version)
 	{
