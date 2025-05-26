@@ -88,7 +88,7 @@ this.Update = function()
 				}
 				
 				this.AddAimRequest( Priority.High, "position", GetEntEyePosition( nearest ) );
-				this.AddWeaponRequest( Priority.High, WEAPON.SMOKE_GRENADE );
+				this.AddWeaponRequest( WEAPON.SMOKE_GRENADE );
 				
 				frameCounter = 0;
 				while ( this.Bot.IsWeaponCharged( WEAPON.SMOKE_GRENADE, 0 ) )
@@ -116,7 +116,7 @@ this.Update = function()
 				if ( this.Debug ) {
 					print( "panzer" );
 				}
-				this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
+				this.AddWeaponRequest( WEAPON.PANZERFAUST );
 				this.AddAimRequest( Priority.High, "position", GetEntEyePosition( nearest ) );
 
 				frameCounter = 0;
@@ -145,7 +145,7 @@ this.Update = function()
 				if ( this.Debug ) {
 					print( "flamer" );
 				}
-				this.AddWeaponRequest( Priority.High, WEAPON.FLAMETHROWER );
+				this.AddWeaponRequest( WEAPON.FLAMETHROWER );
 				this.AddAimRequest( Priority.High, "position", GetEntEyePosition( nearest ) );
 
 				while ( this.Bot.HasAmmo( WEAPON.FLAMETHROWER ) )
@@ -164,7 +164,7 @@ this.Update = function()
 				if ( this.Debug ) {
 					print( "Nade" );
 				}
-				this.AddWeaponRequest( Priority.High, grenadeWeapon );
+				this.AddWeaponRequest( grenadeWeapon );
 
 				frameCounter = 0;
 				while ( this.Bot.HasAmmo( grenadeWeapon ) )
@@ -199,7 +199,7 @@ this.Update = function()
 					print( "BestWeapon:" + Util.WeaponName( bestWeapon ) );
 				}
 				this.ReleaseWeaponRequest();
-				this.AddWeaponRequest( Priority.High, bestWeapon );
+				this.AddWeaponRequest( bestWeapon );
 				while ( this.Bot.HasAmmo( bestWeapon ) )
 				{
 					if ( this.Debug ) {

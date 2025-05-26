@@ -81,7 +81,7 @@ this.Update = function()
 	}
 
 	this.AddAimRequest( Priority.High, "facing", facing );
-	this.AddWeaponRequest( Priority.High, WEAPON.SMOKE_GRENADE );
+	this.AddWeaponRequest( WEAPON.SMOKE_GRENADE );
 	this.BlockForWeaponChange( WEAPON.SMOKE_GRENADE );
 	this.Bot.HoldButton( BTN.ATTACK1, 0.5 );
 	sleep( 1 );

@@ -57,6 +57,7 @@ Added rollcall max ammo and clip
 Added print_filesystem parameters path and expression
 Changed sag is sorted by default priority and name
 Changed some waypoint commands work even when waypoint_view is off
+Improved warpto parameter can be goals regular expression
 Fixed waypoint_shownames expression
 Fixed crash if command had more than 64 parameters
 Removed skip, skipreset

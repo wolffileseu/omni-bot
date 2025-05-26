@@ -31,7 +31,7 @@ global Map =
 						if ( _this.Bot.IsWeaponCharged( WEAPON.PANZERFAUST, 0 ) ) {
 							_this.Bot.HoldButton( BTN.CROUCH, 20 );
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
+							_this.AddWeaponRequest( WEAPON.PANZERFAUST );
 							_this.BlockForWeaponChange( WEAPON.PANZERFAUST );
 							sleep( 0.3 ); // make sure its ready to fire
 							_this.Bot.HoldButton( BTN.ATTACK1, 2 );
@@ -59,7 +59,7 @@ global Map =
 						if ( _this.Bot.IsWeaponCharged( WEAPON.PANZERFAUST, 0 ) ) {
 							_this.Bot.HoldButton( BTN.CROUCH, 20 );
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
+							_this.AddWeaponRequest( WEAPON.PANZERFAUST );
 							_this.BlockForWeaponChange( WEAPON.PANZERFAUST );
 							sleep( 0.3 ); // make sure its ready to fire
 							_this.Bot.HoldButton( BTN.ATTACK1, 2 );

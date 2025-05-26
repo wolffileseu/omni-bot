@@ -52,7 +52,7 @@ global Map =
 				sleep( 1 );
 				if ( Map.gratebot < 1 && !Map.Grate_Destroyed ) {
 					Map.gratebot += 1;
-					_this.AddWeaponRequest( Priority.High, WEAPON.KNIFE );
+					_this.AddWeaponRequest( WEAPON.KNIFE );
 					_this.BlockForWeaponChange( WEAPON.KNIFE );
 					_this.Bot.HoldButton( BTN.ATTACK1, 3 );
 				}

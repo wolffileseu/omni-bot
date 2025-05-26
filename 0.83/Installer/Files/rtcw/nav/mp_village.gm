@@ -51,7 +51,7 @@ global Map =
 						_this.Bot.ReleaseButton( BTN.SPRINT );
 						if ( _this.Bot.IsWeaponCharged( WEAPON.PANZERFAUST, 0 ) ) {
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
+							_this.AddWeaponRequest( WEAPON.PANZERFAUST );
 							_this.BlockForWeaponChange( WEAPON.PANZERFAUST );
 							sleep( 0.3 ); // make sure its ready to fire
 							_this.Bot.HoldButton( BTN.ATTACK1, 2 );
@@ -78,13 +78,13 @@ global Map =
 							_this.Bot.HoldButton( BTN.CROUCH, 10 );
 							sleep(8);
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.SMOKE_GRENADE );
+							_this.AddWeaponRequest( WEAPON.SMOKE_GRENADE );
 							_this.BlockForWeaponChange( WEAPON.SMOKE_GRENADE );
 							//sleep(0.3); // make sure its ready to fire
 
 							_this.Bot.HoldButton( BTN.ATTACK1, 0.5 );
 							sleep( 1 );
-							_this.AddWeaponRequest( Priority.High, WEAPON.MP40 );
+							_this.AddWeaponRequest( WEAPON.MP40 );
 							_this.Bot.MaxViewDistance = Map.ViewDistance;
 							wpTable = Util.WpNameInfo( "bridge_as_hide" );
 							if ( _this.Goto( wpTable.position ) == EVENT.PATH_SUCCESS ) {
@@ -111,7 +111,7 @@ global Map =
 					if ( _this.Goto( wpTable.position ) == EVENT.PATH_SUCCESS ) {
 						if ( _this.Bot.IsWeaponCharged( WEAPON.SMOKE_GRENADE, 0 ) ) {
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.SMOKE_GRENADE );
+							_this.AddWeaponRequest( WEAPON.SMOKE_GRENADE );
 							_this.BlockForWeaponChange( WEAPON.SMOKE_GRENADE );
 							//sleep(0.3); // make sure its ready to fire
 							_this.Bot.HoldButton( BTN.ATTACK1, 0.5 );

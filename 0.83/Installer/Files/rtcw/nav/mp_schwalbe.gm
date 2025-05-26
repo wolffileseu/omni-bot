@@ -61,11 +61,11 @@ global Map =
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
 
 							if ( _this.Bot.GetTeam() == TEAM.ALLIES ) {
-								_this.AddWeaponRequest( Priority.High, WEAPON.ALLY_GRENADE );
+								_this.AddWeaponRequest( WEAPON.ALLY_GRENADE );
 								_this.BlockForWeaponChange( WEAPON.ALLY_GRENADE );
 							} else
 							{
-								_this.AddWeaponRequest( Priority.High, WEAPON.AXIS_GRENADE );
+								_this.AddWeaponRequest( WEAPON.AXIS_GRENADE );
 								_this.BlockForWeaponChange( WEAPON.AXIS_GRENADE );
 							}
 
@@ -79,7 +79,7 @@ global Map =
 						Map.Duct_Bot_Count += 1;
 						if ( _this.Goto( wpTable.position ) == EVENT.PATH_SUCCESS ) {
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.KNIFE );
+							_this.AddWeaponRequest( WEAPON.KNIFE );
 							_this.BlockForWeaponChange( WEAPON.KNIFE );
 
 							while ( !Map.Duct_Destroyed )

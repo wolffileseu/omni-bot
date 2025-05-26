@@ -89,7 +89,7 @@ global Map =
 						_this.Bot.ReleaseButton( BTN.SPRINT );
 						if ( _this.Bot.IsWeaponCharged( WEAPON.PANZERFAUST, 0 ) ) {
 							_this.AddAimRequest( Priority.High, "facing", wpTable.facing );
-							_this.AddWeaponRequest( Priority.High, WEAPON.PANZERFAUST );
+							_this.AddWeaponRequest( WEAPON.PANZERFAUST );
 							_this.BlockForWeaponChange( WEAPON.PANZERFAUST );
 							sleep( 4 ); // Wait for axis to arrive
 							_this.Bot.SayVoice( VOICE.FIRE_IN_THE_HOLE );
