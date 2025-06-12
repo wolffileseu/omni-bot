@@ -74,7 +74,6 @@ namespace KEYVALUEINI
 
 #if defined(__linux__) || ((defined __MACH__) && (defined __APPLE__))
 #   define _stricmp strcasecmp
-#   define _vsnprintf(a,b,c,d) vsnprintf((a),(b),(c),(d))
 #endif
 
 	class FILE_INTERFACE
@@ -379,13 +378,8 @@ namespace KEYVALUEINI
 		va_start(ap, fmt);
 
 		char buffer[2048];
+		vsnprintf(buffer, 2048, fmt, ap);
 		buffer[2047] = 0;
-
-#ifdef __linux__
-		vsnprintf(buffer,2047, fmt, ap);
-#else
-		_vsnprintf(buffer,2047, fmt, ap);
-#endif
 
 		va_end(ap);
 		if ( fph )

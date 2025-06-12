@@ -1704,14 +1704,11 @@ void DebugWindow_s::Log_s::AddLine(eMessageType _type, const char* _msg, ...)
 		if(_type==kScript && !mCbScript->isSelected())
 			return;
 
-		char buffer[8192] = {0};
+		char buffer[8192];
 		va_list list;
 		va_start(list, _msg);
-#ifdef WIN32
-		_vsnprintf(buffer, 8192, _msg, list);	
-#else
 		vsnprintf(buffer, 8192, _msg, list);
-#endif
+		buffer[8191] = 0;
 		va_end(list);
 
 		String s = buffer;
@@ -2030,14 +2027,11 @@ void DebugWindow_s::Console_s::AddLine(const char* _msg, ...)
 {
 	if(mOutput)
 	{
-		char buffer[8192] = {0};
+		char buffer[8192];
 		va_list list;
 		va_start(list, _msg);
-#ifdef WIN32
-		_vsnprintf(buffer, 8192, _msg, list);	
-#else
 		vsnprintf(buffer, 8192, _msg, list);
-#endif
+		buffer[8191] = 0;
 		va_end(list);
 
 		String s = buffer;

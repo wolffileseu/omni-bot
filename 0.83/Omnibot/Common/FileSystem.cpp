@@ -671,14 +671,11 @@ bool File::WriteStringPk(const String& _str)
 
 void File::Printf(const char* _msg, ...)
 {
-	static char buffer[8192] = {0};
+	static char buffer[8192];
 	va_list list;
 	va_start(list, _msg);
-#ifdef WIN32
-	_vsnprintf(buffer, 8192, _msg, list);	
-#else
 	vsnprintf(buffer, 8192, _msg, list);
-#endif
+	buffer[8191] = 0;
 	va_end(list);
 
 	WriteString(buffer);

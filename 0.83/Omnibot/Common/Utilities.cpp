@@ -293,11 +293,8 @@ namespace Utils
 	{
 		va_list list;
 		va_start(list, _msg);
-#ifdef WIN32
-		_vsnprintf(_outbuffer, _buffsize, _msg, list);	
-#else
 		vsnprintf(_outbuffer, _buffsize, _msg, list);
-#endif
+		_outbuffer[_buffsize - 1] = 0;
 		va_end(list);
 		return _outbuffer;
 	}
@@ -315,14 +312,11 @@ namespace Utils
 	void OutputDebug(eMessageType _type, const char* _msg, ...)
 	{
 		enum { BufferSize=2048 };
-		char buffer[BufferSize] = {0};
+		char buffer[BufferSize];
 		va_list list;
 		va_start(list, _msg);
-#ifdef WIN32
-		_vsnprintf(buffer, BufferSize, _msg, list);	
-#else
 		vsnprintf(buffer, BufferSize, _msg, list);
-#endif
+		buffer[BufferSize - 1] = 0;
 		va_end(list);
 		OutputDebugBasic(_type,buffer);
 	}
@@ -989,11 +983,8 @@ namespace Utils
 			char buffer[BufferSize];
 			va_list list;
 			va_start(list, _msg);
-#ifdef WIN32
-			_vsnprintf(buffer, BufferSize, _msg, list);	
-#else
 			vsnprintf(buffer, BufferSize, _msg, list);
-#endif
+			buffer[BufferSize - 1] = 0;
 			va_end(list);
 
 #ifdef WIN32			
@@ -1024,11 +1015,8 @@ namespace Utils
 			char buffer[BufferSize];
 			va_list list;
 			va_start(list, _msg);
-#ifdef WIN32
-			_vsnprintf(buffer, BufferSize, _msg, list);	
-#else
 			vsnprintf(buffer, BufferSize, _msg, list);
-#endif
+			buffer[BufferSize - 1] = 0;
 			va_end(list);
 
 			char strBigBuffer[BufferSize+256];
@@ -1582,11 +1570,8 @@ va::va(const char* msg, ...)
 {
 	va_list list;
 	va_start(list, msg);
-#ifdef WIN32
-	_vsnprintf(buffer, BufferSize, msg, list);	
-#else
 	vsnprintf(buffer, BufferSize, msg, list);
-#endif
+	buffer[BufferSize - 1] = 0; // ensure null termination on Visual Studio 2013
 	va_end(list);
 }
 
@@ -1601,11 +1586,8 @@ filePath::filePath(const char* msg, ...)
 {
 	va_list list;
 	va_start(list, msg);
-#ifdef WIN32
-	_vsnprintf(buffer, BufferSize, msg, list);	
-#else
 	vsnprintf(buffer, BufferSize, msg, list);
-#endif
+	buffer[BufferSize - 1] = 0;
 	va_end(list);
 	FixPath();
 }
@@ -2183,14 +2165,11 @@ bool LimitWeapons::IsAllowed(Client *_client)
 
 void ErrorObj::AddInfo(const char* _msg, ...)
 {
-	char buffer[8192] = {0};
+	char buffer[8192];
 	va_list list;
 	va_start(list, _msg);
-#ifdef WIN32
-	_vsnprintf(buffer, 8192, _msg, list);	
-#else
 	vsnprintf(buffer, 8192, _msg, list);
-#endif
+	buffer[8191] = 0;
 	va_end(list);
 
 	mInfo.push_back(buffer); 
@@ -2198,14 +2177,11 @@ void ErrorObj::AddInfo(const char* _msg, ...)
 
 void ErrorObj::AddError(const char* _msg, ...) 
 { 
-	char buffer[8192] = {0};
+	char buffer[8192];
 	va_list list;
 	va_start(list, _msg);
-#ifdef WIN32
-	_vsnprintf(buffer, 8192, _msg, list);	
-#else
 	vsnprintf(buffer, 8192, _msg, list);
-#endif
+	buffer[8191] = 0;
 	va_end(list);
 
 	mErrors.push_back(buffer); 

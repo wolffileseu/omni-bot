@@ -129,7 +129,6 @@ const char *Omnibot_FixPath(const char *_path)
 #include <stdarg.h>
 #include <dlfcn.h>
 
-#define _vsnprintf vsnprintf
 #define GetProcAddress dlsym
 #define FreeLibrary dlclose
 #define HINSTANCE void*
@@ -153,20 +152,12 @@ const char *OB_VA( const char* _msg, ...)
 
 	va_list list;
 	va_start(list, _msg);
-	_vsnprintf(pNextBuffer, sizeof(buffers[iCurrentBuffer].buffer), _msg, list);	
+	vsnprintf(pNextBuffer, BUF_SIZE, _msg, list);
+	pNextBuffer[BUF_SIZE - 1] = 0;
 	va_end(list);
 
 	iCurrentBuffer = (iCurrentBuffer+1)%iNumBuffers;
 	return pNextBuffer;
-}
-
-int OB_VA_OWNBUFFER(char *_buffer, int _buffersize, const char* _msg, ...)
-{
-	va_list list;
-	va_start(list, _msg);
-	const int ret = _vsnprintf(_buffer, _buffersize, _msg, list);	
-	va_end(list);
-	return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////	
