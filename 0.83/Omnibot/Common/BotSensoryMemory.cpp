@@ -228,7 +228,6 @@ namespace AiState
 				if(!pRecord->m_TargetInfo.m_EntityClass)
 					return;
 
-				pRecord->m_TargetInfo.m_EntityCategory.ClearAll();
 				InterfaceFuncs::GetEntityCategory(_sourceent, pRecord->m_TargetInfo.m_EntityCategory);
 
 				// Get the entity position.
@@ -282,22 +281,16 @@ namespace AiState
 		}
 
 		// Update data that changes.
-		ti.m_EntityFlags.ClearAll();
-		ti.m_EntityPowerups.ClearAll();
 		ti.m_EntityClass = InterfaceFuncs::GetEntityClass(ent);
 
 		Vector3f vNewPosition;
-		if(!InterfaceFuncs::GetEntityFlags(ent, ti.m_EntityFlags))
-			return false;
-		if(!InterfaceFuncs::GetEntityPowerUps(ent, ti.m_EntityPowerups))
-			return false;
-		if(!EngineFuncs::EntityPosition(ent, vNewPosition))
-			return false;
-		if(!InterfaceFuncs::GetEntityCategory(ent, ti.m_EntityCategory))
+		if(!InterfaceFuncs::GetEntityFlags(ent, ti.m_EntityFlags)
+			|| !InterfaceFuncs::GetEntityPowerUps(ent, ti.m_EntityPowerups)
+			|| !EngineFuncs::EntityPosition(ent, vNewPosition)
+			|| !InterfaceFuncs::GetEntityCategory(ent, ti.m_EntityCategory))
 			return false;
 
-		const bool bIsStatic = ti.m_EntityCategory.CheckFlag(ENT_CAT_STATIC);
-		const bool bShootable = ti.m_EntityCategory.CheckFlag(ENT_CAT_SHOOTABLE);
+		const bool bIsStatic = ti.m_EntityCategory.CheckFlag(ENT_CAT_STATIC); //movers are static (tank)
 
 		//////////////////////////////////////////////////////////////////////////
 		Vector3f vTracePosition = vNewPosition;
@@ -326,20 +319,13 @@ namespace AiState
 				//const bool bNewlySeen = (IGame::GetTime() - _record.GetTimeLastSensed()) > m_MemorySpan;
 
 				// Still do the raycast on shootable statics
-				if(bIsStatic)
+				if(bIsStatic && ti.m_EntityCategory.CheckFlag(ENT_CAT_SHOOTABLE))
 				{
-					//const bool bWasShootable = _record.m_IsShootable;
-					//const bool bWasInFov = _record.m_InFOV;
-
-					_record.m_IsShootable = false;					
-					if(bShootable)
+					if(!GetClient()->HasLineOfSightTo(vTracePosition, ent))
 					{
-						if(!GetClient()->HasLineOfSightTo(vTracePosition, ent))
-						{
-							_record.m_IsShootable		= false;
-							_record.m_InFOV				= false;
-							return true;
-						}
+						_record.m_IsShootable		= false;
+						_record.m_InFOV				= false;
+						return true;
 					}
 				}
 
@@ -350,12 +336,6 @@ namespace AiState
 
 				_record.m_TargetInfo.m_CurrentWeapon = InterfaceFuncs::GetEquippedWeapon(ent).m_WeaponId;
 
-				if(!_record.IsShootable() && !bIsStatic)
-				{
-					// restore the old flags
-					ti.m_EntityFlags &= ~bfPersistantMask;
-					ti.m_EntityFlags|=bfPersistantFlags;
-				}
 				//////////////////////////////////////////////////////////////////////////
 				// Update Target Info.
 				ti.m_LastPosition = vNewPosition;

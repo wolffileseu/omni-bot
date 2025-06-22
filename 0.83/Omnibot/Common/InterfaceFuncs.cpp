@@ -79,16 +79,19 @@ namespace InterfaceFuncs
 
 	bool GetEntityCategory(const GameEntity _ent, BitFlag32 &_category)
 	{
+		_category.ClearAll();
 		return SUCCESS(g_EngineFuncs->GetEntityCategory(_ent, _category));
 	}
 
 	bool GetEntityFlags(const GameEntity _ent, BitFlag64 &_flags)
 	{
+		_flags.ClearAll();
 		return SUCCESS(g_EngineFuncs->GetEntityFlags(_ent, _flags));
 	}
 
 	bool GetEntityPowerUps(const GameEntity _ent, BitFlag64 &_powerups)
 	{
+		_powerups.ClearAll();
 		return SUCCESS(g_EngineFuncs->GetEntityPowerups(_ent, _powerups));
 	}
 

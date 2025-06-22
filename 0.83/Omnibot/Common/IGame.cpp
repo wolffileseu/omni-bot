@@ -1933,7 +1933,7 @@ void IGame::UpdateEntity(EntityInstance &_ent)
 {
 	if ( _ent.m_EntityClass < FilterSensory::ANYPLAYERCLASS && _ent.m_TimeStamp < IGame::GetTime() ) {
 		_ent.m_EntityClass = g_EngineFuncs->GetEntityClass( _ent.m_Entity );
-		g_EngineFuncs->GetEntityCategory( _ent.m_Entity, _ent.m_EntityCategory );
+		InterfaceFuncs::GetEntityCategory( _ent.m_Entity, _ent.m_EntityCategory );
 		_ent.m_TimeStamp = IGame::GetTime();
 	}
 }

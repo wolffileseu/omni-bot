@@ -97,10 +97,8 @@ void Client::Update()
 
 		// Update my health/armor
 		InterfaceFuncs::GetHealthAndArmor(GetGameEntity(), m_HealthArmor);
-		m_EntityFlags.ClearAll();
-		m_EntityPowerUps.ClearAll();
-		g_EngineFuncs->GetEntityFlags(m_GameEntity, m_EntityFlags);
-		g_EngineFuncs->GetEntityPowerups(m_GameEntity, m_EntityPowerUps);
+		InterfaceFuncs::GetEntityFlags(m_GameEntity, m_EntityFlags);
+		InterfaceFuncs::GetEntityPowerUps(m_GameEntity, m_EntityPowerUps);
 	}
 
 	if(CheckUserFlag(Client::FL_DISABLED))

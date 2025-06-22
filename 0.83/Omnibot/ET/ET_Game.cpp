@@ -689,7 +689,7 @@ void ET_Game::ET_AddSensorCategory(BitFlag32 category)
 
 const bool ET_Game::ET_CanSensoreEntity(const EntityInstance &_ent)
 {
-	if((((1<<ENT_CAT_PICKUP_HEALTH)|(1<<ENT_CAT_PICKUP_AMMO)|(1<<ENT_CAT_PICKUP_WEAPON)|(1<<ENT_CAT_PROJECTILE)|(1<<ENT_CAT_SHOOTABLE)|(1<<ET_ENT_CAT_MINE))
+	if((((1<<ENT_CAT_PLAYER)|(1<<ENT_CAT_PICKUP_HEALTH)|(1<<ENT_CAT_PICKUP_AMMO)|(1<<ENT_CAT_PICKUP_WEAPON)|(1<<ENT_CAT_PROJECTILE)|(1<<ENT_CAT_SHOOTABLE)|(1<<ET_ENT_CAT_MINE))
 		& _ent.m_EntityCategory.GetRawFlags()) == 0)
 		return false;
 
