@@ -32,6 +32,7 @@ public:
 	static int gmfReadLine(gmThread *a_thread);
 
 	static int gmfWrite(gmThread *a_thread);
+	static int gmfWriteLine(gmThread *a_thread);
 	
 	static File *Constructor(gmThread *a_thread);
 	static void Destructor(File *_native);

@@ -38,7 +38,8 @@ GMBIND_FUNCTION_MAP_BEGIN( gmFile )
 	GMBIND_FUNCTION( "ReadString", gmfReadString )
 	GMBIND_FUNCTION( "ReadLine", gmfReadLine )	
 
-	GMBIND_FUNCTION( "Write", gmfWrite )	
+	GMBIND_FUNCTION( "Write", gmfWrite )
+	GMBIND_FUNCTION( "WriteLine", gmfWriteLine )
 GMBIND_FUNCTION_MAP_END()
 
 GMBIND_PROPERTY_MAP_BEGIN( gmFile )
@@ -613,7 +614,7 @@ int gmFile::gmfReadLine(gmThread *a_thread)
 //
 // Returns:
 //		<int> - true if successful, false if not.
-int gmFile::gmfWrite(gmThread *a_thread)
+static int Write(gmThread *a_thread, bool newLine)
 {
 	GM_CHECK_NUM_PARAMS(1);
 	File *pNative = gmFile::GetThisObject( a_thread );
@@ -643,11 +644,24 @@ int gmFile::gmfWrite(gmThread *a_thread)
 			return GM_EXCEPTION;
 		}
 	}
+	if(newLine)
+		success &= pNative->WriteNewLine();
+
 	a_thread->PushInt(success ? 1 : 0);
 	return GM_OK;
 }
 
-//////////////////////////////////////////////////////////////////////////
+int gmFile::gmfWrite(gmThread *a_thread)
+{
+	return Write(a_thread, false);
+}
+
+int gmFile::gmfWriteLine(gmThread *a_thread)
+{
+	return Write(a_thread, true);
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 
 static int GM_CDECL gmfSystemTime(gmThread * a_thread)
@@ -662,7 +676,6 @@ static int GM_CDECL gmfSystemTime(gmThread * a_thread)
 	return GM_OK;
 }
 
-//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
 static gmFunctionEntry s_systemLib[] = 
