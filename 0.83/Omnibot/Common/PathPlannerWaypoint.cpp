@@ -555,7 +555,7 @@ void PathPlannerWaypoint::Update()
 		if(m_MovingWaypointIndex != -1)
 		{
 			Vector3f vLocalPos;
-			g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos);
+			Utils::GetLocalPosition(vLocalPos);
 
 			if(m_MovingWaypointIndex < (int)m_WaypointList.size() && m_MovingWaypointIndex >= 0)
 			{			

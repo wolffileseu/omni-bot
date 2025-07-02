@@ -130,12 +130,15 @@ void PathPlannerWaypoint::cmdWaypointAdd(const StringVector &_args)
 
 	// get the position of the localhost
 	Vector3f vPosition;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vPosition);
+	if(Utils::GetLocalPosition(vPosition))
+	{
+		AddWaypoint(vPosition, Vector3f::ZERO, true);
 
-	// Add this waypoint to the list.
-	ScriptManager::GetInstance()->ExecuteStringLogged(
-		(String)va("Wp.AddWaypoint( Vector3(%f, %f, %f));", 
-		vPosition.x, vPosition.y, vPosition.z));
+		// Add this waypoint to the list.
+		//ScriptManager::GetInstance()->ExecuteStringLogged(
+		//	(String)va("Wp.AddWaypoint( Vector3(%f, %f, %f));", 
+		//	vPosition.x, vPosition.y, vPosition.z));
+	}
 }
 
 void PathPlannerWaypoint::cmdWaypointAddX(const StringVector &_args)
@@ -148,7 +151,7 @@ void PathPlannerWaypoint::cmdWaypointAddX(const StringVector &_args)
 	if(Utils::GetLocalAimPoint(vAimPosition))
 	{
 		vAimPosition.z -= g_fBottomWaypointOffset;
-		AddWaypoint(vAimPosition);
+		AddWaypoint(vAimPosition, Vector3f::ZERO, true);
 	}
 }
 
@@ -159,7 +162,7 @@ void PathPlannerWaypoint::cmdWaypointDelete(const StringVector &_args)
 
 	// get the position of the localhost, at his feet
 	Vector3f localPos;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), localPos);
+	Utils::GetLocalPosition(localPos);
 
 	// Add this waypoint to the list.
 	if(m_SelectedWaypoints.empty())
@@ -367,7 +370,7 @@ void PathPlannerWaypoint::cmdWaypointAutoRadius(const StringVector &_args)
 	if(mode == Current_Wp)
 	{
 		Vector3f vLocalPos;
-		if(SUCCESS(g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos)))
+		if(Utils::GetLocalPosition(vLocalPos))
 		{
 			pClosestWp = _GetClosestWaypoint(vLocalPos, 0, NOFILTER);
 		}
@@ -632,7 +635,7 @@ void PathPlannerWaypoint::cmdWaypointSetProperty(const StringVector &_args)
 	}
 
 	Vector3f vLocalPos;
-	if(SUCCESS(g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos)))
+	if(Utils::GetLocalPosition(vLocalPos))
 	{
 		Waypoint *pClosest = _GetClosestWaypoint(vLocalPos, 0, NOFILTER);
 		if(pClosest)
@@ -703,7 +706,7 @@ void PathPlannerWaypoint::cmdWaypointClearProperty(const StringVector &_args)
 	}
 
 	Vector3f vLocalPos;
-	if(SUCCESS(g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos)))
+	if(Utils::GetLocalPosition(vLocalPos))
 	{
 		Waypoint *pClosest = _GetClosestWaypoint(vLocalPos, 0, NOFILTER);
 		if(pClosest)
@@ -739,7 +742,7 @@ void PathPlannerWaypoint::cmdWaypointSetRadius(const StringVector &_args)
 	if(_args.size() >= 2)
 	{
 		Vector3f vLocalPos;
-		g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos);
+		Utils::GetLocalPosition(vLocalPos);
 
 		float fWaypointRadius = m_DefaultWaypointRadius;
 		if(!Utils::ConvertString(_args[1], fWaypointRadius))
@@ -791,7 +794,7 @@ void PathPlannerWaypoint::cmdWaypointChangeRadius(const StringVector &_args)
 	if(m_SelectedWaypoints.empty())
 	{
 		Vector3f vLocalPos;
-		g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos);
+		Utils::GetLocalPosition(vLocalPos);
 
 		// Look for the closest waypoint.
 		Waypoint *pClosest = _GetClosestWaypoint(vLocalPos, 0, NOFILTER);
@@ -823,7 +826,7 @@ void PathPlannerWaypoint::cmdWaypointSetFacing(const StringVector &_args)
 	Vector3f vFacing;
 	Vector3f vLocalPos;
 
-	if(SUCCESS(g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos)) && 
+	if(Utils::GetLocalPosition(vLocalPos) && 
 		SUCCESS(g_EngineFuncs->GetEntityOrientation(Utils::GetLocalEntity(), vFacing, 0, 0)))
 	{
 		if(m_SelectedWaypoints.empty())
@@ -853,7 +856,7 @@ void PathPlannerWaypoint::cmdWaypointSetFacing(const StringVector &_args)
 void PathPlannerWaypoint::cmdWaypointInfo(const StringVector &_args)
 {	
 	Vector3f vLocalPos;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos);
+	Utils::GetLocalPosition(vLocalPos);
 
 	// Look for the closest waypoint.
 	Waypoint *pClosest = _GetClosestWaypoint(vLocalPos, 0, NOFILTER);
@@ -931,7 +934,7 @@ void PathPlannerWaypoint::cmdWaypointMove(const StringVector &_args)
 		return;
 
 	Vector3f vLocalPos;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vLocalPos);
+	Utils::GetLocalPosition(vLocalPos);
 
 	if(m_MovingWaypointIndex == -1)
 	{
@@ -1019,7 +1022,7 @@ void PathPlannerWaypoint::cmdWaypointMirror(const StringVector &_args)
 
 	Vector3f vPlayerPos = Vector3f::ZERO;
 	if(bUsePlayer)
-		g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vPlayerPos);
+		Utils::GetLocalPosition(vPlayerPos);
 
 	if(!bAxis[0] && !bAxis[1] && !bAxis[2] && !bAxis[3])
 	{
@@ -1225,7 +1228,7 @@ void PathPlannerWaypoint::cmdWaypointConnect(const StringVector &_args)
 
 	// Get the local characters position
 	Vector3f myPos;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), myPos);
+	Utils::GetLocalPosition(myPos);
 
 	// Get the closest waypoint
 	Waypoint *pClosestWp = _GetClosestWaypoint(myPos, 0, NOFILTER);
@@ -1279,7 +1282,7 @@ void PathPlannerWaypoint::cmdWaypointConnect2Way(const StringVector &_args)
 		return;
 
 	Vector3f myPos;
-	g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), myPos);
+	Utils::GetLocalPosition(myPos);
 	Waypoint *pClosestWp = _GetClosestWaypoint(myPos, 0, NOFILTER);
 	if(pClosestWp != NULL && (pClosestWp->GetPosition()-myPos).Length() < 100.f)
 		cmdWaypointConnect2Way_Helper(_args, pClosestWp);
@@ -1406,7 +1409,7 @@ void PathPlannerWaypoint::cmdWaypointAddFlag(const StringVector &_args)
 	if(m_SelectedWaypoints.empty())
 	{
 		Vector3f myPos;
-		g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), myPos);
+		Utils::GetLocalPosition(myPos);
 		Waypoint *pClosestWp = _GetClosestWaypoint(myPos, 0, NOFILTER);
 		if(pClosestWp != NULL && (pClosestWp->GetPosition()-myPos).Length() < 100.f)
 			cmdWaypointAddFlag_Helper(_args, pClosestWp);
@@ -1518,9 +1521,8 @@ void PathPlannerWaypoint::cmdWaypointClearConnections(const StringVector &_args)
 	if(m_SelectedWaypoints.empty())
 	{
 		Vector3f myPos;
-		g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), myPos);
+		Utils::GetLocalPosition(myPos);
 		Waypoint *pWaypoint = _GetClosestWaypoint(myPos, 0, NOFILTER);
-
 		if(pWaypoint)
 		{
 			pWaypoint->m_Connections.clear();
@@ -1756,7 +1758,7 @@ void PathPlannerWaypoint::cmdSelectWaypoints(const StringVector &_args)
 	CHECK_FLOAT_PARAM(fRadius, 1, strUsage);
 	
 	Vector3f vPos;
-	if(SUCCESS(g_EngineFuncs->GetEntityPosition(Utils::GetLocalEntity(), vPos)))
+	if(Utils::GetLocalPosition(vPos))
 	{
 		cmdSelectWaypoints_Helper(vPos, fRadius);
 	}
@@ -1996,7 +1998,7 @@ void PathPlannerWaypoint::cmdWaypointSplit(const StringVector &_args)
 	Vector3f g;
 	if(GroundPosition(g, p)) p = g;
 
-	Waypoint *wp = AddWaypoint(p,Vector3f::ZERO);			
+	Waypoint *wp = AddWaypoint(p);
 
 	if(wp0->IsConnectedTo(wp1)){
 		wp0->DisconnectFrom(wp1);
