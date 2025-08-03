@@ -966,54 +966,65 @@ bool GoalManager::Load(const String &_map, ErrorObj &_err)
 						else{
 							goalName = gmName.GetCStringSafe("");
 						}
-
-						const String goalType = mgTbl->Get(pMachine, "GoalType").GetCStringSafe("");
-						if(!goalType.empty() && !goalName.empty())
+						if(!goalName.empty())
 						{
-							// if the goal exists already
-							gmGCRoot<gmTableObject> goalTbl(mgTbl,pMachine);
-							MapGoalPtr existingGoal = GetGoal(goalName);
-							//existingGoal is always NULL, because interface goals are initialized after *_goals.gm file is loaded
-							if(existingGoal)
+							String goalType = mgTbl->Get(pMachine, "GoalType").GetCStringSafe("");
+							if(goalType.empty())
 							{
-								if(existingGoal->LoadFromTable(pMachine,goalTbl,_err))
-								{
-									GoalsLoaded++;
-								}
-								else
-								{
-									_err.AddError("Problem reloading goal : %s",goalName.c_str());
-									GoalsLoadedFailed++;
+								//get type from goal name prefix
+								size_t p = goalName.find('_');
+								if(p != String::npos) {
+									if(p==9 && goalName.size()>11 && goalName[11]=='_' && !goalName.compare(0, 9, "ARTILLERY")) p += 2;
+									goalType = goalName.substr(0, p);
 								}
 							}
-							else
+							if(!goalType.empty())
 							{
-								MapGoalPtr mgPtr = g_MapGoalDatabase.GetNewMapGoal(goalType);
-								if(mgPtr)
+								// if the goal exists already
+								gmGCRoot<gmTableObject> goalTbl(mgTbl, pMachine);
+								MapGoalPtr existingGoal = GetGoal(goalName);
+								//existingGoal is always NULL, because interface goals are initialized after *_goals.gm file is loaded
+								if(existingGoal)
 								{
-									if(mgPtr->LoadFromTable(pMachine,goalTbl,_err))
+									if(existingGoal->LoadFromTable(pMachine, goalTbl, _err))
 									{
-										if(mgPtr->GetCreateOnLoad())
-										{
-											mgPtr->InternalInitEntityState();
-											AddGoal(mgPtr);
-											GoalsLoaded++;
-										} 
-										else
-										{
-											GoalsDeferred++;
-										}
-										
+										GoalsLoaded++;
 									}
 									else
 									{
+										_err.AddError("Problem reloading goal : %s", goalName.c_str());
 										GoalsLoadedFailed++;
 									}
 								}
 								else
 								{
-									GoalsLoadedFailed++;
-									_err.AddError("Unknown Goal Type : %s",goalType.c_str());
+									MapGoalPtr mgPtr = g_MapGoalDatabase.GetNewMapGoal(goalType);
+									if(mgPtr)
+									{
+										if(mgPtr->LoadFromTable(pMachine, goalTbl, _err))
+										{
+											if(mgPtr->GetCreateOnLoad())
+											{
+												mgPtr->InternalInitEntityState();
+												AddGoal(mgPtr);
+												GoalsLoaded++;
+											}
+											else
+											{
+												GoalsDeferred++;
+											}
+
+										}
+										else
+										{
+											GoalsLoadedFailed++;
+										}
+									}
+									else
+									{
+										GoalsLoadedFailed++;
+										_err.AddError("Unknown Goal Type : %s", goalType.c_str());
+									}
 								}
 							}
 						}
