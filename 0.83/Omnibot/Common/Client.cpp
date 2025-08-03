@@ -317,9 +317,9 @@ void Client::ProcessEvent(const MessageHelper &_message, CallbackParameters &_cb
 					while(ActiveState->GetActiveState())
 						ActiveState = ActiveState->GetActiveState();
 
-					/*strOutString << hl->GetCurrentState()->GetName() << " : ";*/
-					strOutString << ActiveState->GetName() << std::endl;
+					std::streampos pos = strOutString.tellp();
 					ActiveState->GetDebugString(strOutString);
+					if(pos == strOutString.tellp()) strOutString << ActiveState->GetName();
 					strOutString << std::endl;
 				}
 				else
