@@ -30,13 +30,16 @@ namespace gmUtility
 	{
 		TableInfoList nodeList;
 		nodeList.reserve(_table->Count());
-		
+		bool hasKeys = false;
+
 		// copy the nodes to a list, so we can sort them by default
 		{
+			int index = 0;
 			gmTableIterator tIt;
 			gmTableNode *pNode = _table->GetFirst(tIt);
 			while(pNode)
 			{
+				hasKeys |= pNode->m_key.GetInt(-1) != index++;
 				char tmpName[256];
 				const char * str = pNode->m_key.AsString(_machine,tmpName,256);
 				OBASSERT(str && *str,"Error getting key string of gm var");
@@ -51,46 +54,42 @@ namespace gmUtility
 			}
 		}
 
-		std::sort(nodeList.begin(), nodeList.end(), _TableNodeAlphabetical);
+		if(hasKeys) std::sort(nodeList.begin(), nodeList.end(), _TableNodeAlphabetical);
 
-		/*gmTableIterator tIt;
-		gmTableNode *pNode = _table->GetFirst(tIt);
-		while(pNode)*/
-		for(TableInfoList::iterator it = nodeList.begin();
-			it != nodeList.end();
-			++it)
+		for(TableInfo_t &it : nodeList)
 		{
-			gmTableNode * pNode = (*it).node;
+			gmTableNode * pNode = it.node;
 
 			// Indent
 			for(int i = 0; i < _lvl; ++i)
 				_file.WriteString("\t");
 
 			//////////////////////////////////////////////////////////////////////////
-			switch(pNode->m_key.m_type)
+			if(hasKeys)
 			{
-			case GM_INT:
+				switch(pNode->m_key.m_type)
 				{
-					_file.WriteString("[");
-					_file.WriteInt32(pNode->m_key.GetInt(),false);
-					_file.WriteString("]");
-					_file.WriteString(" = ");
-					break;
+					case GM_INT:
+					{
+						_file.WriteString("[");
+						_file.WriteInt32(pNode->m_key.GetInt(), false);
+						_file.WriteString("]");
+						break;
+					}
+					case GM_FUNCTION:
+					{
+						gmFunctionObject *func = pNode->m_key.GetFunctionObjectSafe();
+						_file.WriteString("// ");
+						_file.WriteString(func->GetDebugName());
+						break;
+					}
+					default:
+					{
+						_file.WriteString(pNode->m_key.AsString(_machine, _buffer, _buflen));
+						break;
+					}
 				}
-			case GM_FUNCTION:
-				{
-					gmFunctionObject *func = pNode->m_key.GetFunctionObjectSafe();
-					_file.WriteString("// ");
-					_file.WriteString(func->GetDebugName());
-					_file.WriteString(" = ");
-					break;
-				}
-			default:
-				{
-					_file.WriteString(pNode->m_key.AsString(_machine, _buffer, _buflen));
-					_file.WriteString(" = ");
-					break;
-				}
+				_file.WriteString(" = ");
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -129,11 +128,13 @@ namespace gmUtility
 				{
 					if(_flags & gmUtility::DUMP_RECURSE)
 					{
-						_file.WriteNewLine();
+						if(hasKeys)
+						{
+							_file.WriteNewLine();
 
-						for(int i = 0; i < _lvl; ++i)
-							_file.WriteString("\t");
-
+							for(int i = 0; i < _lvl; ++i)
+								_file.WriteString("\t");
+						}
 						_file.WriteString("{");
 						_file.WriteNewLine();
 
