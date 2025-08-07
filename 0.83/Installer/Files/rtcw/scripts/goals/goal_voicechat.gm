@@ -112,6 +112,7 @@ this.Events[EVENT.TEAM_VOICE] = function(source, id)
 			{
 				pos = GetEntPosition(source);
 				if ( pos && this.Bot.DistanceTo( pos ) < 80 ) {
+					sleep(1);
 					this.Bot.SayVoice(VOICE.WELCOME);
 				}
 			}
@@ -120,6 +121,7 @@ this.Events[EVENT.TEAM_VOICE] = function(source, id)
 		{
 			if (cls == CLASS.ENGINEER && this.Randomize(this.NEEDENG_SAYENG, source))
 			{
+				sleep(2);
 				this.Bot.SayVoice(VOICE.IMA_ENGINEER);
 			}
 		}
@@ -127,6 +129,7 @@ this.Events[EVENT.TEAM_VOICE] = function(source, id)
 		{
 			if (cls == CLASS.MEDIC && this.Randomize(this.NEEDMED_SAYMED, source))
 			{
+				sleep(2);
 				this.Bot.SayVoice(VOICE.IMA_MEDIC);
 			}
 		}
@@ -134,6 +137,7 @@ this.Events[EVENT.TEAM_VOICE] = function(source, id)
 		{
 			if ( cls == CLASS.LIEUTENANT && this.Randomize(this.NEEDOPS_SAYOPS, source))
 			{
+				sleep(2);
 				this.Bot.SayVoice(VOICE.IMA_LIEUTENANT);
 			}
 		}
