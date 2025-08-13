@@ -43,8 +43,6 @@ void PathPlannerWaypoint::InitCommands()
 		this, &PathPlannerWaypoint::cmdWaypointDisconnectAll);
 	SetEx("waypoint_view", "Turn on/off waypoint visibility", 
 		this, &PathPlannerWaypoint::cmdWaypointView);
-	SetEx("waypoint_autoflag", "Turn on/off waypoint auto flagging, not used", 
-		this, &PathPlannerWaypoint::cmdWaypointAutoFlag);
 	SetEx("waypoint_viewfacing", "Turn on/off rendering of the facing vector", 
 		this, &PathPlannerWaypoint::cmdWaypointViewFacing);
 	SetEx("waypoint_connect", "Create a path between 2 waypoints", 
@@ -629,21 +627,6 @@ void PathPlannerWaypoint::cmdWaypointView(const StringVector &_args)
 		}
 	}
 	EngineFuncs::ConsoleMessage(va("Waypoint Visible %s.", m_PlannerFlags.CheckFlag(NAV_VIEW) ? "on" : "off"));
-}
-
-void PathPlannerWaypoint::cmdWaypointAutoFlag(const StringVector &_args)
-{
-	if(!m_PlannerFlags.CheckFlag(NAV_AUTODETECTFLAGS) && (_args.size() < 2 || Utils::StringToTrue(_args[1])))
-	{
-		m_PlannerFlags.SetFlag(NAV_AUTODETECTFLAGS);
-	}
-	else if(m_PlannerFlags.CheckFlag(NAV_AUTODETECTFLAGS) && (_args.size() < 2 || Utils::StringToFalse(_args[1])))
-	{
-		m_PlannerFlags.ClearFlag(NAV_AUTODETECTFLAGS);
-	}
-
-	EngineFuncs::ConsoleMessage(va("Waypoint Autoflag %s",
-		m_PlannerFlags.CheckFlag(NAV_AUTODETECTFLAGS) ? "on." : "off."));
 }
 
 void PathPlannerWaypoint::cmdWaypointViewFacing(const StringVector &_args)

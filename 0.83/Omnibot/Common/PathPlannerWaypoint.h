@@ -20,7 +20,6 @@ public:
 	{
 		WAYPOINT_ISDONE = NUM_BASE_NAVFLAGS,
 		WAYPOINT_VIEW_FACING,
-		WAYPOINT_DRAWAVOIDLEVEL,
 	};
 
 	typedef std::map<String, const NavFlags> FlagMap;
@@ -264,7 +263,6 @@ protected:
 	void cmdWaypointConnect2Way(const StringVector &_args);
 	void cmdWaypointConnect2WayX(const StringVector &_args);
 	void cmdWaypointConnect2Way_Helper(const StringVector &_args, Waypoint *_waypoint);
-	void cmdWaypointAutoFlag(const StringVector &_args);
 	void cmdWaypointBenchmark(const StringVector &_args);
 	void cmdWaypointBenchmarkGetClosest(const StringVector &_args);
 	void cmdTraceBenchmark(const StringVector &_args);

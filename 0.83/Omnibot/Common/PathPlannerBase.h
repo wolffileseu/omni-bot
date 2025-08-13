@@ -37,11 +37,8 @@ public:
 	enum BasePlannerFlags
 	{
 		NAV_VIEW,
-		NAV_VIEWCONNECTIONS,
 		NAV_FOUNDGOAL,
 		NAV_SAVEFAILEDPATHS,
-		NAV_AUTODETECTFLAGS,
-
 		NUM_BASE_NAVFLAGS
 	};
 
@@ -62,8 +59,6 @@ public:
 	virtual Vector3f GetDisplayPosition(const Vector3f &_pos) = 0; // deprecated
 
 	bool IsViewOn() const { return m_PlannerFlags.CheckFlag(NAV_VIEW); }
-	bool IsViewConnectionOn() const { return m_PlannerFlags.CheckFlag(NAV_VIEWCONNECTIONS); }
-	bool IsAutoDetectFlagsOn() const { return m_PlannerFlags.CheckFlag(NAV_AUTODETECTFLAGS); }
 
 	virtual bool IsDone() const= 0;
 	virtual bool FoundGoal() const = 0;

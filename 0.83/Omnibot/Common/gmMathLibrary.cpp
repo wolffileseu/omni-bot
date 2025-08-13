@@ -75,8 +75,8 @@ static int GM_CDECL gmfRandFloat(gmThread *a_thread)
 //
 // Parameters:
 //
-//		float or int - min value
-//		float or int - max value
+//		int - min value
+//		int - max value
 //
 // Returns:
 //		int - random number between supplied range
