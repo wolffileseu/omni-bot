@@ -191,7 +191,6 @@ public:
 		gmVariable vName = tbl->Get(_m,"Name");
 		gmVariable vOnEnter = tbl->Get(_m,"OnEnter");
 		gmVariable vOnExit = tbl->Get(_m,"OnExit");
-		gmVariable vUpdateDelay = tbl->Get(_m,"UpdateDelay");
 		m_ThisObject = tbl->Get(_m,"CallbackObject");
 
 		if(vOnEnter.GetFunctionObjectSafe())
@@ -296,8 +295,6 @@ public:
 
 		if(vName.GetCStringSafe(NULL))
 			m_NameHash = Utils::MakeHash32(vName.GetCStringSafe());
-		if(vUpdateDelay.IsNumber())
-			m_UpdateDelay = Utils::SecondsToMilliseconds(vUpdateDelay.GetFloatSafe());
 
 		return bHasTriggerCondition;
 	}
@@ -305,7 +302,6 @@ public:
 	TriggerShape()
 		: m_NameHash(0)
 		, m_ExpireTime(0)
-		, m_UpdateDelay(0)
 		, m_SerialNum(0)
 		, m_ThisObject(gmVariable::s_null)
 		, m_DeleteMe(false)
@@ -328,9 +324,6 @@ public:
 private:
 	obuint32	m_NameHash;
 	int			m_ExpireTime;
-
-	int			m_UpdateDelay;
-
 	int			m_SerialNum;
 	
 	GameEntity	m_TriggerOnEntity[MaxEntCount];
