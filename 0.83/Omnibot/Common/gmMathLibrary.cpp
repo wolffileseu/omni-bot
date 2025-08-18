@@ -423,18 +423,18 @@ static int GM_CDECL gmfMin(gmThread * a_thread)
 {
 	GM_CHECK_NUM_PARAMS(2);
 
-	if(a_thread->ParamType(0) == GM_INT && a_thread->ParamType(1) == GM_INT)
+	if(a_thread->Param(0).IsInt() && a_thread->Param(1).IsInt())
 	{
 		a_thread->PushInt(MinT<int>(a_thread->Param(0).GetInt(), a_thread->Param(1).GetInt()));
 		return GM_OK;
 	}
-	if(a_thread->ParamType(0) == GM_FLOAT && a_thread->ParamType(1) == GM_FLOAT)
+	if(a_thread->Param(0).IsNumber() && a_thread->Param(1).IsNumber())
 	{
-		a_thread->PushFloat(MinT<float>(a_thread->Param(0).GetFloat(), a_thread->Param(1).GetFloat()));
+		a_thread->PushFloat(MinT<float>(a_thread->Param(0).GetFloatSafe(), a_thread->Param(1).GetFloatSafe()));
 		return GM_OK;
 	}
 
-	GM_EXCEPTION_MSG("expected 2 floats or 2 ints.");
+	GM_EXCEPTION_MSG("expected 2 floats or ints.");
 	return GM_EXCEPTION;
 }
 
@@ -454,18 +454,18 @@ static int GM_CDECL gmfMax(gmThread * a_thread)
 {
 	GM_CHECK_NUM_PARAMS(2);
 
-	if(a_thread->ParamType(0) == GM_INT && a_thread->ParamType(1) == GM_INT)
+	if(a_thread->Param(0).IsInt() && a_thread->Param(1).IsInt())
 	{
 		a_thread->PushInt(MaxT<int>(a_thread->Param(0).GetInt(), a_thread->Param(1).GetInt()));
 		return GM_OK;
 	}
-	if(a_thread->ParamType(0) == GM_FLOAT && a_thread->ParamType(1) == GM_FLOAT)
+	if(a_thread->Param(0).IsNumber() && a_thread->Param(1).IsNumber())
 	{
-		a_thread->PushFloat(MaxT<float>(a_thread->Param(0).GetFloat(), a_thread->Param(1).GetFloat()));
+		a_thread->PushFloat(MaxT<float>(a_thread->Param(0).GetFloatSafe(), a_thread->Param(1).GetFloatSafe()));
 		return GM_OK;
 	}
 
-	GM_EXCEPTION_MSG("expected 2 floats or 2 ints.");
+	GM_EXCEPTION_MSG("expected 2 floats or ints.");
 	return GM_EXCEPTION;
 }
 
