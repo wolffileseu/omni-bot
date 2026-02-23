@@ -285,15 +285,15 @@ public:
 
 	inline void SetMaxUsers(TrackingCat _cat, obint32 _val)
 	{
-		OBASSERT(_cat < NUM_TRACK_CATS, "Invalid Tracking Category");
-		if ( _cat < NUM_TRACK_CATS ) {
+		OBASSERT((unsigned)_cat < NUM_TRACK_CATS, "Invalid Tracking Category");
+		if ( (unsigned)_cat < NUM_TRACK_CATS ) {
 			m_MaxUsers[_cat] = _val;
 		}
 	}
 	inline obint32 GetMaxUsers(TrackingCat _cat)
 	{
-		OBASSERT(_cat < NUM_TRACK_CATS, "Invalid Tracking Category");
-		if ( _cat < NUM_TRACK_CATS ) {
+		OBASSERT((unsigned)_cat < NUM_TRACK_CATS, "Invalid Tracking Category");
+		if ( (unsigned)_cat < NUM_TRACK_CATS ) {
 			return m_MaxUsers[_cat];
 		}
 		return 0;
@@ -392,7 +392,6 @@ public:
 
 	void SetProfilerZone(const String &_name);
 
-	void CreateGuiFromBluePrint(gmMachine *a_machine, gmTableObject *a_schema);
 	void HudDisplay();
 
 	int GetRandomUsePoint() const { return m_RandomUsePoint; };
@@ -519,8 +518,8 @@ private:
 
 	MapGoalWPtr	m_WeakPtr;
 
-	static bool pfnSetDotEx(gmThread * a_thread, MapGoal * a_goal, const char *a_key, gmVariable * a_operands);
-	static bool pfnGetDotEx(gmThread * a_thread, MapGoal * a_goal, const char *a_key, gmVariable * a_operands);
+	//static bool pfnSetDotEx(gmThread * a_thread, MapGoal * a_goal, const char *a_key, gmVariable * a_operands);
+	//static bool pfnGetDotEx(gmThread * a_thread, MapGoal * a_goal, const char *a_key, gmVariable * a_operands);
 };
 
 typedef TrackablePtr<MapGoal, MapGoal::TRACK_INPROGRESS>	TrackInProgress;

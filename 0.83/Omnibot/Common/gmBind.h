@@ -1665,7 +1665,7 @@ public:
 		return gmbUser;
 	}
 	
-	static gmBindUserObject *GetUserBoundObject( gmMachine *a_machine, gmVariable &_var )
+	static gmBindUserObject *GetUserBoundObject( gmMachine *a_machine, const gmVariable &_var )
 	{
 		gmUserObject *user = _var.GetUserObjectSafe(GetType());
 		if(!user)

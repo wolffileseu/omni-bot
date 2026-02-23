@@ -136,7 +136,7 @@ namespace AiState
 		//ThreadList &GetThreadList() { return m_ThreadList; }
 
 		MapGoalPtr &GetMapGoal() { return m_MapGoal; }
-		void SetMapGoal(MapGoalPtr &_mg) { m_MapGoal = _mg; m_Tracker.Reset(); }
+		void SetMapGoal(const MapGoalPtr &_mg) { m_MapGoal = _mg; m_Tracker.Reset(); }
 		MapGoal *GetMapGoalPtr() { return m_MapGoal.get(); }
 
 		void SetParentName(const char *_str);
@@ -152,21 +152,6 @@ namespace AiState
 		obuint32 GetInsertAfterHash() const { return m_InsertAfterHash; }
 
 		gmUserObject *GetScriptObject(gmMachine *_machine);
-
-		//////////////////////////////////////////////////////////////////////////
-		int gmfFinished(gmThread *a_thread);
-		int gmfGoto(gmThread *a_thread);
-		int gmfGotoAsync(gmThread *a_thread);
-		int gmfAddAimRequest(gmThread *a_thread);
-		int gmfReleaseAimRequest(gmThread *a_thread);
-		int gmfAddWeaponRequest(gmThread *a_thread);
-		int gmfReleaseWeaponRequest(gmThread *a_thread);
-		int gmfUpdateWeaponRequest(gmThread *a_thread);
-		int gmfBlockForWeaponChange(gmThread *a_thread);
-		int gmfBlockForWeaponFire(gmThread *a_thread);
-		int gmfBlockForVoiceMacro(gmThread *a_thread);
-		int gmfThreadFork(gmThread *a_thread);
-		int gmfSignal(gmThread *a_thread);
 
 		//////////////////////////////////////////////////////////////////////////
 

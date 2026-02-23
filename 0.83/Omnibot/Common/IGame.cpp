@@ -1465,7 +1465,7 @@ void IGame::cmdPrintFileSystem(const StringVector &_args)
 		EngineFuncs::ConsoleMessage(dlist[i].string().c_str());		
 	}
 	EngineFuncs::ConsoleMessage("------------------------------------");
-	EngineFuncs::ConsoleMessage(va("%d Files %s, in %s", dlist.size(), ex.c_str(), pth.c_str()));
+	EngineFuncs::ConsoleMessage(va("%u Files %s, in %s", (unsigned)dlist.size(), ex.c_str(), pth.c_str()));
 }
 
 void IGame::cmdReloadWeaponDatabase(const StringVector &_args)

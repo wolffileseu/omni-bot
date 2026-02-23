@@ -66,7 +66,7 @@ namespace KEYVALUEINI
 {
 
 #ifdef _WIN32
-#pragma warning(disable:4996) // Disabling stupid .NET deprecated warning.
+#pragma warning(disable: 4996 6011 6387)
 #endif
 
 #define DEFAULT_BUFFER_SIZE 1000000
@@ -651,7 +651,7 @@ namespace KEYVALUEINI
 			fseek(fph,0L,SEEK_END);
 			mLen = ftell(fph);
 			fseek(fph,0L,SEEK_SET);
-			if ( mLen )
+			if ( mLen > 0 )
 			{
 				mData = (char *) malloc(sizeof(char)*(mLen+1));
 				if ( mData ) {

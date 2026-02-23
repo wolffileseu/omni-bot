@@ -115,7 +115,7 @@ public:
 	inline const BitFlag64 &GetEntityFlags() const				{ return m_EntityFlags; }
 	inline const BitFlag64 &GetPowerUpFlags() const				{ return m_EntityPowerUps; }
 	inline const BitFlag32 &GetRoleMask() const					{ return m_RoleMask; }
-	inline void SetRoleMask(BitFlag32 &_bf)						{ m_RoleMask = _bf; }
+	inline void SetRoleMask(const BitFlag32 &_bf)				{ m_RoleMask = _bf; }
 	inline bool IsInfiltrator() const { return m_RoleMask.CheckFlag(ROLE_INFILTRATOR); }
 
 	inline bool HasEntityFlag(obint32 _flag) const				{ return m_EntityFlags.CheckFlag(_flag); }

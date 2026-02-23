@@ -116,6 +116,7 @@ bool PathPlannerWaypoint::Init()
 {
 	m_BlockableRegulator.reset(new Regulator(2000));
 	m_RadiusMarkRegulator.reset(new Regulator(200));
+	m_OpenCount = m_ClosedCount = 0;
 
 	InitCommands();
 

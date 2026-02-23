@@ -20,7 +20,7 @@ namespace gmUtility
 		gmTableNode *	node;
 	};
 	typedef std::vector<TableInfo_t> TableInfoList;
-	bool _TableNodeAlphabetical(const TableInfo_t &_n1, const TableInfo_t &_n2)
+	static bool _TableNodeAlphabetical(const TableInfo_t &_n1, const TableInfo_t &_n2)
 	{
 		return _n1.name < _n2.name;
 	}
@@ -397,8 +397,8 @@ namespace gmUtility
 		GM_CHECK_STRING_PARAM(tablename, 0);
 
 		const int BUF_SIZE = 512;
-		char buffer[BUF_SIZE] = {0};
-		char buffer2[BUF_SIZE] = {0};
+		char buffer[BUF_SIZE];
+		char buffer2[BUF_SIZE];
 
 		gmMachine *pMachine = a_thread->GetMachine();
 		gmVariable vTable = pMachine->GetGlobals()->Get(pMachine, tablename);

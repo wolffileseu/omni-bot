@@ -168,7 +168,6 @@ namespace AiState
 
 		bool IsMoving();
 
-		bool GetNextDestination(DestinationVector &_desination, bool &_final, bool &_skiplastpt);
 		void NotifyUserSuccess();
 		void NotifyUserFailed(FollowPathUser::FailType _how);
 

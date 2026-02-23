@@ -58,7 +58,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\ET\ET_Notes.txt" />
     <None Include="..\..\..\ET\Jamfile" />
   </ItemGroup>
   <ItemGroup>

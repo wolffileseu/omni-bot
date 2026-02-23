@@ -2,10 +2,10 @@
 #define CODE_ANALYSIS_MACROS
 
 #ifdef CODE_ANALYSIS
-#include <CodeAnalysis\SourceAnnotations.h>
-#define CHECK_PRINTF_ARGS			[SA_FormatString(Style="printf")]
-#define CHECK_PARAM_VALID			[vc_attributes::Pre(Valid=vc_attributes::Yes)]
-#define CHECK_VALID_BYTES(parm)		[vc_attributes::Pre(ValidBytes=#parm)]
+#include <sal.h>
+#define CHECK_PRINTF_ARGS			_Printf_format_string_
+#define CHECK_PARAM_VALID			_In_
+#define CHECK_VALID_BYTES(parm)		_In_reads_bytes_(parm)
 #else
 #define CHECK_PRINTF_ARGS
 #define CHECK_PARAM_VALID

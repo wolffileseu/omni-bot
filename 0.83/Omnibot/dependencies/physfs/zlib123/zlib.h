@@ -34,7 +34,7 @@
 #include "zconf.h"
 
 #if defined(_MSC_VER) && defined(ZLIB_INTERNAL)
-#pragma warning( disable: 4127 4131 4244 4456 )
+#	pragma warning(disable : 4127 4131 4244 4456 6011 6385)
 #endif
 
 #ifdef __cplusplus

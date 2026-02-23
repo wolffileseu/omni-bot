@@ -6,7 +6,7 @@
 #include "prof_internal.h"
 
 #ifdef _WIN32
-#pragma warning(disable:4305; disable:4244)
+#	pragma warning(disable : 4305 4244 26440 26446 26481 26482 26485 26496 26814 26818)
 #endif
 
 // use factor to compute a glow amount
@@ -54,8 +54,8 @@ int get_colors(float factor,
 //   glVertex2f(x0, y1);
 //}
 
-extern void draw_rectangle_sdl(float x0, float y0, float x1, float y1);
-extern void draw_line_sdl(float x0, float y0, float x1, float y1);
+//extern void draw_rectangle_sdl(float x0, float y0, float x1, float y1);
+//extern void draw_line_sdl(float x0, float y0, float x1, float y1);
 
 typedef struct
 {

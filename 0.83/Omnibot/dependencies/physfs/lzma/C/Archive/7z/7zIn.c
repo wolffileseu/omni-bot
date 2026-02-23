@@ -719,28 +719,28 @@ SZ_RESULT SzReadSubStreamsInfo(
     RINOM(*digestsDefined);
     *digests = (UInt32 *)allocTemp->Alloc((size_t)*numUnPackStreams * sizeof(UInt32));
     RINOM(*digests);
-  }
 
-  for(i = 0; i < numFolders; i++)
-  {
-    /*
-    v3.13 incorrectly worked with empty folders
-    v4.07: we check that folder is empty
-    */
-    CFileSize sum = 0;
-    UInt32 j;
-    UInt32 numSubstreams = folders[i].NumUnPackStreams;
-    if (numSubstreams == 0)
-      continue;
-    if (type == k7zIdSize)
-    for (j = 1; j < numSubstreams; j++)
+    for(i = 0; i < numFolders; i++)
     {
-      CFileSize size;
-      RINOK(SzReadSize(sd, &size));
-      (*unPackSizes)[si++] = size;
-      sum += size;
+      /*
+      v3.13 incorrectly worked with empty folders
+      v4.07: we check that folder is empty
+      */
+      CFileSize sum = 0;
+      UInt32 j;
+      UInt32 numSubstreams = folders[i].NumUnPackStreams;
+      if (numSubstreams == 0)
+        continue;
+      if (type == k7zIdSize)
+      for (j = 1; j < numSubstreams; j++)
+      {
+        CFileSize size;
+        RINOK(SzReadSize(sd, &size));
+        (*unPackSizes)[si++] = size;
+        sum += size;
+      }
+      (*unPackSizes)[si++] = SzFolderGetUnPackSize(folders + i) - sum;
     }
-    (*unPackSizes)[si++] = SzFolderGetUnPackSize(folders + i) - sum;
   }
   if (type == k7zIdSize)
   {

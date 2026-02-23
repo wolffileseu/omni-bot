@@ -463,7 +463,7 @@ Real Math<Real>::RadToDeg(Real _a)
 }
 
 template <class Real>
-Real Length(Real v1, Real v2)
+Real Math<Real>::Length(Real v1, Real v2)
 {
 	return  Math<Real>::FAbs(v1-v2);
 }

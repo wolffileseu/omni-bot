@@ -1344,7 +1344,7 @@ struct PersistentPriority
 typedef std::vector<PersistentPriority> PersPriorityList;
 PersPriorityList gPriorityList;
 
-void MapGoal::ClassPriority::GetPriorityText(std::string &_txtout, obReal roleBonus) const
+void MapGoal::ClassPriority::GetPriorityText(String &_txtout, obReal roleBonus) const
 {
 	//////////////////////////////////////////////////////////////////////////
 	int CurrentIndex = 0;
@@ -2296,7 +2296,7 @@ static int gmfCreateGuiFromSchema(gmThread *a_thread)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-void MapGoal_AsString(MapGoal *a_var, char * a_buffer, int a_bufferSize)
+static void MapGoal_AsString(MapGoal *a_var, char *a_buffer, int a_bufferSize)
 {
 	_gmsnprintf(a_buffer, a_bufferSize, 
 		"MapGoal(%s::%s)",a_var->GetGoalType().c_str(),a_var->GetName().c_str());

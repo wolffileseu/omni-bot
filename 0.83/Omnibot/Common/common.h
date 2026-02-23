@@ -99,7 +99,7 @@ namespace stdext
 
 #ifdef _MSC_VER
 #pragma warning( push )
-#pragma warning( disable: 4100 4244 4265 )
+#	pragma warning(disable : 4100 4244 4265 26135 26160 26400 26401 26415 26418 26451 26457 26471 26472 26473 26476 26490 26491 26496 26814 28182 33010)
 #endif
 
 #include <boost/filesystem/operations.hpp>

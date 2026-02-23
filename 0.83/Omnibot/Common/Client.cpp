@@ -539,7 +539,9 @@ void Client::ProcessEvent(const MessageHelper &_message, CallbackParameters &_cb
 			_cb.AddInt("sensedclass", m->m_EntityClass);
 			_cb.AddEntity("sensedentity", m->m_Entity);
 			break;
-		}	
+		}
+		default:
+			break;
 	}
 }
 
@@ -981,7 +983,7 @@ bool Client::AddScriptGoal(const String &_name)
 	bool bSuccess = false;
 
 	gmMachine *pMachine = ScriptManager::GetInstance()->GetMachine();
-	gmTableObject *pScriptGoals = pMachine->GetGlobals()->Get(pMachine, "ScriptGoals").GetTableObjectSafe();
+	const gmTableObject *pScriptGoals = pMachine->GetGlobals()->Get(pMachine, "ScriptGoals").GetTableObjectSafe();
 	if(pScriptGoals)
 	{
 		gmVariable v = pScriptGoals->Get(pMachine, _name.c_str());
@@ -1054,7 +1056,7 @@ void Client::InitScriptGoals()
 	using namespace AiState;
 
 	gmMachine *pMachine = ScriptManager::GetInstance()->GetMachine();
-	gmTableObject *pScriptGoals = pMachine->GetGlobals()->Get(pMachine, "ScriptGoals").GetTableObjectSafe();
+	const gmTableObject *pScriptGoals = pMachine->GetGlobals()->Get(pMachine, "ScriptGoals").GetTableObjectSafe();
 	if(pScriptGoals)
 	{
 		gmTableIterator tIt;

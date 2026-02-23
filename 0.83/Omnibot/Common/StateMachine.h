@@ -70,7 +70,7 @@ public:
 		State_ScriptGoal,			// This state is a script goal.
 	};
 
-	void AppendState(CHECK_PARAM_VALID State *_state);
+	void AppendState(State *_state);
 	bool AppendTo(const char * _name, State *_insertstate);
 	bool AppendTo(obuint32 _name, State *_insertstate);
 	void PrependState(State *_state);
@@ -259,17 +259,6 @@ public:
 			, m_Result(false)
 		{}
 	};
-	int gmfLimitToClass(gmThread *a_thread);
-	int gmfLimitToTeam(gmThread *a_thread);
-	int gmfLimitToPowerUp(gmThread *a_thread);
-	int gmfLimitToEntityFlag(gmThread *a_thread);
-	int gmfLimitToWeapon(gmThread *a_thread);
-
-	int gmfLimitToNoTarget(gmThread *a_thread);
-	int gmfLimitToTargetClass(gmThread *a_thread);
-	int gmfLimitToTargetTeam(gmThread *a_thread);
-	int gmfLimitToTargetPowerUp(gmThread *a_thread);
-	int gmfLimitToTargetEntityFlag(gmThread *a_thread);
 	//////////////////////////////////////////////////////////////////////////
 
 	State(const char * _name, const UpdateDelay &_ur = UpdateDelay(0));

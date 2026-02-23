@@ -215,7 +215,7 @@ void PathPlannerWaypoint::cmdWaypointStats(const StringVector &_args)
 {
 	EngineFuncs::ConsoleMessage("-= Waypoint Stats =-");
 	EngineFuncs::ConsoleMessage(va("Map : %s", g_EngineFuncs->GetMapName()));
-	EngineFuncs::ConsoleMessage(va("# Waypoints : %d", m_WaypointList.size()));		
+	EngineFuncs::ConsoleMessage(va("# Waypoints : %u", (unsigned)m_WaypointList.size()));		
 
 	int n=0;
 	for(WaypointList::iterator it = m_WaypointList.begin(); it != m_WaypointList.end(); ++it)
@@ -223,7 +223,7 @@ void PathPlannerWaypoint::cmdWaypointStats(const StringVector &_args)
 		n+= (int) (*it)->m_Connections.size();
 	}
 	EngineFuncs::ConsoleMessage(va("# Connections : %d", n));
-	EngineFuncs::ConsoleMessage(va("# Blockable connections : %d", m_BlockableList.size()));
+	EngineFuncs::ConsoleMessage(va("# Blockable connections : %u", (unsigned)m_BlockableList.size()));
 	EngineFuncs::ConsoleMessage(va("A* Open List : %d", m_OpenCount));
 	EngineFuncs::ConsoleMessage(va("A* Closed List : %d", m_ClosedCount));
 }
@@ -1797,7 +1797,7 @@ void PathPlannerWaypoint::cmdLockSelected(const StringVector &_args)
 	{
 		m_SelectedWaypoints[i]->m_Locked = true;
 	}
-	EngineFuncs::ConsoleMessage(va("Locked %d waypoints.", m_SelectedWaypoints.size()));
+	EngineFuncs::ConsoleMessage(va("Locked %u waypoints.", (unsigned)m_SelectedWaypoints.size()));
 }
 
 void PathPlannerWaypoint::cmdUnlockAll(const StringVector &_args)

@@ -389,22 +389,8 @@ static int GM_CDECL gmfGetCvar(gmThread *a_thread)
 		const int bufferSize = 512;
 		char buffer[bufferSize];
 
-		int iPos = 0;
-		const int cvarSize = 2048;
-		char cvar[cvarSize] = {0};
-
 		const char *pAsString = a_thread->Param(0).AsString(a_thread->GetMachine(), buffer, bufferSize);
-		if(pAsString)
-		{
-			int len = (int)strlen(pAsString);
-			if(cvarSize - iPos > len)
-			{
-				Utils::StringCopy(&cvar[iPos], pAsString, len);
-				iPos += len;
-			}
-		}
-
-		a_thread->PushInt(InterfaceFuncs::GetCvar(cvar));
+		a_thread->PushInt(InterfaceFuncs::GetCvar(pAsString ? pAsString : ""));
 		return GM_OK;
 	}
 

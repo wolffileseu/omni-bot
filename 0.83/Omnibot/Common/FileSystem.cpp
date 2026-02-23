@@ -422,7 +422,7 @@ void FileSystem::MountArchives(const char *_folder, const char *_mountpoint)
 	catch(const std::exception & ex)
 	{
 		//ex;
-		SOFTASSERTALWAYS(0, "Filesystem: ", ex.what());
+		SOFTASSERTALWAYS(0, "Filesystem: %s", ex.what());
 	}
 }
 

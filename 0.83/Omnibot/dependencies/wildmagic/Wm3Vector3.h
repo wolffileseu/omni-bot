@@ -103,36 +103,6 @@ public:
 	static const Vector3 UNIT_Z;
 };
 
-template <class Real>
-Vector3<Real> operator* (Real fScalar, const Vector3<Real>& rkV);
-
-template <class Real>
-Real Length(const Vector3<Real>& v1, const Vector3<Real>& v2);
-template <class Real>
-Real Length2d(const Vector3<Real>& v1, const Vector3<Real>& v2);
-
-template <class Real>
-Real SquaredLength(const Vector3<Real>& v1, const Vector3<Real>& v2);
-template <class Real>
-Real SquaredLength2d(const Vector3<Real>& v1, const Vector3<Real>& v2);
-
-template <class Real>
-Vector3<Real> Normalize(const Vector3<Real>& v1);
-
-template <class Real>
-Vector3<Real> Interpolate(const Vector3<Real> &_1, const Vector3<Real> &_2, Real _t);
-
-template <class Real>
-Real PointToSegmentDistance(const Vector3<Real> &aPt, const Vector3<Real> &aSeg1, 
-							const Vector3<Real> &aSeg2, Vector3<Real> &aOutClosest, Real &aOutTime);
-
-// debugging output
-template <class Real>
-std::ostream& operator<< (std::ostream& rkOStr, const Vector3<Real>& rkV);
-
-template <class Real>
-std::istream& operator>> (std::istream& rkOStr, Vector3<Real>& rkV);
-
 #include "Wm3Vector3.inl"
 
 typedef Vector3<float> Vector3f;

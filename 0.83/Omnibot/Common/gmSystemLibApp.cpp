@@ -172,7 +172,7 @@ void ScriptEnumerateCallback(void *data, const char *origdir, const char *str)
 	catch(const std::exception & ex)
 	{
 		LOGCRIT("Filesystem Exception: "<<ex.what());
-		SOFTASSERTALWAYS(0, "Filesystem: ",ex.what());
+		SOFTASSERTALWAYS(0, "Filesystem: %s",ex.what());
 	}
 }
 

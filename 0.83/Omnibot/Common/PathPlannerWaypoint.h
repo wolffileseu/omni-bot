@@ -34,8 +34,6 @@ public:
 	//	std::vector of pointers to waypoints.
 	typedef std::vector<Waypoint*> WaypointList;
 
-	static void SetMovementCapFlags(const NavFlags &_flags);
-
 	// typedef: WaypointFlagMap
 	//		Allows fast loopup of waypoints by flags, for a quick first step
 	//		in checking if a waypoint with a required flag exists instead of 
@@ -263,9 +261,6 @@ protected:
 	void cmdWaypointConnect2Way(const StringVector &_args);
 	void cmdWaypointConnect2WayX(const StringVector &_args);
 	void cmdWaypointConnect2Way_Helper(const StringVector &_args, Waypoint *_waypoint);
-	void cmdWaypointBenchmark(const StringVector &_args);
-	void cmdWaypointBenchmarkGetClosest(const StringVector &_args);
-	void cmdTraceBenchmark(const StringVector &_args);
 	void cmdWaypointSetDefaultRadius(const StringVector &_args);
 	void cmdWaypointSetRadius(const StringVector &_args);
 	void cmdWaypointChangeRadius(const StringVector &_args);
@@ -288,7 +283,6 @@ protected:
 	void cmdWaypointDeleteAxis(const StringVector &_args);
 	void cmdWaypointGetWpNames(const StringVector &_args);
 	void cmdWaypointColor(const StringVector &_args);
-	void cmdWaypointAddAvoidWeight(const StringVector &_args);
 	void cmdSelectWaypoints(const StringVector &_args);
 	void cmdSelectWaypoints_Helper(const Vector3f &_pos, float _radius);
 	void cmdLockSelected(const StringVector &_args);

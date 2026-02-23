@@ -1173,11 +1173,11 @@ static int GM_CDECL gmfTransformAndDrawLineList(gmThread *a_thread)
 		}
 
 		// draw the line list.
-		for(int i = 0; i < PointCount; i+=2)
+		for(int i = 1; i < PointCount; i+=2)
 		{
 			Utils::DrawLine(
+				vecs[i-1], 
 				vecs[i], 
-				vecs[i+1], 
 				obColor(color), 
 				duration);
 		}

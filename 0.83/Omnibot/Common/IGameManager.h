@@ -113,10 +113,6 @@ protected:
 	static IGameManager	*m_Instance;
 	IGameManager();
 	virtual ~IGameManager() {};
-	IGameManager &operator=(const IGameManager&);
 };
-
-void ThreadAddMessage(const String &_msg);
-void ThreadAddError(const String &_msg);
 
 #endif

@@ -68,7 +68,7 @@ void PathPlannerBase::cmdShowFailedPaths(const StringVector &_args)
 	if(index >= (int)m_FailedPathList.size() || index < 0)
 	{
 		if(!m_FailedPathList.empty())
-			EngineFuncs::ConsoleMessage(va("Invalid Index, must be 0-%d", m_FailedPathList.size()));
+			EngineFuncs::ConsoleMessage(va("Invalid Index, must be 0-%u", (unsigned)m_FailedPathList.size()));
 		else
 			EngineFuncs::ConsoleMessage("No failed paths to render.");
 		return;
@@ -132,8 +132,8 @@ void PathPlannerBase::AddFailedPath(const Vector3f &_start, const Vector3f &_end
 	fp.m_NextRenderTime = 0;
 	fp.m_Render = false;
 	m_FailedPathList.push_back(fp);
-	EngineFuncs::ConsoleMessage(va("Added failed path to log, view with nav_showfailedpath %d", 
-		m_FailedPathList.size()));
+	EngineFuncs::ConsoleMessage(va("Added failed path to log, view with nav_showfailedpath %u", 
+		(unsigned)m_FailedPathList.size()));
 }
 
 bool PathPlannerBase::Load(bool _dl)
