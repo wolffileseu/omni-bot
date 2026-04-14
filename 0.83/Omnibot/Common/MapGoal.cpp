@@ -1634,7 +1634,6 @@ bool MapGoal::SaveToTable(gmMachine *_machine, gmGCRoot<gmTableObject> &_savetab
 	//////////////////////////////////////////////////////////////////////////
 	// Standard info.
 	if(m_Version!=MapGoalVersion) GoalTable->Set(_machine, "Version", gmVariable(m_Version));
-	GoalTable->Set(_machine,"GoalType",GetGoalType().c_str());
 
 	if(!GetGroupName().empty()) {
 		gmTableObject *map = _machine->GetGlobals()->Get(_machine, "Map").GetTableObjectSafe();
