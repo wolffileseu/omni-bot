@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 
@@ -55,22 +54,22 @@ global Map =
 		},
 	},
 
-	Allied_Central_Communication_System_Destroyed = function( trigger )
+	Allied_Central_Communication_System_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_Central_Communication_System_Destroyed" );
 	},
 
-	Axis_Central_Communication_System_Destroyed = function( trigger )
+	Axis_Central_Communication_System_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Axis_Central_Communication_System_Destroyed" );
 	},
 
-	Allied_Encryption_Documents_Taken = function( trigger )
+	Allied_Encryption_Documents_Taken = function()
 	{
 		Util.MapDebugPrint( "Allied_Encryption_Documents_Taken" );
 	},
 
-	Axis_Encryption_Documents_Taken = function( trigger )
+	Axis_Encryption_Documents_Taken = function()
 	{
 		Util.MapDebugPrint( "Axis_Encryption_Documents_Taken" );
 	},

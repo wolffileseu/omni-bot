@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DontDispenseAmmo = true,
 
 	Roles =
@@ -16,47 +15,47 @@ global Map =
 		},
 	},
 
-	Power_Supply_Destroyed = function( trigger )
+	Power_Supply_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Power_Supply_Destroyed" );
 	},
 
-	Courtyard_flag_Axis_Captured = function( trigger )
+	Courtyard_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Courtyard_flag_Axis_Captured" );
 	},
 
-	Courtyard_flag_Allies_Captured = function( trigger )
+	Courtyard_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Courtyard_flag_Allies_Captured" );
 	},
 
-	Entrance_flag_Axis_Captured = function( trigger )
+	Entrance_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Entrance_flag_Axis_Captured" );
 	},
 
-	Entrance_flag_Allies_Captured = function( trigger )
+	Entrance_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Entrance_flag_Allies_Captured" );
 	},
 
-	alley_flag_Axis_Captured = function( trigger )
+	alley_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "alley_flag_Axis_Captured" );
 	},
 
-	alley_flag_Allies_Captured = function( trigger )
+	alley_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "alley_flag_Allies_Captured" );
 	},
 
-	sewer_flag_Axis_Captured = function( trigger )
+	sewer_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "sewer_flag_Axis_Captured" );
 	},
 
-	sewer_flag_Allies_Captured = function( trigger )
+	sewer_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "sewer_flag_Allies_Captured" );
 	},

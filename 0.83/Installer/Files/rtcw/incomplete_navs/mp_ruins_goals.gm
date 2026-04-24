@@ -4,66 +4,47 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.584, 0.014, 0.811),
+			Vec3(0.584, 0.014, 0.811),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(-247.000, -106.000, -20.000),
-		Radius = 32,
 	},
 	AIRSTRIKE_bRuins2 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.631, 0.068, 0.773),
+			Vec3(0.631, 0.068, 0.773),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(-300.000, -810.000, -16.000),
-		Radius = 32,
 	},
 	AIRSTRIKE_rRuins1 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.785, -0.003, 0.619),
+			Vec3(-0.785, -0.003, 0.619),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(322.000, -91.000, 7.000),
-		Radius = 32,
 	},
 	AIRSTRIKE_rRuins2 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.680, -0.129, 0.722),
+			Vec3(-0.680, -0.129, 0.722),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(499.000, 653.000, 16.000),
-		Radius = 32,
 	},
 	ATTACK_center = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.033, -0.969, -0.243),
+			Vec3(0.033, -0.969, -0.243),
 		},
-		GoalType = "Attack",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(62.000, -100.000, -61.000),
-		Radius = 32,
-		Weapons = 
-		{
-		},
 	},
 	CHECKPOINT_church_flag = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "CHECKPOINT",
 		Position = Vec3(64.000, -96.000, -191.000),
 	},
 	Version = 1,

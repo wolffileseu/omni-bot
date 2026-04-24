@@ -11,7 +11,6 @@
 
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	FogViewDistance = 1400,
 	NormalViewDistance = 5000,
 	DocStatus = false,
@@ -30,12 +29,12 @@ global Map =
 		},
 	},
 
-	catacomb_door_Destroyed = function( trigger )
+	catacomb_door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "catacomb_door_Destroyed" );
 	},
 
-	main_gate_power_Destroyed = function( trigger )
+	main_gate_power_Destroyed = function()
 	{
 		Util.MapDebugPrint( "main_gate_power_Destroyed" );
 		SetAvailableMapGoals( TEAM.ALLIES, false, "AIRSTRIKE_bMain.*" );
@@ -54,14 +53,14 @@ global Map =
 		});
 	},
 
-	waterway_door_Destroyed = function( trigger )
+	waterway_door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "GRENADE_rMain.*" );
 
 		Util.MapDebugPrint( "waterway_door_Destroyed" );
 	},
 
-	Book_of_the_Resurrection_Secured = function( trigger )
+	Book_of_the_Resurrection_Secured = function()
 	{
 		Wp.SetWaypointFlag( "towerjump", "closed", true );
 		Wp.SetWaypointFlag( "cagejump", "closed", true );
@@ -82,7 +81,7 @@ global Map =
 		Util.MapDebugPrint( "Book_of_the_Resurrection_Secured" );
 	},
 
-	Book_of_the_Resurrection_Taken = function( trigger )
+	Book_of_the_Resurrection_Taken = function()
 	{
 		Wp.SetWaypointFlag( "towerjump", "closed", false );
 		Wp.SetWaypointFlag( "cagejump", "closed", false );
@@ -96,7 +95,7 @@ global Map =
 		Util.MapDebugPrint( "Book_of_the_Resurrection_Taken" );
 	},
 
-	room_flag_Axis_Captured = function( trigger )
+	room_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -105,7 +104,7 @@ global Map =
 		Util.MapDebugPrint( "room_flag_Axis_Captured" );
 	},
 
-	room_flag_Allies_Captured = function( trigger )
+	room_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

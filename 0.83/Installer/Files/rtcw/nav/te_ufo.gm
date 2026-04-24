@@ -54,7 +54,7 @@ global Map =
 		},
 	},
 
-	south_flag_Allies_Captured = function( trigger )
+	south_flag_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"AIRSTRIKE_.*",
@@ -83,7 +83,7 @@ global Map =
 
 	},
 
-	south_flag_Axis_Captured = function( trigger )
+	south_flag_Axis_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"PANZER_rRoof_.*",
@@ -91,7 +91,7 @@ global Map =
 		});
 	},
 
-	allied_obj1a_Destroyed = function( trigger )
+	allied_obj1a_Destroyed = function()
 	{
 		Map.SouthStatus = false;
 
@@ -139,7 +139,7 @@ global Map =
 		}
 	},
 
-	allied_obj1_Destroyed = function( trigger )
+	allied_obj1_Destroyed = function()
 	{
 		Map.MainStatus = false;
 
@@ -192,25 +192,25 @@ global Map =
 	},
 
 
-	main_planted = function( trigger )
+	main_planted = function()
 	{
 		Util.DisableGoal( "DEFUSE_Main_Gate.*" );
 	},
 
-	main_defused = function( trigger )
+	main_defused = function()
 	{
 	},
 
-	south_planted = function( trigger )
+	south_planted = function()
 	{
 		Util.DisableGoal( "DEFUSE_South_Gate.*" );
 	},
 
-	south_defused = function( trigger )
+	south_defused = function()
 	{
 	},
 
-	The_UFO_Documents_Taken = function( trigger )
+	The_UFO_Documents_Taken = function()
 	{
 		Map.DocStatus = false;
 		Map.DontDispenseAmmo = true;
@@ -248,7 +248,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "AIRSTRIKE_red_as[12]_trans" );
 	},
 
-	docs_returned = function( trigger )
+	docs_returned = function()
 	{
 		Map.DocStatus = true;
 
@@ -297,11 +297,11 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "PANZER_rRoof.*" );
 	},
 
-	transmitter_Captured = function( trigger )
+	transmitter_Captured = function()
 	{
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;
@@ -329,7 +329,7 @@ global Map =
 		},
 	},
 
-	//thirty_second = function( trigger )
+	//thirty_second = function()
 	//{
 	//
 	//},
@@ -361,7 +361,6 @@ global OnMapLoad = function()
 	Util.SetMaxUsersInProgress( 1, "ATTACK.*" );
 	Util.SetMaxUsersInProgress( 1, "DEFEND.*" );
 	Util.SetMaxUsersInProgress( 1, "MOUNT.*" );
-	Util.SetMaxUsersInProgress( 1, "REPAIR.*" );
 
 	SetMapGoalProperties( "SNIPE_.*", {mincamptime = 999, maxcamptime = 999} );
 	SetMapGoalProperties( "PANZER_.*", {mincamptime = 30, maxcamptime = 60} );

@@ -7,7 +7,7 @@ global Map =
 	EastBlown = false,
 	WestBlown = false,
 
-	Eastern_Ammo_Dump_Destroyed = function( trigger )
+	Eastern_Ammo_Dump_Destroyed = function()
 	{
 		Map.EastBlown = true;
 		if (Map.EastBlown && Map.WestBlown)
@@ -17,7 +17,7 @@ global Map =
 		print( "Eastern_Ammo_Dump_Destroyed" );
 	},
 
-	Western_Ammo_Dump_Destroyed = function( trigger )
+	Western_Ammo_Dump_Destroyed = function()
 	{
 		Map.WestBlown = true;
 		if (Map.EastBlown && Map.WestBlown)
@@ -27,17 +27,17 @@ global Map =
 		print( "Western_Ammo_Dump_Destroyed" );
 	},
 
-	prison_flag_Axis_Captured = function( trigger )
+	prison_flag_Axis_Captured = function()
 	{
 		print( "prison_flag_Axis_Captured" );
 	},
 
-	prison_flag_Allies_Captured = function( trigger )
+	prison_flag_Allies_Captured = function()
 	{
 		print( "prison_flag_Allies_Captured" );
 	},
 
-	documents_stolen = function( trigger )
+	documents_stolen = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"DEFEND_.*",
@@ -54,7 +54,7 @@ global Map =
 
 	},
 
-	documents_returned = function( trigger )
+	documents_returned = function()
 	{
 		Map.defend_key();
 
@@ -62,7 +62,7 @@ global Map =
 
 	},
 
-	defend_fortress = function ()
+	defend_fortress = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"DEFEND_.*",

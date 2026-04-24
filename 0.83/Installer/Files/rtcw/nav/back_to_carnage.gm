@@ -38,7 +38,7 @@ global Map =
 	rSnipers = 0,
 	rFlamers = 0,
 
-	Axis_Transmission_Radio_Destroyed = function( trigger )
+	Axis_Transmission_Radio_Destroyed = function()
 	{
 		print( "Axis_Transmission_Radio_Destroyed" );
 		Map.RadioStatus = true;
@@ -65,18 +65,18 @@ global Map =
 		}
 	},
 
-	Axis_Transmission_Radio_Planted = function( trigger )
+	Axis_Transmission_Radio_Planted = function()
 	{
 	},
 
-	Axis_base_gate_Planted = function( trigger )
+	Axis_base_gate_Planted = function()
 	{
 		// Axis should not go into the trenches...at all
 		Wp.SetWaypointFlag( "walljump1", "allies", false );
 		Wp.SetWaypointFlag( "walljump2", "allies", false );
 	},
 
-	Axis_base_gate_Destroyed = function( trigger )
+	Axis_base_gate_Destroyed = function()
 	{
 		Map.GateStatus = true;
 
@@ -126,12 +126,12 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bEngGate.*" );
 	},
 
-	Axis_staircase_gate_Planted = function( trigger )
+	Axis_staircase_gate_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Axis_staircase_gate.*" );
 	},
 
-	Axis_staircase_gate_Destroyed = function( trigger )
+	Axis_staircase_gate_Destroyed = function()
 	{
 		Map.StairStatus = true;
 		Util.EnableGoal( "ROUTE_steps" );
@@ -139,7 +139,7 @@ global Map =
 		Wp.SetWaypointFlag( "stairgate", "allies", true );
 	},
 
-	Sea_Wall_Destroyed = function( trigger )
+	Sea_Wall_Destroyed = function()
 	{
 		Map.WallStatus = true;
 
@@ -166,12 +166,12 @@ global Map =
 		Map.DontDispenseAmmo = false;
 	},
 
-	Sea_Wall_Planted = function( trigger )
+	Sea_Wall_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Sea_Wall.*" );
 	},
 
-	bunker_door_Destroyed = function( trigger )
+	bunker_door_Destroyed = function()
 	{
 		Map.BunkerDoorStatus = true;
 
@@ -193,12 +193,12 @@ global Map =
 		Util.SetMaxUsersInProgress( 2, "CHECKPOINT.*" );
 	},
 
-	bunker_door_Planted = function( trigger )
+	bunker_door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_bunker_door.*" );
 	},
 
-	power_generator_Destroyed = function( trigger )
+	power_generator_Destroyed = function()
 	{
 		Map.GeneratorStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bGenerator.*" );
@@ -222,14 +222,14 @@ global Map =
 		});
 	},
 
-	power_generator_Planted = function( trigger )
+	power_generator_Planted = function()
 	{
 		if ( Map.RadioStatus == false ) {
 			SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_power_generator.*" );
 		}
 	},
 
-	trench_door_Destroyed = function( trigger )
+	trench_door_Destroyed = function()
 	{
 		Map.TrenchStatus = true;
 		RTCWUtil.StopSniping();     // Push on OBJs now
@@ -259,7 +259,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "AIRSTRIKE_rTrenchSpam_.*" );
 	},
 
-	beach_flag_Axis_Captured = function( trigger )
+	beach_flag_Axis_Captured = function()
 	{
 		if ( Map.GateStatus == false && Map.BunkerStatus == false && Map.WallStatus == true ) {
 			SetAvailableMapGoals( TEAM.AXIS, true, {
@@ -282,7 +282,7 @@ global Map =
 		}
 	},
 
-	beach_flag_Allies_Captured = function( trigger )
+	beach_flag_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "AIRSTRIKE_.*" );
 

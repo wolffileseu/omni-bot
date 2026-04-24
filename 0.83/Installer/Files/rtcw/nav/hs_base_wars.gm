@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	ViewDistance = 1000,
@@ -29,12 +28,12 @@ global Map =
 		},
 	},
 
-	allied_bridge_Planted = function( trigger )
+	allied_bridge_Planted = function()
 	{
 		Util.MapDebugPrint( "allied_bridge_Planted" );
 	},
 
-	allied_bridge_Destroyed = function( trigger )
+	allied_bridge_Destroyed = function()
 	{
 		Wp.SetWaypointFlag( "bbridge1", "closed", true );
 		Wp.SetWaypointFlag( "bbridge2", "closed", true );
@@ -42,12 +41,12 @@ global Map =
 		Util.MapDebugPrint( "allied_bridge_Destroyed" );
 	},
 
-	axis_bridge_Planted = function( trigger )
+	axis_bridge_Planted = function()
 	{
 		Util.MapDebugPrint( "axis_bridge_Planted" );
 	},
 
-	axis_bridge_Destroyed = function( trigger )
+	axis_bridge_Destroyed = function()
 	{
 		Wp.SetWaypointFlag( "rbridge1", "closed", true );
 		Wp.SetWaypointFlag( "rbridge2", "closed", true );
@@ -55,22 +54,22 @@ global Map =
 		Util.MapDebugPrint( "axis_bridge_Destroyed" );
 	},
 
-	Radio_Codes_Taken = function( trigger )
+	Radio_Codes_Taken = function()
 	{
 		Util.MapDebugPrint( "Radio_Codes_Taken" );
 	},
 
-	Radio_Codes_Returned = function( trigger )
+	Radio_Codes_Returned = function()
 	{
 		Util.MapDebugPrint( "Radio_Codes_Returned" );
 	},
 
-	Weld_Tanks_Returned = function( trigger )
+	Weld_Tanks_Returned = function()
 	{
 		Util.MapDebugPrint( "Weld_Tanks_Taken" );
 	},
 
-	Weld_Tanks_Taken = function( trigger )
+	Weld_Tanks_Taken = function()
 	{
 		Util.MapDebugPrint( "Weld_Tanks_Taken" );
 	},

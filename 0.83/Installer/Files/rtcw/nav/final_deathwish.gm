@@ -10,7 +10,7 @@ global Map =
 	ShiftAvailable = true,
 	LastFlakAttacked = 0,
 
-	Axis_Barracks_Destroyed = function( trigger )
+	Axis_Barracks_Destroyed = function()
 	{
 		print( "Axis_Barracks_Destroyed" );
 
@@ -37,7 +37,7 @@ global Map =
 		}
 	},
 
-	Flak_gun_1_Destroyed = function( trigger )
+	Flak_gun_1_Destroyed = function()
 	{
 		print( "Flak_gun_1_Destroyed" );
 		Map.Flak1Status = true;
@@ -46,17 +46,17 @@ global Map =
 		Map.Flak2Attack();
 	},
 
-	Flak_gun_1_Planted = function( trigger )
+	Flak_gun_1_Planted = function()
 	{
 		print( "Flak_gun_1_Planted" );
 	},
 
-	Flak_gun_1_Defused = function( trigger )
+	Flak_gun_1_Defused = function()
 	{
 		print( "Flak_gun_1_Defused" );
 	},
 
-	Flak_gun_2_Destroyed = function( trigger )
+	Flak_gun_2_Destroyed = function()
 	{
 		print( "Flak_gun_2_Destroyed" );
 		Map.Flak2Status = true;
@@ -64,17 +64,17 @@ global Map =
 		Map.Flak1Attack();
 	},
 
-	Flak_gun_2_Planted = function( trigger )
+	Flak_gun_2_Planted = function()
 	{
 		print( "Flak_gun_2_Planted" );
 	},
 
-	Flak_gun_2_Defused = function( trigger )
+	Flak_gun_2_Defused = function()
 	{
 		print( "Flak_gun_2_Defused" );
 	},
 
-	Foward_Barricade_Destroyed = function( trigger )
+	Foward_Barricade_Destroyed = function()
 	{
 		print( "Foward_Barricade_Destroyed" );
 		Map.BarbwireStatus = true;
@@ -85,7 +85,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ARTILLERY_S_bBeach.*" );
 	},
 
-	West_Barrier_Destroyed = function( trigger )
+	West_Barrier_Destroyed = function()
 	{
 		print( "West_Barrier_Destroyed" );
 		Map.BarbwireStatus = true;
@@ -96,13 +96,13 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ARTILLERY_S_bBeach.*" );
 	},
 
-	foward_spawn_Axis_Captured = function( trigger )
+	foward_spawn_Axis_Captured = function()
 	{
 		print( "foward_spawn_Axis_Captured" );
 		Map.FlagStatus = 1;
 	},
 
-	foward_spawn_Allies_Captured = function( trigger )
+	foward_spawn_Allies_Captured = function()
 	{
 		print( "foward_spawn_Allies_Captured" );
 		Map.FlagStatus = 2;

@@ -102,7 +102,6 @@ global Map =
 	{
 		button1 =
 		{
-			Debug = false,
 			Enabled = true,
 			Priority = 0,
 			WaypointName = "button1",
@@ -121,7 +120,6 @@ global Map =
 
 		button2 =
 		{
-			Debug = false,
 			Enabled = true,
 			Priority = 0,
 			WaypointName = "button2",
@@ -168,17 +166,17 @@ global Map =
 		}
 	},
 
-	East_Station_Door_Destroyed = function( trigger )
+	East_Station_Door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "PLANT_ME262" );
 	},
 
-	East_Station_Door_Planted = function( trigger )
+	East_Station_Door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_East_Station_Door.*" );
 	},
 
-	Footbridge_Destroyed = function( trigger )
+	Footbridge_Destroyed = function()
 	{
 		Map.FootbridgeStatus = true;
 
@@ -186,7 +184,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rEngFootbridge.*" );
 	},
 
-	ME262_Destroyed = function( trigger )
+	ME262_Destroyed = function()
 	{
 		Map.PlaneStatus = true;
 
@@ -198,16 +196,16 @@ global Map =
 		}
 	},
 
-	Station_Door_Destroyed = function( trigger )
+	Station_Door_Destroyed = function()
 	{
 	},
 
-	Station_Door_Planted = function( trigger )
+	Station_Door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Station_Door.*" );
 	},
 
-	Plans_Taken = function( trigger )
+	Plans_Taken = function()
 	{
 		Map.DocStatus = true;
 		if ( Map.PlaneStatus == true ) {
@@ -215,7 +213,7 @@ global Map =
 		}
 	},
 
-	Plans_Returned = function( trigger )
+	Plans_Returned = function()
 	{
 		Map.DocStatus = false;
 		foreach( id and bot in BotTable )
@@ -242,11 +240,11 @@ global Map =
 		}
 	},
 
-	mine_flag_Axis_Captured = function( trigger )
+	mine_flag_Axis_Captured = function()
 	{
 	},
 
-	mine_flag_Allies_Captured = function( trigger )
+	mine_flag_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "GRENADE_Barricade[23]" );
 		Map.DontDispenseAmmo = false;
@@ -272,41 +270,41 @@ global Map =
 		}
 	},
 
-	east_door_opening = function( trigger )
+	east_door_opening = function()
 	{
 		Map.Switches.button2.Enabled = false;
 		Map.EastDoorStatus = "Opened";
 	},
 
-	east_door_closing = function( trigger )
+	east_door_closing = function()
 	{
 		Map.Switches.button2.Enabled = true;
 		Map.EastDoorStatus = "Closed";
 	},
 
-	west_door_opening = function( trigger )
+	west_door_opening = function()
 	{
 		Map.Switches.button1.Enabled = false;
 		Map.WestDoorStatus = "Opened";
 	},
 
-	west_door_closing = function( trigger )
+	west_door_closing = function()
 	{
 		Map.Switches.button1.Enabled = true;
 		Map.WestDoorStatus = "Closed";
 	},
 
-	barrier1_destroyed = function( trigger )
+	barrier1_destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "CHECKPOINT.*" );
 	},
 
-	barrier2_destroyed = function( trigger )
+	barrier2_destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "CHECKPOINT.*" );
 	},
 
-	barrier3_destroyed = function( trigger )
+	barrier3_destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "CHECKPOINT.*" );
 	},

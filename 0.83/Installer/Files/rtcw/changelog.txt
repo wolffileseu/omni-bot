@@ -1,11 +1,34 @@
 Omni-bot RTCW Change Log
 ---------------------------------------------------------------
 
+0.93 (2026-04-24)
+
+=== BOT ===
+Removed GoalType and TagName from goals.gm files (incompatible with older omni-bot versions !)
+Added SaveGroups=0 and SaveRoles=0 in the Map disables writing groups and roles to goals.gm file
+Added System.CopyToClipboard (only on Windows), used in commands trigger_bounds, trigger_aimpos, saveplayerpos, saveusepoint
+Added File.WriteLine
+Added connections in table returned by GetWaypointByGUID and GetAllWaypoints
+Fixed Wp.Disconnect crashed on blockable connections
+Fixed crash if there was %s in waypoint name, DrawText3d or EchoToScreen
+Fixed don't add multiple waypoints at the same position
+Fixed 2 seconds blinking when drawing some goals or routes
+Removed table indexes from DumpTableInfo
+Removed writing newly added waypoints to logged.gm file
+Removed Activator from debug triggers messages
+Removed TriggerShape.UpdateDelay
+Improved functions Min,Max can have parameters (int,float) or (float,int)
+Improved text of error messages if param is table of wrong type
+Changed reloading is disabled near some goals even if bot has zero velocity
+Changed debug fpinfo target distance and waypoint radius are displayed as integers
+Changed debug fpinfo desired weapon is shown only if it's not same as current weapon
+
 === GOALS ===
 Added SaveCampTime=0 in the Map disables writing camp times to _goals.gm file
 Added delay before voice chat response "You're welcome", "I'm an engineer/medic/ops"
 Added REPAIRMG42 stance prone
 Added entityname property to PLANT goal
+Removed MOVER and EXPLODE goals from goals.gm files
 Changed REPAIRMG42 is limited to 1 bot
 Changed default camp times of ATTACK/DEFEND/CAMP
 

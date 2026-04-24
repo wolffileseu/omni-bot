@@ -7,12 +7,12 @@ global Map =
 	Explode_573 = "EXPLODE_573",
 
 
-	Gas_Mask_Supplies_Destroyed = function( trigger )
+	Gas_Mask_Supplies_Destroyed = function()
 	{
 		print( "Gas_Mask_Supplies_Destroyed" );
 	},
 
-	Lower_Bunker_Supplies_Destroyed = function( trigger )
+	Lower_Bunker_Supplies_Destroyed = function()
 	{
 		print( "Lower_Bunker_Supplies_Destroyed" );
 	},

@@ -252,7 +252,7 @@ global Map =
 		},
 	},
 
-	Gold_Storage_Crypt_Destroyed = function( trigger )
+	Gold_Storage_Crypt_Destroyed = function()
 	{
 		Map.CryptStatus = true;
 		Map.CryptDyno = 0;
@@ -268,17 +268,17 @@ global Map =
 		});
 	},
 
-	Gold_Storage_Crypt_Planted = function( trigger )
+	Gold_Storage_Crypt_Planted = function()
 	{
 		Map.CryptDyno += 1;
 	},
 
-	Gold_Storage_Crypt_Defused = function( trigger )
+	Gold_Storage_Crypt_Defused = function()
 	{
 		Map.CryptDyno -= 1;
 	},
 
-	obj_item01_Taken = function( trigger )
+	obj_item01_Taken = function()
 	{
 		Map.GoldStatus = true;
 		Map.AxisPushedForward = false;
@@ -324,7 +324,7 @@ global Map =
 		Map.Airstrike.cottage.Enabled = false;
 	},
 
-	obj_item01_Returned = function( trigger )
+	obj_item01_Returned = function()
 	{
 		Map.GoldStatus = false;
 
@@ -366,11 +366,11 @@ global Map =
 		Map.Airstrike.cottage.Enabled = true;
 	},
 
-	truck_Captured = function( trigger )
+	truck_Captured = function()
 	{
 	},
 
-	allied_flag01_Axis_Captured = function( trigger )
+	allied_flag01_Axis_Captured = function()
 	{
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, false, {
@@ -383,7 +383,7 @@ global Map =
 		});
 	},
 
-	allied_flag01_Allies_Captured = function( trigger )
+	allied_flag01_Allies_Captured = function()
 	{
 		Map.RoundStart = false;
 		Util.SetMaxUsersInProgress( 1, "CHECKPOINT.*" );
@@ -428,7 +428,7 @@ global Map =
 		Map.Airstrike.bridge.Enabled = false;
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;
@@ -444,18 +444,18 @@ global Map =
 		}
 	},
 
-	block1 = function( trigger )
+	block1 = function()
 	{
 		Map.b1_status = true;
 	},
 
-	block2 = function( trigger )
+	block2 = function()
 	{
 		Map.b2_status = true;
 		Util.EnableGoal( "ROUTE_block2" );
 	},
 
-	block3 = function( trigger )
+	block3 = function()
 	{
 		Map.b3_status = true;
 		Util.EnableGoal( "ROUTE_block3" );

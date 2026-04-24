@@ -4,61 +4,44 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.466, 0.882, -0.065),
+			Vec3(-0.466, 0.882, -0.065),
 		},
-		GoalType = "Attack",
 		MaxCampTime = 60,
 		MinCampTime = 30,
 		Position = Vec3(121.767, -562.104, 203.794),
 		Radius = 70,
-		Weapons = 
-		{
-		},
 	},
 	ATTACK_84 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.662, 0.745, -0.085),
+			Vec3(-0.662, 0.745, -0.085),
 		},
-		GoalType = "Attack",
 		MaxCampTime = 60,
 		MinCampTime = 30,
 		Position = Vec3(234.916, -429.556, 183.712),
 		Radius = 70,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_5 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.775, -0.630, -0.047),
+			Vec3(0.775, -0.630, -0.047),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 60,
 		MinCampTime = 30,
 		Position = Vec3(-33.335, -203.493, 204.857),
-		Radius = 35,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_6 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.034, -0.993, -0.114),
+			Vec3(0.034, -0.993, -0.114),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 60,
 		MinCampTime = 30,
 		Position = Vec3(-22.540, -366.733, 208.549),
 		Radius = 70,
-		Weapons = 
-		{
-		},
 	},
 	Version = 1,
 };

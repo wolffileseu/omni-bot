@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DontDispenseAmmo = true,
 
 	Airstrike =
@@ -21,7 +20,7 @@ global Map =
 		},
 	},
 
-	entrance_of_the_Fortress_Destroyed = function( trigger )
+	entrance_of_the_Fortress_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"DEFEND_rCastlewall.*",
@@ -42,24 +41,24 @@ global Map =
 		Util.MapDebugPrint( "entrance_of_the_Fortress_Destroyed" );
 	},
 
-	entrance_of_the_Guns_Cave_Destroyed = function( trigger )
+	entrance_of_the_Guns_Cave_Destroyed = function()
 	{
 		Util.MapDebugPrint( "entrance_of_the_Guns_Cave_Destroyed" );
 	},
 
-	one_of_the_two_guns_Destroyed = function( trigger )
+	one_of_the_two_guns_Destroyed = function()
 	{
 		Util.MapDebugPrint( "one_of_the_two_guns_Destroyed" );
 	},
 
-	flag_Axis_Captured = function( trigger )
+	flag_Axis_Captured = function()
 	{
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" );
 
 		Util.MapDebugPrint( "flag_Axis_Captured" );
 	},
 
-	flag_Allies_Captured = function( trigger )
+	flag_Allies_Captured = function()
 	{
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" );
 

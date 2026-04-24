@@ -1,34 +1,33 @@
 global Map =
 {
-	Debug = 0,
 	DontDispenseAmmo = true,
 
-	balkonflag_Axis_Captured = function( trigger )
+	balkonflag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "balkonflag_Axis_Captured" );
 	},
 
-	balkonflag_Allies_Captured = function( trigger )
+	balkonflag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "balkonflag_Allies_Captured" );
 	},
 
-	kellerflag_Axis_Captured = function( trigger )
+	kellerflag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "kellerflag_Axis_Captured" );
 	},
 
-	kellerflag_Allies_Captured = function( trigger )
+	kellerflag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "kellerflag_Allies_Captured" );
 	},
 
-	saeulenflag_Axis_Captured = function( trigger )
+	saeulenflag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "saeulenflag_Axis_Captured" );
 	},
 
-	saeulenflag_Allies_Captured = function( trigger )
+	saeulenflag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "saeulenflag_Allies_Captured" );
 	},

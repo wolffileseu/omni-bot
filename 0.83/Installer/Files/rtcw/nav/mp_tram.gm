@@ -1,8 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
-
 	Movers =
 	{
 		"MOVER_tramcar_1",
@@ -157,7 +155,7 @@ global Map =
 		},
 	},
 
-	Castle_Basement_Door_Destroyed = function( trigger )
+	Castle_Basement_Door_Destroyed = function()
 	{
 		Map.BasementStatus = true;
 		Map.BasementDyno = 0;
@@ -166,17 +164,17 @@ global Map =
 		//SetAvailableMapGoals( TEAM.ALLIES, false, "MOUNTMG42_snowhut" );
 	},
 
-	Castle_Basement_Door_Planted = function( trigger )
+	Castle_Basement_Door_Planted = function()
 	{
 		Map.BasementDyno += 1;
 	},
 
-	Castle_Basement_Door_Defused = function( trigger )
+	Castle_Basement_Door_Defused = function()
 	{
 		Map.BasementDyno -= 1;
 	},
 
-	Lower_Access_Door_Destroyed = function( trigger )
+	Lower_Access_Door_Destroyed = function()
 	{
 		Map.LowerStatus = true;
 		Map.LowerDyno = 0;
@@ -195,17 +193,17 @@ global Map =
 		}
 	},
 
-	Lower_Access_Door_Planted = function( trigger )
+	Lower_Access_Door_Planted = function()
 	{
 		Map.LowerDyno += 1;
 	},
 
-	Lower_Access_Door_Defused = function( trigger )
+	Lower_Access_Door_Defused = function()
 	{
 		Map.LowerDyno -= 1;
 	},
 
-	Supply_Room_Door_Destroyed = function( trigger )
+	Supply_Room_Door_Destroyed = function()
 	{
 		Map.SupplyStatus = true;
 		Map.SupplyDyno = 0;
@@ -249,14 +247,14 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "CALLARTILLERY_rCastleSpot.*" );
 	},
 
-	Supply_Room_Door_Planted = function( trigger )
+	Supply_Room_Door_Planted = function()
 	{
 		Map.SupplyDyno += 1;
 
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_rDynoSupply.*" );
 	},
 
-	Supply_Room_Door_Defused = function( trigger )
+	Supply_Room_Door_Defused = function()
 	{
 		Map.SupplyDyno -= 1;
 
@@ -265,12 +263,12 @@ global Map =
 		}
 	},
 
-	Radio_Codes_Booklet_Taken = function( trigger )
+	Radio_Codes_Booklet_Taken = function()
 	{
 		Map.BookStatus = true;
 	},
 
-	Radio_Codes_Booklet_Returned = function( trigger )
+	Radio_Codes_Booklet_Returned = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"ARTILLERY_S_rSecondHalf.*",
@@ -281,7 +279,7 @@ global Map =
 		Map.DocsInCastle = false;
 	},
 
-	flag_respawn_obj_Axis_Captured = function( trigger )
+	flag_respawn_obj_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -312,7 +310,7 @@ global Map =
 		});
 	},
 
-	flag_respawn_obj_Allies_Captured = function( trigger )
+	flag_respawn_obj_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -346,7 +344,7 @@ global Map =
 		});
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		Map.twominute = true;
 
@@ -359,7 +357,7 @@ global Map =
 		}
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		Map.thirtysecond = true;
 	},

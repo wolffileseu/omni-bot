@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	Checkpoint_building_flag = "CHECKPOINT_building_flag",
 	Plant_Allied_munitions = "PLANT_Allied_munitions",
 	Plant_radar_equip = "PLANT_radar_equip",
@@ -96,35 +95,35 @@ global Map =
 		},
 	},
 
-	Allied_munitions_Destroyed = function( trigger )
+	Allied_munitions_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_munitions_Destroyed" );
 	},
 
-	Allied_munitions_Planted = function( trigger )
+	Allied_munitions_Planted = function()
 	{
 		Util.MapDebugPrint( "Allied_munitions_Planted" );
 	},
 
-	Allied_munitions_Defused = function( trigger )
+	Allied_munitions_Defused = function()
 	{
 		Util.MapDebugPrint( "Allied_munitions_Defused" );
 	},
 
-	radar_equip_Destroyed = function( trigger )
+	radar_equip_Destroyed = function()
 	{
 		Util.MapDebugPrint( "radar_equip_Destroyed" );
 	},
-	radar_equip_Planted = function( trigger )
+	radar_equip_Planted = function()
 	{
 		Util.MapDebugPrint( "radar_equip_Planted" );
 	},
-	radar_equip_Defused = function( trigger )
+	radar_equip_Defused = function()
 	{
 		Util.MapDebugPrint( "radar_equip_Defused" );
 	},
 
-	sewer_bars_Destroyed = function( trigger )
+	sewer_bars_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, "PLANT_Allied_munitions" );
 		Util.EnableGoal("ROUTE_CentralSewer");
@@ -133,7 +132,7 @@ global Map =
 	},
 
 
-	sewer_bars_Planted = function( trigger )
+	sewer_bars_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_sewer_bars_.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_sewer_bars_.*" );
@@ -141,12 +140,12 @@ global Map =
 		Util.MapDebugPrint( "sewer_bars_Planted" );
 	},
 
-	sewer_bars_1_Destroyed = function( trigger )
+	sewer_bars_1_Destroyed = function()
 	{
 		Util.MapDebugPrint( "sewer_bars_1_Destroyed" );
 	},
 
-	building_flag_Axis_Captured = function( trigger )
+	building_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = TEAM.AXIS;
 
@@ -191,7 +190,7 @@ global Map =
 		Util.MapDebugPrint( "building_flag_Axis_Captured" );
 	},
 
-	building_flag_Allies_Captured = function( trigger )
+	building_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = TEAM.ALLIES;
 
@@ -284,7 +283,6 @@ global OnMapLoad = function()
 	Util.SetMaxUsersInProgress( 1, "PANZER.*" );
 	Util.SetMaxUsersInProgress( 1, "DEFEND.*" );
 	Util.SetMaxUsersInProgress( 1, "PLANT_sewer_bars" );
-	Util.SetMaxUsersInProgress( 1, "REPAIRMG42.*" );
 
 	Util.EnableGoal("CHECKPOINT.*");
 	Util.DisableGoal("ROUTE_CentralSewer");

@@ -13,12 +13,12 @@ global Map =
 	SubDyno = 0,
 	DispenseAmmoTime = 1,
 
-	Axis_Submarine_Destroyed = function( trigger )
+	Axis_Submarine_Destroyed = function()
 	{
 		Map.SubDyno = 0;
 	},
 
-	Submarine_Planted = function( trigger )
+	Submarine_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"DEFEND.*",
@@ -31,7 +31,7 @@ global Map =
 		Map.SubDyno += 1;
 	},
 
-	Submarine_Defused = function( trigger )
+	Submarine_Defused = function()
 	{
 		Map.SubDyno -= 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND.*" );
@@ -42,7 +42,7 @@ global Map =
 		});
 	},
 
-	Filtration_Door_Destroyed = function( trigger )
+	Filtration_Door_Destroyed = function()
 	{
 		Map.FiltStatus = true;
 
@@ -67,7 +67,7 @@ global Map =
 		Wp.SetWaypointFlag( "poolhallway", "allies", true ); // Keep axis out of that hallway
 	},
 
-	Filtration_Door_Planted = function( trigger )
+	Filtration_Door_Planted = function()
 	{
 		//don't bother defusing this
 		Util.DisableGoal( "DEFUSE_Filtration_.*" );
@@ -80,7 +80,7 @@ global Map =
 		}
 	},
 
-	Storage_Door_Destroyed = function( trigger )
+	Storage_Door_Destroyed = function()
 	{
 		Map.StorageStatus = true;
 
@@ -94,7 +94,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_eng_filtration" );
 	},
 
-	Storage_Door_Planted = function( trigger )
+	Storage_Door_Planted = function()
 	{
 		//don't bother defusing this
 		Util.DisableGoal( "DEFUSE_Storage_.*" );
@@ -104,24 +104,24 @@ global Map =
 		}
 	},
 
-	flag_respawn_Axis_Captured = function( trigger )
+	flag_respawn_Axis_Captured = function()
 	{
 	},
 
-	flag_respawn_Allies_Captured = function( trigger )
+	flag_respawn_Allies_Captured = function()
 	{
 		if ( !Map.FiltStatus ) {
 			SetAvailableMapGoals( TEAM.AXIS, true, Map.Checkpoint_flag_respawn );
 		}
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.SybDyno > 1 ) {
 			return;

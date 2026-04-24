@@ -18,7 +18,7 @@ global Map =
 	MainGateDyno = 0,
 	ControlsDyno = 0,
 
-	side_door_script_Destroyed = function( trigger )
+	side_door_script_Destroyed = function()
 	{
 		//set status to destroyed
 		Map.SideDoorStatus = 1;
@@ -33,7 +33,7 @@ global Map =
 		Map.BaseFlex(); //Fallback to prevent sneak attack
 	},
 
-	main_gate_script_Destroyed = function( trigger )
+	main_gate_script_Destroyed = function()
 	{
 		//set status to destroyed
 		Map.MainGateStatus = 1;
@@ -56,19 +56,19 @@ global Map =
 		}
 	},
 
-	bunker_controls_script_Destroyed = function( trigger )
+	bunker_controls_script_Destroyed = function()
 	{
 	},
 
-	allied_cp_open_Destroyed = function( trigger )
+	allied_cp_open_Destroyed = function()
 	{
 	},
 
-	axis_cp_open_Destroyed = function( trigger )
+	axis_cp_open_Destroyed = function()
 	{
 	},
 
-	Allies_Capture_Flag = function( trigger )
+	Allies_Capture_Flag = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -84,12 +84,12 @@ global Map =
 		}
 	},
 
-	Axis_Capture_Flag = function( trigger )
+	Axis_Capture_Flag = function()
 	{
 		Map.FlagStatus = 1;
 	},
 
-	Dyno_Plant_Main = function( trigger )
+	Dyno_Plant_Main = function()
 	{
 		Map.MainGateDyno += 1;
 
@@ -112,7 +112,7 @@ global Map =
 		}
 	},
 
-	Dyno_Defuse_Main = function( trigger )
+	Dyno_Defuse_Main = function()
 	{
 		Map.MainGateDyno -= 1;
 
@@ -126,7 +126,7 @@ global Map =
 		}
 	},
 
-	Dyno_Plant_Controls = function( trigger )
+	Dyno_Plant_Controls = function()
 	{
 		print( "controlsPlant" );
 
@@ -136,7 +136,7 @@ global Map =
 		Map.BaseDefense();
 	},
 
-	Dyno_Defuse_Controls = function( trigger )
+	Dyno_Defuse_Controls = function()
 	{
 		Map.ControlsDyno -= 1;
 
@@ -146,7 +146,7 @@ global Map =
 		}
 	},
 
-	Dyno_Plant_SideDoor = function( trigger )
+	Dyno_Plant_SideDoor = function()
 	{
 		Map.SideDoorDyno += 1;
 
@@ -156,7 +156,7 @@ global Map =
 		}
 	},
 
-	Dyno_Defuse_SideDoor = function( trigger )
+	Dyno_Defuse_SideDoor = function()
 	{
 		Map.ControlsDyno -= 1;
 	},

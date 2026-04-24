@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = false,
 	FlagStatus = -1,
@@ -71,37 +70,37 @@ global Map =
 		},
 	},
 
-	Allied_Field_Ops_Planted = function( trigger )
+	Allied_Field_Ops_Planted = function()
 	{
 		Util.MapDebugPrint( "Allied_Field_Ops_Planted" );
 	},
 
-	Allied_Field_Ops_Defused = function( trigger )
+	Allied_Field_Ops_Defused = function()
 	{
 		Util.MapDebugPrint( "Allied_Field_Ops_Defused" );
 	},
 
-	Allied_Field_Ops_Destroyed = function( trigger )
+	Allied_Field_Ops_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_Field_Ops_Destroyed" );
 	},
 
-	Anti_Aircraft_Gun_Planted = function( trigger )
+	Anti_Aircraft_Gun_Planted = function()
 	{
 		Util.MapDebugPrint( "Anti_Aircraft_Gun_Planted" );
 	},
 
-	Anti_Aircraft_Gun_Defused = function( trigger )
+	Anti_Aircraft_Gun_Defused = function()
 	{
 		Util.MapDebugPrint( "Anti_Aircraft_Gun_Defused" );
 	},
 
-	Anti_Aircraft_Gun_Destroyed = function( trigger )
+	Anti_Aircraft_Gun_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Anti_Aircraft_Gun_Destroyed" );
 	},
 
-	North_Gate_Destroyed = function( trigger )
+	North_Gate_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"PLANT_Allied_Field_Ops",
@@ -111,7 +110,7 @@ global Map =
 		Util.MapDebugPrint( "North_Gate_Destroyed" );
 	},
 
-	South_Gate_Destroyed = function( trigger )
+	South_Gate_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, {
 			"PLANT_Anti_Aircraft_Gun",
@@ -121,7 +120,7 @@ global Map =
 		Util.MapDebugPrint( "South_Gate_Destroyed" );
 	},
 
-	flag_respawn_obj_Axis_Captured = function( trigger )
+	flag_respawn_obj_Axis_Captured = function()
 	{
 		Map.FlagStatus = TEAM.AXIS;
 		Map.DontDispenseAmmo = true;
@@ -158,7 +157,7 @@ global Map =
 		Util.MapDebugPrint( "flag_respawn_obj_Axis_Captured" );
 	},
 
-	flag_respawn_obj_Allies_Captured = function( trigger )
+	flag_respawn_obj_Allies_Captured = function()
 	{
 		Map.FlagStatus = TEAM.ALLIES;
 		Map.DontDispenseAmmo = true;

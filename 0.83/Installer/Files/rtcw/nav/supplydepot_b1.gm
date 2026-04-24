@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	DontDispenseAmmo = true,
 	Checkpoint_flag = "CHECKPOINT_forwardflag",
 	FlagStatus = false,
@@ -28,7 +27,7 @@ global Map =
 		},
 	},
 
-	forwardflag_Axis_Captured = function( trigger )
+	forwardflag_Axis_Captured = function()
 	{
 		if ( Map.Suicide ) {
 			RTCWUtil.SetSuicide( TEAM.AXIS, CLASS.LIEUTENANT, 1, 1 );
@@ -37,7 +36,7 @@ global Map =
 		Map.FlagStatus = false;
 	},
 
-	forwardflag_Allies_Captured = function( trigger )
+	forwardflag_Allies_Captured = function()
 	{
 		Map.FlagStatus = true;
 		if ( Map.Suicide ) {
@@ -57,12 +56,12 @@ global Map =
 		}
 	},
 
-	Supply_Documents_Taken = function( trigger )
+	Supply_Documents_Taken = function()
 	{
 		Map.DocStatus = true;
 		Map.TransmitDefense();
 	},
-	Supply_Documents_Returned = function( trigger )
+	Supply_Documents_Returned = function()
 	{
 		Map.DocStatus = false;
 		Map.InnerDefense();
@@ -77,25 +76,25 @@ global Map =
 			}
 		}
 	},
-	Forward_Spawn_Door_Destroyed = function( trigger )
+	Forward_Spawn_Door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "PLANT_.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bEngSpawn.*" );
 	},
-	Forward_Spawn_Door_Planted = function( trigger )
+	Forward_Spawn_Door_Planted = function()
 	{
 		Map.SpawnPlanted = true;
 
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Forward_Spawn_Door.*" );
 		Map.FlagSK();
 	},
-	Depot_Gate_Planted = function( trigger )
+	Depot_Gate_Planted = function()
 	{
 		// only try to defuse if depot hasn't been breached
 		Map.EvalDefuse( "DEFUSE_Depot_Gate.*" );
 		Map.GateDefense();
 	},
-	Depot_Gate_Destroyed = function( trigger )
+	Depot_Gate_Destroyed = function()
 	{
 		Util.EnableGoal( "ROUTE_depotgate" );
 		Map.DepotStatus = true;
@@ -115,13 +114,13 @@ global Map =
 			Map.InnerDefense();
 		}
 	},
-	East_Depot_Wall_Planted = function( trigger )
+	East_Depot_Wall_Planted = function()
 	{
 		// only try to defuse if depot hasn't been breached
 		Map.EvalDefuse( "DEFUSE_East_Depot_Wall.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_bEngEast_.*" );
 	},
-	East_Depot_Wall_Destroyed = function( trigger )
+	East_Depot_Wall_Destroyed = function()
 	{
 		Util.EnableGoal( "ROUTE_eastwall" );
 
@@ -136,13 +135,13 @@ global Map =
 		Map.WallStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bEngEast_.*" );
 	},
-	West_Depot_Wall_Planted = function( trigger )
+	West_Depot_Wall_Planted = function()
 	{
 		// only try to defuse if depot hasn't been breached
 		Map.EvalDefuse( "DEFUSE_West_Depot_Wall.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_bEngWest_.*" );
 	},
-	West_Depot_Wall_Destroyed = function( trigger )
+	West_Depot_Wall_Destroyed = function()
 	{
 		Util.EnableGoal( "ROUTE_westwall" );
 

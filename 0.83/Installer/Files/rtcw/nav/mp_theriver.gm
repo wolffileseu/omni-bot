@@ -20,19 +20,19 @@ global Map =
 	ElePosition = "Top",
 	EleMoving = false,
 
-	Bridge_Controls_Planted = function( trigger )
+	Bridge_Controls_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Bridge_Controls.*" );   // Easier for spawning axis to get to cappoint if this is blown
 	},
 
-	Bridge_Controls_Destroyed = function( trigger )
+	Bridge_Controls_Destroyed = function()
 	{
 		Map.BridgeStatus = true;
 
 		SetAvailableMapGoals( TEAM.ALLIES, false, "PLANT_Bridge_Controls" );
 	},
 
-	Front_Wall_breach_Destroyed = function( trigger )
+	Front_Wall_breach_Destroyed = function()
 	{
 		Map.WallStatus = true;
 
@@ -61,7 +61,7 @@ global Map =
 		Util.EnableGoal( "ROUTE_wFootbridge" );
 	},
 
-	War_Documents_Taken = function( trigger )
+	War_Documents_Taken = function()
 	{
 		if ( !Map.DocStatus ) {
 			Map.DocStatus = true;
@@ -91,7 +91,7 @@ global Map =
 			}
 		}
 	},
-	War_Documents_Returned = function( trigger )
+	War_Documents_Returned = function()
 	{
 		Map.DocStatus = false;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_.*" );
@@ -117,7 +117,7 @@ global Map =
 		});
 	},
 
-	beach_flag_Axis_Captured = function( trigger )
+	beach_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -130,7 +130,7 @@ global Map =
 		}
 	},
 
-	beach_flag_Allies_Captured = function( trigger )
+	beach_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

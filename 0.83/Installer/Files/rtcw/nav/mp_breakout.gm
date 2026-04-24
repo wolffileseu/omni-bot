@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	ChurchAlley = false,
 	BackAlley = false,
 	FlagStatus = 0,

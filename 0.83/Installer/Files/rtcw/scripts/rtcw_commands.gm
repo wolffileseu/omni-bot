@@ -277,8 +277,8 @@ Commands["goaldef"] =
 
 		foreach( goal in goals ) {
 			str = format("\t%s =", goal.Name);
-			assert( gmfile.Write( str, System.NewLine ) );
-			assert( gmfile.Write( "\t{", System.NewLine ) );
+			assert( gmfile.WriteLine( str) );
+			assert( gmfile.WriteLine( "\t{") );
 
 			// add some common props
 			goal.CreateOnLoad = 1;
@@ -294,28 +294,28 @@ Commands["goaldef"] =
 					case "int":
 					{
 						str = format("\t\t%s = %d,", property, value);
-						assert( gmfile.Write( str, System.NewLine ) );
+						assert( gmfile.WriteLine( str) );
 					}
 					case "float":
 					{
 						str = format("\t\t%s = %f,", property, value);
-						assert( gmfile.Write( str, System.NewLine ) );
+						assert( gmfile.WriteLine( str) );
 					}
 					case "string":
 					{
 						str = format("\t\t%s = \"%s\",", property, value);
-						assert( gmfile.Write( str, System.NewLine ) );
+						assert( gmfile.WriteLine( str) );
 					}
 					case "vector3":
 					{
 						str = format("\t\t%s = Vec3(%f,%f,%f),", property, value.x, value.y, value.z);
-						assert( gmfile.Write( str, System.NewLine ) );
+						assert( gmfile.WriteLine( str) );
 					}
 					case "table":
 					{
 						str = format("\t\t%s = ", property);
-						assert( gmfile.Write( str, System.NewLine ) );
-						assert( gmfile.Write( "\t\t{", System.NewLine ) );
+						assert( gmfile.WriteLine( str) );
+						assert( gmfile.WriteLine( "\t\t{") );
 
 						foreach( xid and val in value ) {
 
@@ -324,22 +324,22 @@ Commands["goaldef"] =
 								case "vector3":
 								{
 									str = format("\t\t\t[%d] = Vec3(%f,%f,%f),", xid, val.x, val.y, val.z);
-									assert( gmfile.Write( str, System.NewLine ) );
+									assert( gmfile.WriteLine( str) );
 								}
 								case "string":
 								{
 									str = format("\t\t\t[%d] = \"%s\",", xid, val);
-									assert( gmfile.Write( str, System.NewLine ) );
+									assert( gmfile.WriteLine( str) );
 								}
 							};
 						}
 
-						assert( gmfile.Write( "\t\t},", System.NewLine ) );
+						assert( gmfile.WriteLine( "\t\t},") );
 					}
 				};
 			}
 
-			assert( gmfile.Write( "\t},", System.NewLine ) );
+			assert( gmfile.WriteLine( "\t},") );
 		}
 
 		gmfile.Close();

@@ -11,29 +11,27 @@
 
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
-
-	gate_of_Forest_Brescia_Destroyed = function( trigger )
+	gate_of_Forest_Brescia_Destroyed = function()
 	{
 		Util.MapDebugPrint( "gate_of_Forest_Brescia_Destroyed" );
 	},
 
-	lower_bunker_door_Destroyed = function( trigger )
+	lower_bunker_door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "lower_bunker_door_Destroyed" );
 	},
 
-	Enigma_codes_Taken = function( trigger )
+	Enigma_codes_Taken = function()
 	{
 		Util.MapDebugPrint( "Enigma_codes_Taken" );
 	},
 
-	beach_flag_Axis_Captured = function( trigger )
+	beach_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Axis_Captured" );
 	},
 
-	beach_flag_Allies_Captured = function( trigger )
+	beach_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Allies_Captured" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rFlag.*" );

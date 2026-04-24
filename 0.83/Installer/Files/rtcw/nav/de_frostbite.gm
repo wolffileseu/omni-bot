@@ -3,7 +3,6 @@ global Map =
 	Quiet = true,
 	FocusPrimary = false,
 	DispenseAmmoTime = 1,
-	Debug = false,
 	DontDispenseAmmo = true,
 
 	Destroy_service_door = "PLANT_service_door",
@@ -141,7 +140,7 @@ global Map =
 		},
 	},
 
-	allies_capture = function( trigger )
+	allies_capture = function()
 	{
 		Map.FlagStatus = 2;
 		Map.DontDispenseAmmo = false;
@@ -162,7 +161,7 @@ global Map =
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" );
 	},
 
-	axis_capture = function( trigger )
+	axis_capture = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -177,7 +176,7 @@ global Map =
 		Util.SetMaxUsersInProgress( 2, "CHECKPOINT.*" );
 	},
 
-	main_door_Destroyed = function( trigger )
+	main_door_Destroyed = function()
 	{
 		Map.MainDoorStatus = 1;
 		Util.EnableGoal( "ROUTE_lowercp" );
@@ -189,7 +188,7 @@ global Map =
 		}
 	},
 
-	Dyno_Plant_Main = function( trigger )
+	Dyno_Plant_Main = function()
 	{
 		//bots shouldnt attempt defuse
 		Util.DisableGoal( "DEFUSE_main.*" );
@@ -197,12 +196,12 @@ global Map =
 		Map.MainDoorDyno += 1;
 	},
 
-	Dyno_Defuse_Main = function( trigger )
+	Dyno_Defuse_Main = function()
 	{
 		Map.MainDoorDyno -= 1;
 	},
 
-	wall_Destroyed = function( trigger )
+	wall_Destroyed = function()
 	{
 		Map.WallStatus = 1;
 		Util.EnableGoal( "ROUTE_wallroute" );
@@ -219,7 +218,7 @@ global Map =
 
 	},
 
-	Dyno_Plant_Wall = function( trigger )
+	Dyno_Plant_Wall = function()
 	{
 		//bots shouldnt attempt defuse
 		Util.DisableGoal( "DEFUSE_storage.*" );
@@ -227,12 +226,12 @@ global Map =
 		Map.WallDyno += 1;
 	},
 
-	Dyno_Defuse_Wall = function( trigger )
+	Dyno_Defuse_Wall = function()
 	{
 		Map.WallDyno -= 1;
 	},
 
-	service_door_Destroyed = function( trigger )
+	service_door_Destroyed = function()
 	{
 		Map.ServiceDoorStatus = 1;
 
@@ -244,7 +243,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ROUTE_office" );
 	},
 
-	Dyno_Plant_Service = function( trigger )
+	Dyno_Plant_Service = function()
 	{
 		//bots shouldnt attempt defuse if they don't own flag
 		if ( Map.FlagStatus != 1 ) {
@@ -254,12 +253,12 @@ global Map =
 		Map.ServiceDoorDyno += 1;
 	},
 
-	Dyno_Defuse_Service = function( trigger )
+	Dyno_Defuse_Service = function()
 	{
 		Map.ServiceDoorDyno -= 1;
 	},
 
-	Documents_Taken = function( trigger )
+	Documents_Taken = function()
 	{
 		Map.DocStatus = 1;
 
@@ -291,7 +290,7 @@ global Map =
 
 	},
 
-	Documents_Returned = function( trigger )
+	Documents_Returned = function()
 	{
 		Map.DocStatus = 0;
 
@@ -324,7 +323,7 @@ global Map =
 		}
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, Map.FLAG_War_Documents );
 		SetAvailableMapGoals( TEAM.ALLIES, false, {

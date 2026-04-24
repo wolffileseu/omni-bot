@@ -1,12 +1,11 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	ViewDistance = 2500,
 	Suicide = MAP_SUICIDE,
 
-	Front_Gate_Destroyed = function( trigger )
+	Front_Gate_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "AIRSTRIKE_bGate.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_bLighthouse.*" );
@@ -19,12 +18,12 @@ global Map =
 		Util.MapDebugPrint( "Front_Gate_Destroyed" );
 	},
 
-	Lighthouse_Light_Destroyed = function( trigger )
+	Lighthouse_Light_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Lighthouse_Light_Destroyed" );
 	},
 
-	Sea_wall_door_Destroyed = function( trigger )
+	Sea_wall_door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "AIRSTRIKE_bDoor.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_bLighthouse.*" );
@@ -37,12 +36,12 @@ global Map =
 		Util.MapDebugPrint( "Sea_wall_door_Destroyed" );
 	},
 
-	beach_flag_Axis_Captured = function( trigger )
+	beach_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Axis_Captured" );
 	},
 
-	beach_flag_Allies_Captured = function( trigger )
+	beach_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Allies_Captured" );
 	},

@@ -7,8 +7,6 @@ global Map =
 	ViewDistance = 4000,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
-	Debug = false,
-
 	OBStatus = false,
 	SWStatus = false,
 	SEStatus = false,
@@ -17,24 +15,24 @@ global Map =
 	RoofAxis = 0,
 	RoofAllies = 0,
 
-	Southeast_Gate_Destroyed = function( trigger )
+	Southeast_Gate_Destroyed = function()
 	{
 		Map.SEStatus = true;
 		Map.SEDyno = 0;
 		SetAvailableMapGoals( TEAM.ALLIES, true, Map.Flag_obj_item01 );
 	},
 
-	Southeast_Gate_Planted = function( trigger )
+	Southeast_Gate_Planted = function()
 	{
 		Map.SEDyno += 1;
 	},
 
-	Southeast_Gate_Defused = function( trigger )
+	Southeast_Gate_Defused = function()
 	{
 		Map.SEDyno -= 1;
 	},
 
-	Southwest_Gate_Destroyed = function( trigger )
+	Southwest_Gate_Destroyed = function()
 	{
 		Map.SWStatus = true;
 		Map.SWDyno = 0;
@@ -43,17 +41,17 @@ global Map =
 
 	},
 
-	Southwest_Gate_Planted = function( trigger )
+	Southwest_Gate_Planted = function()
 	{
 		Map.SWDyno += 1;
 	},
 
-	Southwest_Gate_Defused = function( trigger )
+	Southwest_Gate_Defused = function()
 	{
 		Map.SWDyno -= 1;
 	},
 
-	obj_item01_Taken = function( trigger )
+	obj_item01_Taken = function()
 	{
 		Map.OBStatus = true;
 		Map.DontDispenseAmmo = true;
@@ -84,7 +82,7 @@ global Map =
 		});
 	},
 
-	obj_item01_Returned = function( trigger )
+	obj_item01_Returned = function()
 	{
 		Map.OBStatus = false;
 		Map.DontDispenseAmmo = false;

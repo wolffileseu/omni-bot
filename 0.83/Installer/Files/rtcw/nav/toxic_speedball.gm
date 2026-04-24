@@ -105,17 +105,17 @@ global Map =
 			NoPause = true,
 		},
 	},
-	Allied_Flag_Taken = function( trigger )
+	Allied_Flag_Taken = function()
 	{
 		print( "Allied_Flag_Taken" );
 	},
 
-	Axis_Flag_Taken = function( trigger )
+	Axis_Flag_Taken = function()
 	{
 		print( "Axis_Flag_Taken" );
 	},
 
-	forwardspawn_Axis_Captured = function( trigger )
+	forwardspawn_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -140,7 +140,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ARTILLERY_S_bBoxes.*" );
 	},
 
-	forwardspawn_Allies_Captured = function( trigger )
+	forwardspawn_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

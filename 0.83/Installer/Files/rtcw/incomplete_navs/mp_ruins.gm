@@ -11,14 +11,12 @@
 
 global Map =
 {
-	Debug = 1, // please set to zero before distributing your script
-
-	church_flag_Axis_Captured = function( trigger )
+	church_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "church_flag_Axis_Captured" );
 	},
 
-	church_flag_Allies_Captured = function( trigger )
+	church_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "church_flag_Allies_Captured" );
 	},

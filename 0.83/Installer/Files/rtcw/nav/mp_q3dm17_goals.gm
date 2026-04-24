@@ -3,7 +3,6 @@ global _MG =
 	MOUNTMG42_mg = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(2288.000, 64.000, 304.000),
@@ -12,7 +11,6 @@ global _MG =
 	REPAIRMG42_mg = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(2288.000, 64.000, 304.000),
 		TeamAvailability = 6,
 	},

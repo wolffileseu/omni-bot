@@ -4,7 +4,6 @@ global Map =
 	DispenseAmmoTime = 1,
 	//set this to false if you don't like bots /killing
 	Suicide = MAP_SUICIDE,
-	Debug = false,
 	Quiet = true,
 	Flag_Sacred_Obelisk = "FLAG_Sacred_Obelisk",
 	Plant_Coffin = "PLANT_Coffin",
@@ -56,7 +55,7 @@ global Map =
 		},
 	},
 
-	Coffin_Destroyed = function( trigger )
+	Coffin_Destroyed = function()
 	{
 		// this region trigger isn't needed anymore
 		DeleteTriggerRegion( "Coffin" );
@@ -69,7 +68,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rDefuseAssist.*" );
 	},
 
-	Coffin_Planted = function( trigger )
+	Coffin_Planted = function()
 	{
 		Map.CoffinDyno += 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "CALLARTILLERY_rCoffin.*" );    // Let eng defuse!
@@ -88,7 +87,7 @@ global Map =
 		}
 	},
 
-	Coffin_Defused = function( trigger )
+	Coffin_Defused = function()
 	{
 		Map.CoffinDyno -= 1;
 		if ( Map.CoffinDyno < 1 ) {
@@ -107,7 +106,7 @@ global Map =
 		}
 	},
 
-	Hallway_Gate_Destroyed = function( trigger )
+	Hallway_Gate_Destroyed = function()
 	{
 		Map.HallwayStatus = true;
 		Map.checkCoffinFallback();
@@ -120,17 +119,17 @@ global Map =
 		}
 	},
 
-	Hallway_Gate_Planted = function( trigger )
+	Hallway_Gate_Planted = function()
 	{
 		Map.HallwayDyno += 1;
 	},
 
-	Hallway_Gate_Defused = function( trigger )
+	Hallway_Gate_Defused = function()
 	{
 		Map.HallwayDyno -= 1;
 	},
 
-	West_Gate_Destroyed = function( trigger )
+	West_Gate_Destroyed = function()
 	{
 		Map.WestStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bGate.*" );
@@ -147,18 +146,18 @@ global Map =
 		Map.checkCoffinFallback();
 	},
 
-	West_Gate_Planted = function( trigger )
+	West_Gate_Planted = function()
 	{
 		Map.WestDyno += 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_West_Gate.*" );
 	},
 
-	West_Gate_Defused = function( trigger )
+	West_Gate_Defused = function()
 	{
 		Map.WestDyno -= 1;
 	},
 
-	Sacred_Obelisk_Taken = function( trigger )
+	Sacred_Obelisk_Taken = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "CALLARTILLERY_rCoffin.*" );    // Focus on obelisk
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -182,7 +181,7 @@ global Map =
 		}
 	},
 
-	Sacred_Obelisk_Returned = function( trigger )
+	Sacred_Obelisk_Returned = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"CALLARTILLERY_rCoffin.*",
@@ -212,7 +211,7 @@ global Map =
 			}
 		}
 	},
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		// better just focus on the coffin now
 		SetGoalPriority( "ATTACK_bHallway.*", 0.49 );
@@ -220,7 +219,7 @@ global Map =
 		SetGoalPriority( "PLANT_Coffin", 0.93 );
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 	},
 

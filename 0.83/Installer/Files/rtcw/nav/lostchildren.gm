@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	bridgeBuilt = false,
 	barrier1Destroyed = false,
 	barrier2Destroyed = true,
@@ -172,14 +171,14 @@ global Map =
 		}*/
 	},
 
-	Barrier1_Planted  = function( trigger )
+	Barrier1_Planted  = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_barrier_1.*" );
 
 		Util.MapDebugPrint( "Barrier1_Planted " );
 	},
 
-	Barrier1_Destroyed  = function( trigger )
+	Barrier1_Destroyed  = function()
 	{
 		Map.barrier1Destroyed = true;
 		Util.EnableGoal( "ROUTE_barrier1" );
@@ -191,12 +190,12 @@ global Map =
 		Util.MapDebugPrint( "Barrier1_Destroyed " );
 	},
 
-	Second_barrier_Planted = function( trigger )
+	Second_barrier_Planted = function()
 	{
 		Util.MapDebugPrint( "Second_barrier_Planted" );
 	},
 
-	Second_barrier_Destroyed = function( trigger )
+	Second_barrier_Destroyed = function()
 	{
 		Map.barrier2Destroyed = true;
 		//Map.SetAvail();
@@ -210,7 +209,7 @@ global Map =
 		Util.MapDebugPrint( "Second_barrier_Destroyed" );
 	},
 
-	Old_city_wall_Planted = function( trigger )
+	Old_city_wall_Planted = function()
 	{
 		Map.Old_city_wall_Dyno += 1;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFEND_east.*" );
@@ -218,7 +217,7 @@ global Map =
 		Util.MapDebugPrint( "Old_city_wall_Planted" );
 	},
 
-	Old_city_wall_Defused = function( trigger )
+	Old_city_wall_Defused = function()
 	{
 		Map.Old_city_wall_Dyno -= 1;
 		if (Map.Old_city_wall_Dyno < 1)
@@ -229,7 +228,7 @@ global Map =
 		Util.MapDebugPrint( "Old_city_wall_Defused" );
 	},
 
-	Old_city_wall_Destroyed = function( trigger )
+	Old_city_wall_Destroyed = function()
 	{
 		Map.wallDestroyed = true;
 		Util.EnableGoal( "ROUTE_wall" );
@@ -254,7 +253,7 @@ global Map =
 		Util.MapDebugPrint( "Old_city_wall_Destroyed" );
 	},
 
-	book1_Taken = function( trigger )
+	book1_Taken = function()
 	{
 		Map.bookTaken = true;
 		Map.SetAvail();
@@ -291,7 +290,7 @@ global Map =
 		Util.MapDebugPrint( "book1_Taken" );
 	},
 
-	book1_Returned = function( trigger )
+	book1_Returned = function()
 	{
 		Map.bookTaken = false;
 		Map.bookAtBoat = false;
@@ -322,7 +321,7 @@ global Map =
 		Util.MapDebugPrint( "book1_Returned" );
 	},
 
-	flag_Axis_Captured = function( trigger )
+	flag_Axis_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"PLANT_barrier_2",
@@ -350,7 +349,7 @@ global Map =
 		Util.MapDebugPrint( "flag_Axis_Captured" );
 	},
 
-	flag_Allies_Captured = function( trigger )
+	flag_Allies_Captured = function()
 	{
 		Util.SetMaxUsersInProgress(5, "CHECKPOINT.*");
 		Util.MapDebugPrint( "flag_Allies_Captured" );

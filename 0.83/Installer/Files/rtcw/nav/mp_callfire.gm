@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 5,
 	DontDispenseAmmo = true,
 	AntennaStatus = 0,
@@ -34,20 +33,20 @@ global Map =
 	},
 
 	// Radio Destroyed
-	Communication_station_1_Destroyed = function( trigger )
+	Communication_station_1_Destroyed = function()
 	{
 		Map.RadioStatus = 1;
 
 		Util.MapDebugPrint( "Communication_station_1_Destroyed" );
 	},
 
-	Communication_station_2_Planted = function (trigger)
+	Communication_station_2_Planted = function()
 	{
 		Map.EnableAxisAntennaAccess();
 		Map.AntennaDyno += 1;
 		Util.MapDebugPrint( "Communication_station_2_Planted" );
 	},
-	Communication_station_2_Defused = function (trigger)
+	Communication_station_2_Defused = function()
 	{
 		Map.AntennaDyno -= 1;
 		if (Map.AntennaDyno == 0)
@@ -57,7 +56,7 @@ global Map =
 		Util.MapDebugPrint( "Communication_station_2_Defused" );
 	},
 	// Antenna Destroyed
-	Communication_station_2_Destroyed = function( trigger )
+	Communication_station_2_Destroyed = function()
 	{
 		Map.AntennaStatus = 1;
 
@@ -94,7 +93,7 @@ global Map =
 		Util.MapDebugPrint( "Communication_station_2_Destroyed" );
 	},
 
-	Lower_Tunnel_Gate_Planted = function( trigger )
+	Lower_Tunnel_Gate_Planted = function()
 	{
 		Map.EvalFallback();
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Lower.*" );
@@ -102,11 +101,11 @@ global Map =
 		Util.MapDebugPrint( "Lower_Tunnel_Gate_Planted" );
 	},
 
-	Lower_Tunnel_Gate_Destroyed = function( trigger )
+	Lower_Tunnel_Gate_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Lower_Tunnel_Gate_Destroyed" );
 	},
-	sewer_grate_Planted = function( trigger )
+	sewer_grate_Planted = function()
 	{
 		Map.EvalFallback();
 
@@ -114,19 +113,19 @@ global Map =
 
 		Util.MapDebugPrint( "sewer_grate_Planted" );
 	},
-	sewer_grate_Destroyed = function( trigger )
+	sewer_grate_Destroyed = function()
 	{
 		Util.MapDebugPrint( "sewer_grate_Destroyed" );
 	},
 
-	rivr_flag_Axis_Captured = function( trigger )
+	rivr_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
 		Util.MapDebugPrint( "rivr_flag_Axis_Captured" );
 	},
 
-	rivr_flag_Allies_Captured = function( trigger )
+	rivr_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 		Map.EvalFallback();
@@ -134,7 +133,7 @@ global Map =
 		Util.MapDebugPrint( "rivr_flag_Allies_Captured" );
 	},
 
-	EvalFallback = function ()
+	EvalFallback = function()
 	{
 		if (!Map.Fallback)
 		{

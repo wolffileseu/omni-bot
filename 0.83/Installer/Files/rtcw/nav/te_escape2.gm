@@ -22,14 +22,14 @@ global Map =
 	MainStatus = false, //intact
 	TunnelStatus = false, //intact
 
-	Main_Gate_Planted = function( trigger )
+	Main_Gate_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Main_Gate.*" );
 
 		Util.MapDebugPrint( "Main_Gate_Planted" );
 	},
 
-	Main_Gate_Destroyed = function( trigger )
+	Main_Gate_Destroyed = function()
 	{
 		Map.MainStatus = true;
 	RTCWUtil.SetSuicide( TEAM.AXIS, CLASS.LIEUTENANT, 0, 0 );
@@ -52,14 +52,14 @@ global Map =
 		Util.MapDebugPrint( "Main_Gate!_Destroyed" );
 	},
 
-	Tunnel_Door_Planted = function( trigger )
+	Tunnel_Door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Tunnel_Door.*" );
 
 		Util.MapDebugPrint( "Tunnel_Door_Planted" );
 	},
 
-	Tunnel_Door_Destroyed = function( trigger )
+	Tunnel_Door_Destroyed = function()
 	{
 		RTCWUtil.SetSuicide( TEAM.AXIS, CLASS.LIEUTENANT, 0, 0 );
 
@@ -74,7 +74,7 @@ global Map =
 		Util.MapDebugPrint( "Tunnel_Door_Destroyed" );
 	},
 
-	Unholy_Grail_Taken = function( trigger )
+	Unholy_Grail_Taken = function()
 	{
 		RTCWUtil.SetSuicide( TEAM.AXIS, CLASS.LIEUTENANT, 0, 0 );
 
@@ -99,7 +99,7 @@ global Map =
 		Util.MapDebugPrint( "Unholy_Grail_Taken" );
 	},
 
-	Unholy_Grail_Returned = function( trigger )
+	Unholy_Grail_Returned = function()
 	{
 		Map.RelicStatus = false;
 		Map.RestrictAxis();
@@ -132,12 +132,12 @@ global Map =
 		Util.MapDebugPrint( "Unholy_Grail_Taken" );
 	},
 
-	deliver_Captured = function( trigger )
+	deliver_Captured = function()
 	{
 		Util.MapDebugPrint( "deliver_Captured" );
 	},
 
-	flag_obj_Axis_Captured = function( trigger )
+	flag_obj_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" );
@@ -145,7 +145,7 @@ global Map =
 		Util.MapDebugPrint( "flag_obj_Axis_Captured" );
 	},
 
-	flag_obj_Allies_Captured = function( trigger )
+	flag_obj_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 		Util.SetMaxUsersInProgress( 1, "CHECKPOINT.*" );
@@ -177,11 +177,11 @@ global Map =
 		Util.MapDebugPrint( "flag_obj_Allies_Captured" );
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		SetGoalPriority( "CALL.*", 0.0 );
 		SetGoalPriority( "ARTILLERY.*", 0.0 );
@@ -191,7 +191,7 @@ global Map =
 		}
 	},
 
-	RestrictAxis = function ()
+	RestrictAxis = function()
 	{
 		Wp.SetWaypointFlag( "axisblock1", "allies", true );
 		Wp.SetWaypointFlag( "axisblock2", "allies", true );

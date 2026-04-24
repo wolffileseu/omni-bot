@@ -126,7 +126,7 @@ global Map =
 		},
 	},
 
-	Fortress_Wall_Destroyed = function( trigger )
+	Fortress_Wall_Destroyed = function()
 	{
 		Map.SideWallStatus = true;
 
@@ -134,7 +134,7 @@ global Map =
 		Util.EnableGoal( "ROUTE_sidewall" );
 	},
 
-	Service_Door_Destroyed  = function( trigger )
+	Service_Door_Destroyed  = function()
 	{
 		Map.MainDoorStatus = true;
 
@@ -184,7 +184,7 @@ global Map =
 		}
 	},
 
-	axis_obj01_Taken = function( trigger )
+	axis_obj01_Taken = function()
 	{
 		if ( !Map.DocStatus ) {
 			Map.DocStatus = true;
@@ -223,7 +223,7 @@ global Map =
 		}
 	},
 
-	axis_obj01_Returned = function( trigger )
+	axis_obj01_Returned = function()
 	{
 		Map.DocStatus = false;
 
@@ -247,7 +247,7 @@ global Map =
 		SetGoalPriority( "ARTILLERY.*", 1.0 );
 	},
 
-	flag_respawn_obj_Allies_Captured = function( trigger )
+	flag_respawn_obj_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -269,7 +269,7 @@ global Map =
 		});
 	},
 
-	flag_respawn_obj_Axis_Captured = function( trigger )
+	flag_respawn_obj_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -301,27 +301,27 @@ global Map =
 		});
 	},
 
-	Service_Door_Planted = function( trigger )
+	Service_Door_Planted = function()
 	{
 		Map.MainDoorDyno += 1;
 	},
 
-	Service_Door_Defused = function( trigger )
+	Service_Door_Defused = function()
 	{
 		Map.MainDoorDyno -= 1;
 	},
 
-	Fortress_Wall_Planted = function( trigger )
+	Fortress_Wall_Planted = function()
 	{
 		Map.SideWallDyno += 1;
 	},
 
-	Fortress_Wall_Defused = function( trigger )
+	Fortress_Wall_Defused = function()
 	{
 		Map.SideWallDyno -= 1;
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;

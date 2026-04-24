@@ -1,18 +1,16 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
-
-	Allied_Helicopter_Destroyed = function( trigger )
+	Allied_Helicopter_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_Helicopter_Destroyed" );
 	},
 
-	Cathedrale_door_Destroyed = function( trigger )
+	Cathedrale_door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Cathedrale_door_Destroyed" );
 	},
 
-	Top_Secret_Documents_Taken = function( trigger )
+	Top_Secret_Documents_Taken = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_transmit.*" );
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -25,7 +23,7 @@ global Map =
 		Util.MapDebugPrint( "Top_Secret_Documents_Taken" );
 	},
 
-	Top_Secret_Documents_Secured = function( trigger )
+	Top_Secret_Documents_Secured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"DEFEND_rChurch.*",

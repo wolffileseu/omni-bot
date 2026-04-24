@@ -11,9 +11,7 @@
 
 global Map =
 {
-	Debug = 0,
-
-	access_door_target_Destroyed = function( trigger )
+	access_door_target_Destroyed = function()
 	{
 		Util.EnableGoal("ROUTE_door");
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_door.*");

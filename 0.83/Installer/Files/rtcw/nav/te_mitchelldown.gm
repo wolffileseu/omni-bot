@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	ViewDistance = 2300,
 	DontDispenseAmmo = true,
 	Suicide = MAP_SUICIDE,
@@ -17,7 +16,7 @@ global Map =
 		},
 	},
 
-	North_Factory_Door_Destroyed = function( trigger )
+	North_Factory_Door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "North_Factory_Door_Destroyed" );
 
@@ -33,7 +32,7 @@ global Map =
 		}
 	},
 
-	South_Factory_Door_Destroyed = function( trigger )
+	South_Factory_Door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "South_Factory_Door_Destroyed" );
 
@@ -49,7 +48,7 @@ global Map =
 		}
 	},
 
-	Little_Boy_Bomb_Taken = function( trigger )
+	Little_Boy_Bomb_Taken = function()
 	{
 		Util.MapDebugPrint( "Little_Boy_Bomb_Taken" );
 
@@ -71,7 +70,7 @@ global Map =
 		});
 	},
 
-	Little_Boy_Bomb_Secured = function( trigger )
+	Little_Boy_Bomb_Secured = function()
 	{
 		Util.MapDebugPrint( "Little_Boy_Bomb_Secured" );
 
@@ -103,12 +102,12 @@ global Map =
 		}
 	},
 
-	the_flag_Axis_Captured = function( trigger )
+	the_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "the_flag_Axis_Captured" );
 	},
 
-	the_flag_Allies_Captured = function( trigger )
+	the_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "the_flag_Allies_Captured" );
 	},

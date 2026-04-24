@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	DispenseAmmoTime = 6,   // Time to call arty
 	DontDispenseAmmo = false,
 

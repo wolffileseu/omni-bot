@@ -17,12 +17,12 @@ global Map =
 	SewerStatus = false,
 	BridgeDyno = 0,
 
-	Alley_Gate_Planted = function( trigger )
+	Alley_Gate_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_rEng_Gate.*" );
 	},
 
-	Alley_Gate_Destroyed = function( trigger )
+	Alley_Gate_Destroyed = function()
 	{
 		Map.GateStatus = true;
 
@@ -42,30 +42,30 @@ global Map =
 		Util.EnableGoal( "ROUTE_gate" );
 	},
 
-	Bridge_Destroyed = function( trigger )
+	Bridge_Destroyed = function()
 	{
 		Map.BridgeDyno = 0;
 
 	},
 
-	Bridge_Planted = function( trigger )
+	Bridge_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_Alley.*" );
 
 		Map.BridgeDyno += 1;
 	},
 
-	Bridge_Defused = function( trigger )
+	Bridge_Defused = function()
 	{
 		Map.BridgeDyno -= 1;
 	},
 
-	Sewer_Hatch_Planted = function( trigger )
+	Sewer_Hatch_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_Sewer.*" );
 	},
 
-	Sewer_Hatch_Destroyed = function( trigger )
+	Sewer_Hatch_Destroyed = function()
 	{
 		Map.SewerStatus = true;
 
@@ -78,7 +78,7 @@ global Map =
 
 	},
 
-	court_flag_Axis_Captured = function( trigger )
+	court_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -87,7 +87,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, true, "CHECKPOINT.*" );
 	},
 
-	court_flag_Allies_Captured = function( trigger )
+	court_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

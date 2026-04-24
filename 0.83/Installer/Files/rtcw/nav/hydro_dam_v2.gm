@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	DontDispenseAmmo = true,
 	ViewDistance = 2900,
 
@@ -43,7 +42,7 @@ global Map =
 		},
 	},
 
-	allied_door_Destroyed = function( trigger )
+	allied_door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"FLAG_Gold",
@@ -55,7 +54,7 @@ global Map =
 		Util.MapDebugPrint( "allied_door_Destroyed" );
 	},
 
-	axis_door_Destroyed = function( trigger )
+	axis_door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, {
 			"FLAG_Secret_Documents",
@@ -67,7 +66,7 @@ global Map =
 		Util.MapDebugPrint( "axis_door_Destroyed" );
 	},
 
-	gold_box_Taken = function( trigger )
+	gold_box_Taken = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "DEFEND_gold_box" );
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_gold_box.*" );
@@ -85,22 +84,22 @@ global Map =
 		Util.MapDebugPrint( "gold_box_Taken" );
 	},
 
-	docs_taken = function( trigger )
+	docs_taken = function()
 	{
 		Util.MapDebugPrint( "docs_taken" );
 	},
 
-	cap_parts_Captured = function( trigger )
+	cap_parts_Captured = function()
 	{
 		Util.MapDebugPrint( "cap_parts_Captured" );
 	},
 
-	gold_cap_Captured = function( trigger )
+	gold_cap_Captured = function()
 	{
 		Util.MapDebugPrint( "gold_cap_Captured" );
 	},
 
-	allied_flag1_Axis_Captured = function( trigger )
+	allied_flag1_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "allied_flag1_Axis_Captured" );
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -113,7 +112,7 @@ global Map =
 		});
 	},
 
-	allied_flag1_Allies_Captured = function( trigger )
+	allied_flag1_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "allied_flag1_Allies_Captured" );
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -123,7 +122,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "ARTILLERY_S_rSpawnkill.*" );
 	},
 
-	axis_flag1_Axis_Captured = function( trigger )
+	axis_flag1_Axis_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, {
 			"AIRSTRIKE_.*",
@@ -134,7 +133,7 @@ global Map =
 		Util.MapDebugPrint( "axis_flag1_Axis_Captured" );
 	},
 
-	axis_flag1_Allies_Captured = function( trigger )
+	axis_flag1_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, {
 			"AIRSTRIKE_.*",
@@ -148,12 +147,12 @@ global Map =
 		Util.MapDebugPrint( "axis_flag1_Allies_Captured" );
 	},
 
-	docs_returned = function( trigger )
+	docs_returned = function()
 	{
 		Util.MapDebugPrint( "docs_returned" );
 	},
 
-	gold_returned = function( trigger )
+	gold_returned = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFEND_gold_box" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_gold_box.*" );
@@ -167,12 +166,12 @@ global Map =
 		Util.MapDebugPrint( "gold returned" );
 	},
 
-	Ally_plant = function( trigger )
+	Ally_plant = function()
 	{
 		Util.MapDebugPrint( "Planted at axis door" );
 	},
 
-	Axis_plant = function( trigger )
+	Axis_plant = function()
 	{
 		Util.MapDebugPrint( "Planted at allied door" );
 	},

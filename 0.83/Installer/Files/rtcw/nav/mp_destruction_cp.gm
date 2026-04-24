@@ -43,7 +43,7 @@ global Map =
 		},
 	},
 
-	checkpoint1_Axis_Captured = function( trigger )
+	checkpoint1_Axis_Captured = function()
 	{
 		Map.c1status = 1;
 
@@ -51,7 +51,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint1_Allies_Captured = function( trigger )
+	checkpoint1_Allies_Captured = function()
 	{
 		Map.c1status = 2;
 
@@ -59,7 +59,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint2_Axis_Captured = function( trigger )
+	checkpoint2_Axis_Captured = function()
 	{
 		Map.c2status = 1;
 
@@ -67,7 +67,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint2_Allies_Captured = function( trigger )
+	checkpoint2_Allies_Captured = function()
 	{
 		Map.c2status = 2;
 
@@ -75,7 +75,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint3_Axis_Captured = function( trigger )     // Allied 3rd
+	checkpoint3_Axis_Captured = function()     // Allied 3rd
 	{
 		Map.c3status = 1;
 
@@ -93,7 +93,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint3_Allies_Captured = function( trigger )   // Allied 3rd
+	checkpoint3_Allies_Captured = function()   // Allied 3rd
 	{
 		Map.c3status = 2;
 
@@ -106,7 +106,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint4_Axis_Captured = function( trigger )     // Axis 3rd
+	checkpoint4_Axis_Captured = function()     // Axis 3rd
 	{
 		Map.c4status = 1;
 
@@ -119,7 +119,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint4_Allies_Captured = function( trigger )   // Axis 3rd
+	checkpoint4_Allies_Captured = function()   // Axis 3rd
 	{
 		Map.c4status = 2;
 
@@ -134,7 +134,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint5_Axis_Captured = function( trigger )     // Axis 2nd
+	checkpoint5_Axis_Captured = function()     // Axis 2nd
 	{
 		Map.c5status = 1;
 
@@ -142,7 +142,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint5_Allies_Captured = function( trigger )   // Axis 2nd
+	checkpoint5_Allies_Captured = function()   // Axis 2nd
 	{
 		Map.c5status = 2;
 
@@ -150,7 +150,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint6_Axis_Captured = function( trigger )     // Axis 1st
+	checkpoint6_Axis_Captured = function()     // Axis 1st
 	{
 		Map.c6status = 1;
 
@@ -158,7 +158,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	checkpoint6_Allies_Captured = function( trigger )   // Axis 1st
+	checkpoint6_Allies_Captured = function()   // Axis 1st
 	{
 		Map.c6status = 2;
 
@@ -166,7 +166,7 @@ global Map =
 		Map.ToggleDefends();
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		Map.thirtysecond = true;
 

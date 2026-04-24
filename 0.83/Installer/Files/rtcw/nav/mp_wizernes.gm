@@ -122,19 +122,19 @@ global Map =
 		DeleteTriggerRegion("rTrigger");
 	},
 
-	Allied_Control_Center_Destroyed = function( trigger )
+	Allied_Control_Center_Destroyed = function()
 	{
 		Map.bccDyno = 0;
 	},
 
-	Allied_Control_Center_Planted = function( trigger )
+	Allied_Control_Center_Planted = function()
 	{
 		Map.bccDyno += 1;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "CAMP_.*" );
 		SetAvailableMapGoals( TEAM.ALLIES, true, "CAMP_bDefend[12367]" );
 	},
 
-	Allied_Control_Center_Defused = function( trigger )
+	Allied_Control_Center_Defused = function()
 	{
 		Map.bccDyno -= 1;
 
@@ -144,7 +144,7 @@ global Map =
 		}
 	},
 
-	Allied_side_entrance_Destroyed = function( trigger )
+	Allied_side_entrance_Destroyed = function()
 	{
 		signal("Init_bDefends");
 		Util.EnableGoal("ROUTE_bSide.*");
@@ -168,27 +168,27 @@ global Map =
 		Map.AxisDontDispenseAmmo = false;
 	},
 
-	Allied_side_entrance_Planted = function( trigger )
+	Allied_side_entrance_Planted = function()
 	{
 	},
 
-	Allied_side_entrance_Defused = function( trigger )
+	Allied_side_entrance_Defused = function()
 	{
 	},
 
-	Axis_Control_Center_Destroyed = function( trigger )
+	Axis_Control_Center_Destroyed = function()
 	{
 		Map.rccDyno = 0;
 	},
 
-	Axis_Control_Center_Planted = function( trigger )
+	Axis_Control_Center_Planted = function()
 	{
 		Map.rccDyno += 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "CAMP_.*" );
 		SetAvailableMapGoals( TEAM.AXIS, true, "CAMP_rDefend[12367]" );
 	},
 
-	Axis_Control_Center_Defused = function( trigger )
+	Axis_Control_Center_Defused = function()
 	{
 		Map.rccDyno -= 1;
 
@@ -199,7 +199,7 @@ global Map =
 
 	},
 
-	Axis_side_entrance_Destroyed = function( trigger )
+	Axis_side_entrance_Destroyed = function()
 	{
 		signal("Init_rDefends");
 		Util.EnableGoal("ROUTE_rSide.*");
@@ -223,27 +223,27 @@ global Map =
 		Map.AlliesDontDispenseAmmo = false;
 	},
 
-	Axis_side_entrance_Planted = function( trigger )
+	Axis_side_entrance_Planted = function()
 	{
 	},
 
-	Axis_side_entrance_Defused = function( trigger )
+	Axis_side_entrance_Defused = function()
 	{
 	},
 
-	allied_flag_Axis_Captured = function( trigger )
+	allied_flag_Axis_Captured = function()
 	{
 	},
 
-	allied_flag_Allies_Captured = function( trigger )
+	allied_flag_Allies_Captured = function()
 	{
 	},
 
-	axis_flag_Axis_Captured = function( trigger )
+	axis_flag_Axis_Captured = function()
 	{
 	},
 
-	axis_flag_Allies_Captured = function( trigger )
+	axis_flag_Allies_Captured = function()
 	{
 	},
 };

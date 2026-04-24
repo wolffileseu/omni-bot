@@ -21,35 +21,35 @@ global Map =
 		},
 	},
 
-	Allies_locknar_Taken = function( trigger )
+	Allies_locknar_Taken = function()
 	{
 	},
 
-	Axis_locknar_Taken = function( trigger )
+	Axis_locknar_Taken = function()
 	{
 	},
 
-	bCappoint1_Captured = function( trigger )
+	bCappoint1_Captured = function()
 	{
 	},
 
-	bCappoint2_Captured = function( trigger )
+	bCappoint2_Captured = function()
 	{
 	},
 
-	bCappoint3_Captured = function( trigger )
+	bCappoint3_Captured = function()
 	{
 	},
 
-	rCappoint1_Captured = function( trigger )
+	rCappoint1_Captured = function()
 	{
 	},
 
-	rCappoint2_Captured = function( trigger )
+	rCappoint2_Captured = function()
 	{
 	},
 
-	rCappoint3_Captured = function( trigger )
+	rCappoint3_Captured = function()
 	{
 	},
 };

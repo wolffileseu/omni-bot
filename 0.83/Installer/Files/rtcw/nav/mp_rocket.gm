@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	Quiet = true,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = false,

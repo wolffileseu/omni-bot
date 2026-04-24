@@ -2,8 +2,6 @@ global Map =
 {
 	Quiet = true,
 	FocusPrimary = false,
-	Debug = false,
-
 	Plant_North = "PLANT_North_Radar_01",
 	Plant_South = "PLANT_South_Radar_02",
 

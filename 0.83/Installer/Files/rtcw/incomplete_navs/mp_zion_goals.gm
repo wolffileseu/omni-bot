@@ -1,57 +1,21 @@
 global _MG = 
 {
-	EXPLODE_201 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(1468.193, 1632.000, -324.001),
-		TagName = "",
-	},
 	FLAG_Top_Secret_Documents = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "Flag",
 		Position = Vec3(1720.000, 1048.000, -296.000),
-		TagName = "Top Secret Documents",
 		TeamAvailability = 4,
-	},
-	MOVER_cine_door = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "MOVER",
-		Position = Vec3(0.000, 0.000, 0.000),
-		TeamAvailability = 6,
-	},
-	MOVER_cine_door_1 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "MOVER",
-		Position = Vec3(0.000, 0.000, 0.000),
-		TagName = "cine_door",
-		TeamAvailability = 6,
 	},
 	PLANT_Allied_Helicopter = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(408.000, 79.000, 395.000),
-		TagName = "Allied Helicopter",
 		TeamAvailability = 4,
 	},
 	PLANT_Cathedrale_door = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(1616.000, 710.000, -384.000),
-		TagName = "Cathedrale door",
 		TeamAvailability = 4,
 	},
 	Version = 1,

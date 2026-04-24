@@ -1,19 +1,18 @@
 global Map =
 {
-	Debug = 0,
 	DontDispenseAmmo = true,
 	DispenseAmmoTime = 1,
 	DocStatus = 0,
 	FlagStatus = 0, //0 nobody, 1 allies
 
-	Vault_Door_Planted = function( trigger )
+	Vault_Door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG.*" );
 
 		Util.MapDebugPrint( "Vault_Door_Destroyed" );
 	},
 
-	Vault_Door_Destroyed = function( trigger )
+	Vault_Door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG.*" );
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_rDocs.*" );
@@ -21,14 +20,14 @@ global Map =
 		Util.MapDebugPrint( "Vault_Door_Destroyed" );
 	},
 
-	bunker_door_Planted = function( trigger )
+	bunker_door_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_bunker.*" );
 
 		Util.MapDebugPrint( "bunker_door_Planted" );
 	},
 
-	bunker_door_Destroyed = function( trigger )
+	bunker_door_Destroyed = function()
 	{
 		if ( !Map.DocStatus && !Map.FlagStatus)
 		{
@@ -42,7 +41,7 @@ global Map =
 		Util.MapDebugPrint( "bunker_door_Destroyed" );
 	},
 
-	Enigma_Machine_Taken = function( trigger )
+	Enigma_Machine_Taken = function()
 	{
 		Util.ChangeSpawn( TEAM.ALLIES, 101 );
 		Map.DocStatus = 1;
@@ -66,7 +65,7 @@ global Map =
 		Util.MapDebugPrint( "Enigma_Machine_Taken" );
 	},
 
-	Enigma_Machine_Secured = function( trigger )
+	Enigma_Machine_Secured = function()
 	{
 		Util.ChangeSpawn( TEAM.ALLIES, 0 );
 		Map.DocStatus = 0;
@@ -91,14 +90,14 @@ global Map =
 		Util.MapDebugPrint( "Enigma_Machine_Secured" );
 	},
 
-	forward_spawn_Axis_Captured = function( trigger )
+	forward_spawn_Axis_Captured = function()
 	{
 		Map.FlagStatus = 0;
 
 		Util.MapDebugPrint( "forward_spawn_Axis_Captured" );
 	},
 
-	forward_spawn_Allies_Captured = function( trigger )
+	forward_spawn_Allies_Captured = function()
 	{
 		DontDispenseAmmo = false;
 		Map.FlagStatus = 1;

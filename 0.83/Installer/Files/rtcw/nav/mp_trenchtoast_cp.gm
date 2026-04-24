@@ -69,75 +69,75 @@ global Map =
 		},
 	},
 
-	checkpoint1_Axis_Captured = function( trigger )
+	checkpoint1_Axis_Captured = function()
 	{
 		Map.c1status = 1;
 		Map.eval_cps();
 	},
 
-	checkpoint1_Allies_Captured = function( trigger )
+	checkpoint1_Allies_Captured = function()
 	{
 		Map.c1status = 2;
 		Map.eval_cps();
 	},
 
-	checkpoint2_Axis_Captured = function( trigger )
+	checkpoint2_Axis_Captured = function()
 	{
 		Map.c2status = 1;
 		Map.eval_cps();
 	},
 
-	checkpoint2_Allies_Captured = function( trigger )
+	checkpoint2_Allies_Captured = function()
 	{
 		Map.c2status = 2;
 		Map.eval_cps();
 	},
 
-	checkpoint3_Axis_Captured = function( trigger )
+	checkpoint3_Axis_Captured = function()
 	{
 		Map.c3status = 1;
 		Map.eval_cps();
 	},
 
-	checkpoint3_Allies_Captured = function( trigger )
+	checkpoint3_Allies_Captured = function()
 	{
 		Map.c3status = 2;
 		Map.eval_cps();
 		Map.firstSpawnArty();   // Turn off firstspawnarty
 	},
 
-	checkpoint4_Axis_Captured = function( trigger )
+	checkpoint4_Axis_Captured = function()
 	{
 		Map.c4status = 1;
 		Map.eval_cps();
 		Map.firstSpawnArty();   // Turn off firstspawnarty
 	},
 
-	checkpoint4_Allies_Captured = function( trigger )
+	checkpoint4_Allies_Captured = function()
 	{
 		Map.c4status = 2;
 		Map.eval_cps();
 	},
 
-	checkpoint5_Axis_Captured = function( trigger )
+	checkpoint5_Axis_Captured = function()
 	{
 		Map.c5status = 1;
 		Map.eval_cps();
 	},
 
-	checkpoint5_Allies_Captured = function( trigger )
+	checkpoint5_Allies_Captured = function()
 	{
 		Map.c5status = 2;
 		Map.eval_cps();
 	},
 
-	checkpoint6_Axis_Captured = function( trigger )
+	checkpoint6_Axis_Captured = function()
 	{
 		Map.c6status = 1;
 		Map.eval_cps();
 	},
 
-	checkpoint6_Allies_Captured = function( trigger )
+	checkpoint6_Allies_Captured = function()
 	{
 		Map.c6status = 2;
 		Map.eval_cps();
@@ -163,7 +163,7 @@ global Map =
 		}
 	},
 
-	void_1_Axis_Captured = function( trigger )  // Axis capture own Spawflag
+	void_1_Axis_Captured = function()  // Axis capture own Spawflag
 	{
 		Map.axis_cp = 1;
 		SetAvailableMapGoals( TEAM.AXIS, true, {
@@ -173,7 +173,7 @@ global Map =
 		});
 	},
 
-	void_1_Allies_Neutralize = function( trigger )  // Allies reclaim axis flag
+	void_1_Allies_Neutralize = function()  // Allies reclaim axis flag
 	{
 		Map.axis_cp = 0;
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -183,7 +183,7 @@ global Map =
 		});
 	},
 
-	void_Axis_Neutralize = function( trigger )  // Axis reclaim allies flag
+	void_Axis_Neutralize = function()  // Axis reclaim allies flag
 	{
 		Map.allies_cp = 0;
 		SetAvailableMapGoals( TEAM.ALLIES, false, {
@@ -193,7 +193,7 @@ global Map =
 		});
 	},
 
-	void_Allies_Captured = function( trigger )  // Allies capture own Spawnflag
+	void_Allies_Captured = function()  // Allies capture own Spawnflag
 	{
 		Map.allies_cp = 2;
 		SetAvailableMapGoals( TEAM.ALLIES, true, {
@@ -203,7 +203,7 @@ global Map =
 		});
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		Map.thirtysecond = true;
 
@@ -217,12 +217,12 @@ global Map =
 		Util.DisableGoal( "SNIPE.*" );
 	},
 
-	barrier1 = function( trigger )
+	barrier1 = function()
 	{
 		Map.BarrierOne = true;
 	},
 
-	barrier2 = function( trigger )
+	barrier2 = function()
 	{
 		Map.BarrierTwo = true;
 	},

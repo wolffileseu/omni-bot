@@ -2,8 +2,6 @@ global Map =
 {
 	Quiet = true,
 	FocusPrimary = false,
-	Debug = false,
-
 	Checkpoint_tunnelflag = "CHECKPOINT_tunnelflag",
 	Flag_Docs = "FLAG_Docs",
 	Plant_Radio = "PLANT_Radio",
@@ -107,7 +105,7 @@ global Map =
 		},
 	},
 
-	Radio_Destroyed = function( trigger )
+	Radio_Destroyed = function()
 	{
 		Map.GateStatus = true;
 
@@ -132,18 +130,18 @@ global Map =
 		Util.SetMaxUsersInProgress( 3, "CHECKPOINT.*" ); // Getting the docs is the high priority.  Also reduces impact of human flag runs
 	},
 
-	Radio_Planted = function( trigger )
+	Radio_Planted = function()
 	{
 		if ( !Map.DocStatus ) {
 			SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_rDocs.*" );
 		}
 	},
 
-	Radio_Defused = function( trigger )
+	Radio_Defused = function()
 	{
 	},
 
-	Docs_Taken = function( trigger )
+	Docs_Taken = function()
 	{
 		if ( !Map.DocStatus ) {
 			Map.DocStatus = true;
@@ -188,7 +186,7 @@ global Map =
 		Util.MapDebugPrint( "Docs_Taken" );
 	},
 
-	Docs_Returned = function( trigger )
+	Docs_Returned = function()
 	{
 		Map.DocStatus = false;
 
@@ -217,14 +215,14 @@ global Map =
 		Util.MapDebugPrint( "Docs_Returned" );
 	},
 
-	tunnelflag_Axis_Captured = function( trigger )
+	tunnelflag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "CAMP_bGate.*" );
 		RTCWUtil.SwitchSoldierWeapons( TEAM.ALLIES, WEAPON.PANZERFAUST );
 	},
 
-	tunnelflag_Allies_Captured = function( trigger )
+	tunnelflag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 		Map.DontDispenseAmmo = false;
@@ -261,7 +259,7 @@ global Map =
 
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;
@@ -318,7 +316,7 @@ global Map =
 		},
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		// better go short with docs now
 		Util.DisableGoal( "ROUTE_sidewall" );

@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DontDispenseAmmo = true,
 
 	Roles =
@@ -24,83 +23,83 @@ global Map =
 		},
 	},
 
-	barracks_Axis_Captured = function( trigger )
+	barracks_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "barracks_Axis_Captured" );
 	},
 
-	barracks_Allies_Captured = function( trigger )
+	barracks_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "barracks_Allies_Captured" );
 	},
 
-	fuel_Axis_Captured = function( trigger )
+	fuel_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "fuel_Axis_Captured" );
 	},
 
-	fuel_Allies_Captured = function( trigger )
+	fuel_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "fuel_Allies_Captured" );
 	},
 
-	loading_Axis_Captured = function( trigger )
+	loading_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "loading_Axis_Captured" );
 	},
 
-	loading_Allies_Captured = function( trigger )
+	loading_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "loading_Allies_Captured" );
 	},
 
-	power_Axis_Captured = function( trigger )
+	power_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "power_Axis_Captured" );
 	},
 
-	power_Allies_Captured = function( trigger )
+	power_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "power_Allies_Captured" );
 	},
 
-	refineries_Axis_Captured = function( trigger )
+	refineries_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "refineries_Axis_Captured" );
 	},
 
-	refineries_Allies_Captured = function( trigger )
+	refineries_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "refineries_Allies_Captured" );
 	},
 
-	warehouse_Axis_Captured = function( trigger )
+	warehouse_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "warehouse_Axis_Captured" );
 	},
 
-	warehouse_Allies_Captured = function( trigger )
+	warehouse_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "warehouse_Allies_Captured" );
 	},
 
-	KillWarehouse = function ()
+	KillWarehouse = function()
 	{
 		RTCWUtil.KillEntities({73,96,472});
 	},
-	KillNESpawn = function ()
+	KillNESpawn = function()
 	{
 		RTCWUtil.KillEntities({89,90});
 	},
-	KillSWSpawn = function ()
+	KillSWSpawn = function()
 	{
 		RTCWUtil.KillEntities({452,453});
 	},
-	KillSESpawn = function ()
+	KillSESpawn = function()
 	{
 		RTCWUtil.KillEntities({558,559});
 	},
-	KillAxisSpawn = function ()
+	KillAxisSpawn = function()
 	{
 		RTCWUtil.KillEntities({450,464,465});
 	},

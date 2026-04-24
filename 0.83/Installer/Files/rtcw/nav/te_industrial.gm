@@ -1,11 +1,10 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	Suicide = MAP_SUICIDE,
 
-	Main_Gate_Destroyed = function( trigger )
+	Main_Gate_Destroyed = function()
 	{
 		Util.EnableGoal("ROUTE_maingate");
 
@@ -15,19 +14,19 @@ global Map =
 		Util.MapDebugPrint( "Main_Gate_Destroyed" );
 	},
 
-	Transmitter_Door_Destroyed = function( trigger )
+	Transmitter_Door_Destroyed = function()
 	{
 		Util.EnableGoal("ROUTE_transmitdoor");
 
 		Util.MapDebugPrint( "Transmitter_Door_Destroyed" );
 	},
 
-	Supply_Documents_Taken = function( trigger )
+	Supply_Documents_Taken = function()
 	{
 		Util.MapDebugPrint( "Supply_Documents_Taken" );
 	},
 
-	transmit_Captured = function( trigger )
+	transmit_Captured = function()
 	{
 		Util.MapDebugPrint( "transmit_Captured" );
 	},

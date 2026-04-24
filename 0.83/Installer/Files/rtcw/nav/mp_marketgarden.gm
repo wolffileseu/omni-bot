@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	FlagStatus = 0,
 
 	DispenseAmmoTime = 1, //Start passing it out right away
@@ -32,34 +31,34 @@ global Map =
 		},
 	},
 
-	Allied_Command_Center_Destroyed = function( trigger )
+	Allied_Command_Center_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_Command_Center_Destroyed" );
 	},
 
-	Bridge_Detonator_Destroyed = function( trigger )
+	Bridge_Detonator_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Bridge_Detonator_Destroyed" );
 	},
 
-	Water_Tower_Door_Destroyed = function( trigger )
+	Water_Tower_Door_Destroyed = function()
 	{
 		Util.EnableGoal( "FLAG.*" );  //Enable the flag goal
 
 		Util.MapDebugPrint( "Water_Tower_Door_Destroyed" );
 	},
 
-	Water_Tower_Door_Planted = function( trigger )
+	Water_Tower_Door_Planted = function()
 	{
 		Util.MapDebugPrint( "Water_Tower_Door_Planted" );
 	},
 
-	obj_trigger01_Taken = function( trigger )
+	obj_trigger01_Taken = function()
 	{
 		Util.MapDebugPrint( "obj_trigger01_Taken" );
 	},
 
-	flag_respawn_obj_Axis_Captured = function( trigger )
+	flag_respawn_obj_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -108,7 +107,7 @@ global Map =
 		Util.MapDebugPrint( "flag_respawn_obj_Axis_Captured" );
 	},
 
-	flag_respawn_obj_Allies_Captured = function( trigger )
+	flag_respawn_obj_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

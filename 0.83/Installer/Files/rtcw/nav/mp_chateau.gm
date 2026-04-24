@@ -3,7 +3,6 @@ global Map =
 	Quiet = true,
 	FocusPrimary = false,
 	DispenseAmmoTime = 1,
-	Debug = false,
 	RoundTime = 0,
 
 	Checkpoint = "CHECKPOINT_flag_respawn_obj",
@@ -82,7 +81,7 @@ global Map =
 		},
 	},
 
-	Cellar_Door_Destroyed = function( trigger )
+	Cellar_Door_Destroyed = function()
 	{
 		Map.CellarStatus = true;
 
@@ -115,16 +114,16 @@ global Map =
 		}
 	},
 
-	cellar_planted = function( trigger )
+	cellar_planted = function()
 	{
 		Map.EvalDefuse();
 	},
 
-	cellar_defused = function( trigger )
+	cellar_defused = function()
 	{
 	},
 
-	Main_Door_Destroyed = function( trigger )
+	Main_Door_Destroyed = function()
 	{
 		Map.MainStatus = true;
 		Map.MainDyno = 0; //clear it
@@ -156,7 +155,7 @@ global Map =
 		Map.DontDispenseAmmo = false;   // pass out the goods
 	},
 
-	main_planted = function( trigger )
+	main_planted = function()
 	{
 		Map.MainDyno += 1;
 		Map.EvalDefuse();
@@ -182,7 +181,7 @@ global Map =
 		Map.DisableAxisCourtyardAccess();
 	},
 
-	main_defused = function( trigger )
+	main_defused = function()
 	{
 		Map.MainDyno -= 1;
 	},
@@ -193,7 +192,7 @@ global Map =
 		Util.DisableGoal( "DEFUSE.*" );
 	},
 
-	obj_taken = function( trigger )
+	obj_taken = function()
 	{
 		Map.DocStatus = true;
 		//disable the main door airstrikes
@@ -229,7 +228,7 @@ global Map =
 
 	},
 
-	obj_secure = function( trigger )
+	obj_secure = function()
 	{
 		Map.DocStatus = false;
 		Map.DocsGone = false;
@@ -245,7 +244,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "AIRSTRIKE_.*" );
 	},
 
-	Axis_Capture_Flag = function( trigger )
+	Axis_Capture_Flag = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -261,7 +260,7 @@ global Map =
 		Util.SetMaxUsersInProgress( 2, "CHECKPOINT.*" );
 	},
 
-	Allies_Capture_Flag = function( trigger )
+	Allies_Capture_Flag = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -277,7 +276,7 @@ global Map =
 		Util.SetMaxUsersInProgress( 1, "CHECKPOINT.*" );
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;

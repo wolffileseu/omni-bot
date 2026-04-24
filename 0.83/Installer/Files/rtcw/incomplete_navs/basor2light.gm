@@ -11,24 +11,22 @@
 
 global Map =
 {
-	Debug = 0,
-
-	Stockroomdoor7_Destroyed = function( trigger )
+	Stockroomdoor7_Destroyed = function()
 	{
 		Util.MapDebugPrint( "2Stockroomdoor7_Destroyed" );
 	},
 
-	ze_2War_Documents7_Taken = function( trigger )
+	ze_2War_Documents7_Taken = function()
 	{
 		Util.MapDebugPrint( "ze_2War_Documents7_Taken" );
 	},
 
-	beach_flag_Axis_Captured = function( trigger )
+	beach_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Axis_Captured" );
 	},
 
-	beach_flag_Allies_Captured = function( trigger )
+	beach_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "beach_flag_Allies_Captured" );
 	},

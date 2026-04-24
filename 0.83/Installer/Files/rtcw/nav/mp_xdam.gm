@@ -4,7 +4,7 @@ global Map =
 	DocStatus = false,
 	Suicide = true,
 
-	Blocked_Dam_Door_Destroyed = function( trigger )
+	Blocked_Dam_Door_Destroyed = function()
 	{
 		if (!Map.DocStatus)
 		{
@@ -44,26 +44,26 @@ global Map =
 		print( "Blocked_Dam_Door_Destroyed" );
 	},
 
-	Service_Entrance_Destroyed = function( trigger )
+	Service_Entrance_Destroyed = function()
 	{
 		print( "Service_Entrance_Destroyed" );
 
 		// Axis need to switch to spawn pt 101 if they have the flag
 	},
 
-	X_Lab_equipment_Destroyed = function( trigger )
+	X_Lab_equipment_Destroyed = function()
 	{
 		print( "X_Lab_equipment_Destroyed" );
 	},
 
-	Research_Documents_Taken = function( trigger )
+	Research_Documents_Taken = function()
 	{
 		Map.DocStatus = true;
 
 		print( "Research_Documents_Taken" );
 	},
 
-	Research_Documents_Transmitted = function( trigger )
+	Research_Documents_Transmitted = function()
 	{
 		Map.DocStatus = false;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "FLAG_Research_Documents" );
@@ -72,27 +72,27 @@ global Map =
 		print( "Research_Documents_Transmitted" );
 	},
 
-	Research_Documents_Secured = function( trigger )
+	Research_Documents_Secured = function()
 	{
 		Map.DocStatus = false;
 
 		print( "Research_Documents_Secured" );
 	},
 
-	the_flag_Axis_Captured = function( trigger )
+	the_flag_Axis_Captured = function()
 	{
 		print( "the_flag_Axis_Captured" );
 		// Axis need to switch to spawn pt 101 if service entrance is blown
 	},
 
-	the_flag_Allies_Captured = function( trigger )
+	the_flag_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ARTILLERY_S_bFlag.*" );
 
 		print( "the_flag_Allies_Captured" );
 	},
 
-	RestrictAxis = function ()
+	RestrictAxis = function()
 	{
 		Wp.SetWaypointFlag( "axisblock1", "allies", true );
 		Wp.SetWaypointFlag( "axisblock2", "allies", true );
@@ -126,12 +126,12 @@ global Map =
 			}
 		},
 	},
-	KillBridge1 = function ()
+	KillBridge1 = function()
 	{
 		RTCWUtil.KillEntities({196,321,178});
 	},
 
-	KillAxisSpawn = function ()
+	KillAxisSpawn = function()
 	{
 		RTCWUtil.KillEntities({413,322});
 	},

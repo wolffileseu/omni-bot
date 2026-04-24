@@ -4,316 +4,203 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.157, -0.956, 0.248),
+			Vec3(0.157, -0.956, 0.248),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(1561.000, 1140.000, -406.000),
-		Radius = 32,
 	},
 	CAPPOINT_transmit = 
 	{
-		GoalType = "CapPoint",
-		MinRadius = 32,
 		Position = Vec3(407.000, 85.000, 345.000),
 	},
 	DEFEND_rChurch1 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.678, -0.733, -0.052),
+			Vec3(-0.678, -0.733, -0.052),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1837.000, 1062.000, -350.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_rChurch2 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.995, 0.094, 0.014),
+			Vec3(-0.995, 0.094, 0.014),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1837.000, 802.000, -390.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_rChurch3 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.175, -0.983, 0.051),
-			[1] = Vec3(-0.991, -0.116, 0.073),
+			Vec3(-0.175, -0.983, 0.051),
+			Vec3(-0.991, -0.116, 0.073),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1676.000, 1285.000, -406.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_rChurch4 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.230, -0.973, -0.000),
-			[1] = Vec3(0.991, -0.137, -0.000),
+			Vec3(0.230, -0.973, -0.000),
+			Vec3(0.991, -0.137, -0.000),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1126.000, 1285.000, -406.000),
-		Radius = 32,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_rChurch5 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.990, 0.142, -0.000),
-			[1] = Vec3(0.134, 0.991, -0.000),
+			Vec3(0.990, 0.142, -0.000),
+			Vec3(0.134, 0.991, -0.000),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1126.000, 802.000, -406.000),
-		Radius = 32,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_rChurch6 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.315, -0.937, -0.151),
-			[1] = Vec3(-0.994, -0.112, 0.007),
+			Vec3(-0.315, -0.937, -0.151),
+			Vec3(-0.994, -0.112, 0.007),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1716.000, 1134.000, -350.000),
-		Radius = 32,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit1 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.418, 0.908, -0.012),
+			Vec3(-0.418, 0.908, -0.012),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(1044.000, -87.000, 313.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit2 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.599, 0.800, 0.000),
+			Vec3(0.599, 0.800, 0.000),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(-265.000, -272.000, 313.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit3 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.123, 0.992, 0.011),
+			Vec3(-0.123, 0.992, 0.011),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(715.000, -280.000, 313.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit4 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.588, 0.809, -0.022),
-			[1] = Vec3(0.639, 0.769, -0.012),
+			Vec3(-0.588, 0.809, -0.022),
+			Vec3(0.639, 0.769, -0.012),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(406.000, 2.000, 349.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit5 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.648, 0.762, 0.010),
+			Vec3(0.648, 0.762, 0.010),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(-276.000, 36.000, 313.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_transmit6 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.277, 0.960, 0.033),
+			Vec3(-0.277, 0.960, 0.033),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 20,
 		MinCampTime = 10,
-		MinRadius = 32,
 		Position = Vec3(153.000, -289.000, 313.000),
-		Radius = 32,
 		Stance = "crouch",
-		Weapons = 
-		{
-		},
-	},
-	EXPLODE_165 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(1468.193, 1632.000, -324.001),
-		TagName = "",
-	},
-	EXPLODE_201 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(1468.193, 1632.000, -324.001),
-		TagName = "",
 	},
 	FLAG_Top_Secret_Documents = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "Flag",
 		Position = Vec3(1720.000, 1048.000, -296.000),
-		TagName = "Top Secret Documents",
 		TeamAvailability = 4,
 	},
 	PLANT_Allied_Helicopter = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(408.000, 79.000, 395.000),
-		TagName = "Allied Helicopter",
 		TeamAvailability = 4,
 	},
 	PLANT_Cathedrale_door = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(1616.000, 710.000, -384.000),
-		TagName = "Cathedrale door",
 		TeamAvailability = 4,
 	},
 	ROUTE_bspawn = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(1331.932, 3171.343, 60.125),
 		Radius = 350,
 	},
 	ROUTE_churchdoor = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(1601.000, 723.000, -406.000),
 		Radius = 125,
 	},
 	ROUTE_docsteal = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(1717.000, 1049.000, -310.000),
 		Radius = 125,
 	},
 	ROUTE_radiohallway = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(20.000, 607.000, -158.000),
 		Radius = 125,
 	},
 	ROUTE_radioroom = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(526.000, -90.000, -62.000),
 		Radius = 125,
 	},
 	ROUTE_spawnladder = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(767.000, 3173.000, -270.000),
 		Radius = 125,
 	},
 	ROUTE_spawnsteps = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(188.186, 3227.108, -187.875),
 		Radius = 125,
 	},
 	ROUTE_waterladder = 
 	{
-		GoalType = "ROUTE",
 		Position = Vec3(311.000, 1210.000, -270.000),
 		Radius = 125,
 	},

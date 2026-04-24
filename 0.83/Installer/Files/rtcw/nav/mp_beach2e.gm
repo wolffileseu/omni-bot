@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	DebugAvailability = false,
 	ViewDistance = 3500,
 	Suicide = MAP_SUICIDE,
@@ -168,7 +167,7 @@ global Map =
 		},
 	},
 
-	allied_obj1_1_Destroyed = function( trigger )
+	allied_obj1_1_Destroyed = function()
 	{
 		Map.DoorStatus = true;
 
@@ -180,7 +179,7 @@ global Map =
 		Util.MapDebugPrint( "allied_obj1_1_Destroyed" );
 	},
 
-	allied_obj1_2_Destroyed = function( trigger )
+	allied_obj1_2_Destroyed = function()
 	{
 		Map.WallStatus = true;
 
@@ -274,7 +273,7 @@ global Map =
 		Util.MapDebugPrint( "eval_beach_shift" );
 	},
 
-	Allies_Capture_Flag = function( trigger )
+	Allies_Capture_Flag = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -300,7 +299,7 @@ global Map =
 		Util.MapDebugPrint( "Allies_Capture_Flag" );
 	},
 
-	Axis_Capture_Flag = function( trigger )
+	Axis_Capture_Flag = function()
 	{
 		Map.FlagStatus = 1;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "AIRSTRIKE_.*" );
@@ -314,7 +313,7 @@ global Map =
 		Util.MapDebugPrint( "Axis_Capture_Flag" );
 	},
 
-	documents_stolen = function( trigger )
+	documents_stolen = function()
 	{
 		// cs: this gets called when picked up off ground too, so don't re-shift to war room in that case.
 		if ( !Map.DocStatus ) {
@@ -416,7 +415,7 @@ global Map =
 		Util.MapDebugPrint( "EvalArty" );
 	},
 
-	documents_returned = function( trigger )
+	documents_returned = function()
 	{
 		Map.DocStatus = false;
 
@@ -444,12 +443,12 @@ global Map =
 		Util.MapDebugPrint( "documents_returned" );
 	},
 
-	documents_secured = function( trigger )
+	documents_secured = function()
 	{
 		Util.MapDebugPrint( "documents_secured" );
 	},
 
-	door_planted = function( trigger )
+	door_planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Sea_Wall_door.*" );
 		Util.MapDebugPrint( "door_planted" );
@@ -458,12 +457,12 @@ global Map =
 		}
 	},
 
-	door_defused = function( trigger )
+	door_defused = function()
 	{
 		Util.MapDebugPrint( "door_defused" );
 	},
 
-	breach_planted = function( trigger )
+	breach_planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Sea_Wall_breach.*" );
 		Util.MapDebugPrint( "breach_planted" );
@@ -472,12 +471,12 @@ global Map =
 		}
 	},
 
-	breach_defused = function( trigger )
+	breach_defused = function()
 	{
 		Util.MapDebugPrint( "breach_defused" );
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, Map.Flag_War_Documents );
 		Util.MapDebugPrint( "two_minute" );

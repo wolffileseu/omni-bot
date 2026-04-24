@@ -36,11 +36,11 @@ global Map =
 		},
 	},
 
-	Radar_Array_Destroyed = function( trigger )
+	Radar_Array_Destroyed = function()
 	{
 	},
 
-	Radar_Array_Defused = function( trigger )
+	Radar_Array_Defused = function()
 	{
 		Map.RadarDyno -= 1;
 
@@ -49,12 +49,12 @@ global Map =
 		}
 	},
 
-	Radar_Array_Planted = function( trigger )
+	Radar_Array_Planted = function()
 	{
 		Map.RadarDyno += 1;
 	},
 
-	Security_Wall_Destroyed = function( trigger )
+	Security_Wall_Destroyed = function()
 	{
 		Map.SecurityStatus = true;
 
@@ -65,18 +65,18 @@ global Map =
 		Map.DontDispenseAmmo = false;
 	},
 
-	Security_Wall_Planted = function( trigger )
+	Security_Wall_Planted = function()
 	{
 		Map.SecurityDyno += 1;
 
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Security_Wall_.*" );
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.RadarDyno >= 1 ) {
 			return;

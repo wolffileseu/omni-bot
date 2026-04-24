@@ -1,32 +1,31 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	GenADestroyed = 0,
 	GenBDestroyed = 0,
 	GenCDestroyed = 0,
 
-	north_wall_Planted = function( trigger )
+	north_wall_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_north_wall.*" );
 
 		Util.MapDebugPrint( "north_wall_Planted" );
 	},
 
-	north_wall_Destroyed = function( trigger )
+	north_wall_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "PLANT_north_wall" );
 
 		Util.MapDebugPrint( "north_wall_Destroyed" );
 	},
 
-	power_generator_A_Planted = function( trigger )
+	power_generator_A_Planted = function()
 	{
 		Util.MapDebugPrint( "power_generator_A_Planted" );
 	},
 
-	power_generator_A_Destroyed = function( trigger )
+	power_generator_A_Destroyed = function()
 	{
 		Map.GenADestroyed = true;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rGeneratorA.*" );
@@ -34,7 +33,7 @@ global Map =
 		Util.MapDebugPrint( "power_generator_A_Destroyed" );
 	},
 
-	power_generator_B_Destroyed = function( trigger )
+	power_generator_B_Destroyed = function()
 	{
 		Map.GenBDestroyed = true;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rGeneratorB.*" );
@@ -42,17 +41,17 @@ global Map =
 		Util.MapDebugPrint( "power_generator_B_Destroyed" );
 	},
 
-	power_generator_B_Planted = function( trigger )
+	power_generator_B_Planted = function()
 	{
 		Util.MapDebugPrint( "power_generator_B_Planted" );
 	},
 
-	power_generator_C_Planted = function( trigger )
+	power_generator_C_Planted = function()
 	{
 		Util.MapDebugPrint( "power_generator_C_Planted" );
 	},
 
-	power_generator_C_Destroyed = function( trigger )
+	power_generator_C_Destroyed = function()
 	{
 		Map.GenCDestroyed = true;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_rGeneratorC.*" );
@@ -60,13 +59,13 @@ global Map =
 		Util.MapDebugPrint( "power_generator_C_Destroyed" );
 	},
 
-	tunnel_entrance_Planted = function( trigger )
+	tunnel_entrance_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_tunnel_entrance.*" );
 		Util.MapDebugPrint( "tunnel_entrance_Planted" );
 	},
 
-	tunnel_entrance_Destroyed = function( trigger )
+	tunnel_entrance_Destroyed = function()
 	{
 		Map.DontDispenseAmmo = false;
 		SetAvailableMapGoals( TEAM.AXIS, false, {
@@ -106,13 +105,13 @@ global Map =
 		Util.MapDebugPrint( "tunnel_entrance_Destroyed" );
 	},
 
-	front_fort_Axis_Captured = function( trigger )
+	front_fort_Axis_Captured = function()
 	{
 		Util.SetMaxUsersInProgress( 5, "CHECKPOINT.*" );
 		Util.MapDebugPrint( "front_fort_Axis_Captured" );
 	},
 
-	front_fort_Allies_Captured = function( trigger )
+	front_fort_Allies_Captured = function()
 	{
 		Util.SetMaxUsersInProgress( 1, "CHECKPOINT.*" );
 		Util.MapDebugPrint( "front_fort_Allies_Captured" );

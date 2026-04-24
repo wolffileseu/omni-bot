@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	Checkpoint_dam_flag = "CHECKPOINT_dam_flag",
 	Plant_Dam_Stairwell_Door = "PLANT_Dam_Stairwell_Door",
 	Plant_Lower_Dam_Door = "PLANT_Lower_Dam_Door",
@@ -43,7 +42,7 @@ global Map =
 		},
 	},
 
-	Dam_Stairwell_Door_Destroyed = function( trigger )
+	Dam_Stairwell_Door_Destroyed = function()
 	{
 		Map.DamStatus = 1;
 
@@ -51,7 +50,7 @@ global Map =
 		Util.EnableGoal( "ROUTE_northstairwell" );
 	},
 
-	Lower_Dam_Door_Destroyed = function( trigger )
+	Lower_Dam_Door_Destroyed = function()
 	{
 		Map.LowerStatus = 1;
 
@@ -59,7 +58,7 @@ global Map =
 		Map.regulator_plant_check();
 	},
 
-	Main_Doors_Destroyed = function( trigger )
+	Main_Doors_Destroyed = function()
 	{
 		Map.MainStatus = 1;
 
@@ -73,7 +72,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "CHECKPOINT_dam_flag" );    // We cant ever reclaim...
 	},
 
-	Main_Doors_Planted = function( trigger )
+	Main_Doors_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ATTACK_eng.*" );
 
@@ -82,29 +81,29 @@ global Map =
 		}
 	},
 
-	Lower_Dam_Door_Planted = function( trigger )
+	Lower_Dam_Door_Planted = function()
 	{
 		if ( Map.DefenseShifted ) {
 			SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Lower_Dam.*" );
 		}
 	},
 
-	Dam_Stairwell_Planted = function( trigger )
+	Dam_Stairwell_Planted = function()
 	{
 		if ( Map.DefenseShifted ) {
 			SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Dam_Stairwell.*" );
 		}
 	},
 
-	Main_Doors_Defused = function( trigger )
+	Main_Doors_Defused = function()
 	{
 	},
 
-	Main_Water_Regulator_Destroyed = function( trigger )
+	Main_Water_Regulator_Destroyed = function()
 	{
 	},
 
-	lower_front_door_Destroyed = function( trigger )
+	lower_front_door_Destroyed = function()
 	{
 		RTCWUtil.SetSuicide( TEAM.ALLIES, CLASS.LIEUTENANT, 0, 0 );
 
@@ -129,7 +128,7 @@ global Map =
 		});
 	},
 
-	upper_front_door_Destroyed = function( trigger )
+	upper_front_door_Destroyed = function()
 	{
 		RTCWUtil.SetSuicide( TEAM.ALLIES, CLASS.LIEUTENANT, 0, 0 );
 
@@ -151,7 +150,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "AIRSTRIKE_.*" );
 	},
 
-	dam_flag_Axis_Captured = function( trigger )
+	dam_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -160,7 +159,7 @@ global Map =
 		}
 	},
 
-	dam_flag_Allies_Captured = function( trigger )
+	dam_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 
@@ -184,7 +183,7 @@ global Map =
 		Util.SetMaxUsersInProgress( 2, "CHECKPOINT.*" );
 	},
 
-	Lower_Front_Door_Planted = function( trigger )
+	Lower_Front_Door_Planted = function()
 	{
 		Map.LowerFrontDyno += 1;
 		if ( Map.UpperFront ) {
@@ -197,7 +196,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_lower_front_door.*" );
 	},
 
-	Upper_Front_Door_Planted = function( trigger )
+	Upper_Front_Door_Planted = function()
 	{
 		Map.UpperFrontDyno += 1;
 		if ( Map.LowerFront ) {
@@ -210,7 +209,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_upper_front_door.*" );
 	},
 
-	Main_Water_Regulator_Planted = function( trigger )
+	Main_Water_Regulator_Planted = function()
 	{
 		Map.RegulatorDynos += 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_.*" );
@@ -220,16 +219,16 @@ global Map =
 		}
 	},
 
-	Main_Water_Regulator_Defused = function( trigger )
+	Main_Water_Regulator_Defused = function()
 	{
 		Map.RegulatorDynos -= 1;
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.RegulatorDynos >= 1 ) {
 			return;

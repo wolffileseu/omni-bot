@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 
@@ -67,27 +66,27 @@ global Map =
 		},
 	},
 
-	Allied_Entrance_Destroyed = function( trigger )
+	Allied_Entrance_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Allied_Entrance_Destroyed" );
 	},
 
-	Axis_Entrance_Destroyed = function( trigger )
+	Axis_Entrance_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Axis_Entrance_Destroyed" );
 	},
 
-	Allied_Teams_Gold__Taken = function( trigger )
+	Allied_Teams_Gold__Taken = function()
 	{
 		Util.MapDebugPrint( "Allied_Teams_Gold__Taken" );
 	},
 
-	Axis_Teams_Documents_Taken = function( trigger )
+	Axis_Teams_Documents_Taken = function()
 	{
 		Util.MapDebugPrint( "Axis_Teams_Documents_Taken" );
 	},
 
-	bg_flag_Axis_Captured = function( trigger )
+	bg_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "bg_flag_Axis_Captured" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "ARTILLERY_S_rFlag.*" );
@@ -95,7 +94,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, true, "ARTILLERY_S_bFlag.*" );
 	},
 
-	bg_flag_Allies_Captured = function( trigger )
+	bg_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "bg_flag_Allies_Captured" );
 

@@ -27,14 +27,14 @@ global Map =
 	bSnipers = 0,
 	DontDispenseAmmo = true,
 
-	Trench_Destroyed = function( trigger )
+	Trench_Destroyed = function()
 	{
 		Map.TrenchStatus = true;
 
 		SetAvailableMapGoals( TEAM.ALLIES, true, "PLANT_Beach_Head_Wall" );
 	},
 
-	Wall_Destroyed = function( trigger )
+	Wall_Destroyed = function()
 	{
 		Map.WallStatus = true;
 		// Force allies inside a bit
@@ -61,7 +61,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "ARTILLERY_S_rWall" );
 	},
 
-	Bunker_Destroyed = function( trigger )
+	Bunker_Destroyed = function()
 	{
 		Map.BunkerStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, true, {
@@ -86,7 +86,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "AIRSTRIKE_red_as2_p[12]" );
 	},
 
-	Allies_Capture_Flag = function( trigger )
+	Allies_Capture_Flag = function()
 	{
 		Map.FlagStatus = 2;
 		SetAvailableMapGoals( TEAM.AXIS, false, "MOUNTMG42_westbunker" );       // dont try to get back in here
@@ -98,7 +98,7 @@ global Map =
 		Util.LimitToClass( "CHECKPOINT_beacheadspawn", TEAM.AXIS, CLASS.SOLDIER, CLASS.LIEUTENANT );
 	},
 
-	Axis_Capture_Flag = function( trigger )
+	Axis_Capture_Flag = function()
 	{
 		if ( Map.BunkerStatus == false ) {
 			SetAvailableMapGoals( TEAM.AXIS, true, {
@@ -110,7 +110,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "ARTILLERY_S_rWall" );
 	},
 
-	Trench_Planted = function( trigger )
+	Trench_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Trench.*" );
 		if ( Map.Suicide ) {
@@ -119,23 +119,23 @@ global Map =
 	},
 
 
-	Wall_Planted = function( trigger )
+	Wall_Planted = function()
 	{
 	},
 
-	Wall_Defused = function( trigger )
+	Wall_Defused = function()
 	{
 	},
 
-	Bunker_Planted = function( trigger )
+	Bunker_Planted = function()
 	{
 	},
 
-	Bunker_Defused = function( trigger )
+	Bunker_Defused = function()
 	{
 	},
 
-	Cyanide_Planted = function( trigger )
+	Cyanide_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"DEFEND_rBase.*",
@@ -152,7 +152,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "CHECKPOINT_beacheadspawn" );
 	},
 
-	Cyanide_Defused = function( trigger )
+	Cyanide_Defused = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "AIRSTRIKE_.*" );
 		SetAvailableMapGoals( TEAM.AXIS, true, "AIRSTRIKE_red_as2_p1" );
@@ -170,7 +170,7 @@ global Map =
 		}
 	},
 
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		//time is low, so start focusing on main obj
 		Map.FocusPrimary = true;
@@ -183,7 +183,7 @@ global Map =
 		}
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.CyanideDyno >= 1 ) {
 			return;

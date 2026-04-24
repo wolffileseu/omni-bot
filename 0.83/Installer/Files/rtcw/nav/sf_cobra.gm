@@ -3,7 +3,6 @@
 // ***
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DispenseAmmoTime = 1, // give axis time to go call the arty
 	DontDispenseAmmo = false,
 
@@ -33,27 +32,27 @@ global Map =
 		},
 	},
 
-	Checkpoint1_Axis_Captured = function( trigger )
+	Checkpoint1_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint1_Axis_Captured" );
 	},
 
-	Checkpoint1_Allies_Captured = function( trigger )
+	Checkpoint1_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint1_Allies_Captured" );
 	},
 
-	Checkpoint2_Axis_Captured = function( trigger )
+	Checkpoint2_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint2_Axis_Captured" );
 	},
 
-	Checkpoint2_Allies_Captured = function( trigger )
+	Checkpoint2_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint2_Allies_Captured" );
 	},
 
-	Checkpoint3_Axis_Captured = function( trigger )
+	Checkpoint3_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint3_Axis_Captured" );
 
@@ -62,7 +61,7 @@ global Map =
 		Map.Airstrike.bmid2.Enabled = true;
 	},
 
-	Checkpoint3_Allies_Captured = function( trigger )
+	Checkpoint3_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint3_Allies_Captured" );
 
@@ -71,22 +70,22 @@ global Map =
 		Map.Airstrike.bmid2.Enabled = false;
 	},
 
-	Checkpoint4_Axis_Captured = function( trigger )
+	Checkpoint4_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint4_Axis_Captured" );
 	},
 
-	Checkpoint4_Allies_Captured = function( trigger )
+	Checkpoint4_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint4_Allies_Captured" );
 	},
 
-	Checkpoint5_Axis_Captured = function( trigger )
+	Checkpoint5_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint5_Axis_Captured" );
 	},
 
-	Checkpoint5_Allies_Captured = function( trigger )
+	Checkpoint5_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Checkpoint5_Allies_Captured" );
 	},

@@ -22,42 +22,42 @@ global Map =
 	Snipe_rGate_s1 = "SNIPE_rGate_s1",
 	Snipe_rGate_s2 = "SNIPE_rGate_s2",
 
-	checkpoint1_Axis_Captured = function( trigger )
+	checkpoint1_Axis_Captured = function()
 	{
 		print( "checkpoint1_Axis_Captured" );
 	},
 
-	checkpoint1_Allies_Captured = function( trigger )
+	checkpoint1_Allies_Captured = function()
 	{
 		print( "checkpoint1_Allies_Captured" );
 	},
 
-	checkpoint2_Axis_Captured = function( trigger )
+	checkpoint2_Axis_Captured = function()
 	{
 		print( "checkpoint2_Axis_Captured" );
 	},
 
-	checkpoint2_Allies_Captured = function( trigger )
+	checkpoint2_Allies_Captured = function()
 	{
 		print( "checkpoint2_Allies_Captured" );
 	},
 
-	checkpoint3_Axis_Captured = function( trigger )
+	checkpoint3_Axis_Captured = function()
 	{
 		print( "checkpoint3_Axis_Captured" );
 	},
 
-	checkpoint3_Allies_Captured = function( trigger )
+	checkpoint3_Allies_Captured = function()
 	{
 		print( "checkpoint3_Allies_Captured" );
 	},
 
-	checkpoint4_Axis_Captured = function( trigger )
+	checkpoint4_Axis_Captured = function()
 	{
 		print( "checkpoint4_Axis_Captured" );
 	},
 
-	checkpoint4_Allies_Captured = function( trigger )
+	checkpoint4_Allies_Captured = function()
 	{
 		print( "checkpoint4_Allies_Captured" );
 	},

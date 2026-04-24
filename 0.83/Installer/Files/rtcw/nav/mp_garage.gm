@@ -2,7 +2,6 @@ global Map =
 {
 	DontDispenseAmmo = true,
 	DispenseAmmoTime = 1,
-	Debug = 0, // please set to zero before distributing your script
 	DocStatus = 0,
 	Suicide = MAP_SUICIDE,
 	DocsGone = false,

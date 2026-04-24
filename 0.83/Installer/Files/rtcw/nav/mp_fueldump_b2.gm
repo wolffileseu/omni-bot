@@ -8,13 +8,13 @@ global Map =
 	SideStatus = false,
 	FlagStatus = 0, // 0 = axis / no one, 1 = allies
 
-	Fueldump_Destroyed = function( trigger )
+	Fueldump_Destroyed = function()
 	{
 		Map.FuelDyno = 0;
 		Util.MapDebugPrint( "Fueldump_Destroyed" );
 	},
 
-	Fueldump_Defused = function( trigger )
+	Fueldump_Defused = function()
 	{
 		Map.FuelDyno -= 1;
 
@@ -33,14 +33,14 @@ global Map =
 		Util.MapDebugPrint( "Fueldump_Defused" );
 	},
 
-	Fueldump_Planted = function( trigger )
+	Fueldump_Planted = function()
 	{
 		Map.FuelDyno += 1;
 
 		Util.MapDebugPrint( "Fueldump_Planted" );
 	},
 
-	Main_Gate_Destroyed = function( trigger )
+	Main_Gate_Destroyed = function()
 	{
 		Map.GateStatus = true;
 
@@ -57,12 +57,12 @@ global Map =
 		Util.MapDebugPrint( "Main_Gate_Destroyed" );
 	},
 
-	Main_Gate_Planted = function( trigger )
+	Main_Gate_Planted = function()
 	{
 		Util.MapDebugPrint( "Main_Gate_Planted" );
 	},
 
-	Side_Wall_Destroyed = function( trigger )
+	Side_Wall_Destroyed = function()
 	{
 		Map.SideStatus = true;
 
@@ -79,12 +79,12 @@ global Map =
 		Util.MapDebugPrint( "Side_Wall_Destroyed" );
 	},
 
-	Side_Wall_Planted = function( trigger )
+	Side_Wall_Planted = function()
 	{
 		Util.MapDebugPrint( "Side_Wall_Planted" );
 	},
 
-	hill_flag_Axis_Captured = function( trigger )
+	hill_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 0;
 
@@ -94,7 +94,7 @@ global Map =
 		Util.MapDebugPrint( "hill_flag_Axis_Captured" );
 	},
 
-	hill_flag_Allies_Captured = function( trigger )
+	hill_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -235,7 +235,7 @@ global Map =
 			}
 		},
 	},
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		RTCWUtil.StopSniping(); //Push everyone inside
 		Util.MapDebugPrint( "two_minute" );

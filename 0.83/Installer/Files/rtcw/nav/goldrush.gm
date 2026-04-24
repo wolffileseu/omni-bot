@@ -1,54 +1,53 @@
 global Map =
 {
-	Debug = 0, // please set to zero before distributing your script
 	DontDispenseAmmo = true,
 	DispenseAmmoTime = 15,
 
-	Front_Door_Planted = function( trigger )
+	Front_Door_Planted = function()
 	{
 		Util.MapDebugPrint( "Front_Door_Planted" );
 	},
 
-	Front_Door_Destroyed = function( trigger )
+	Front_Door_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG.*" );
 
 		Util.MapDebugPrint( "Front_Door_Destroyed" );
 	},
 
-	back_wall_Planted = function( trigger )
+	back_wall_Planted = function()
 	{
 		Util.MapDebugPrint( "back_wall_Planted" );
 	},
 
-	back_wall_Destroyed = function( trigger )
+	back_wall_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG.*" );
 
 		Util.MapDebugPrint( "back_wall_Destroyed" );
 	},
 
-	Gold_Bars_Taken = function( trigger )
+	Gold_Bars_Taken = function()
 	{
 		Util.MapDebugPrint( "Gold_Bars_Taken" );
 	},
 
-	Gold_Bars_Secured = function( trigger )
+	Gold_Bars_Secured = function()
 	{
 		Util.MapDebugPrint( "Gold_Bars_Secured" );
 	},
 
-	Gold_Dropoff_Captured = function( trigger )
+	Gold_Dropoff_Captured = function()
 	{
 		Util.MapDebugPrint( "Gold_Dropoff_Captured" );
 	},
 
-	Forward_flag_Axis_Captured = function( trigger )
+	Forward_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "Forward_flag_Axis_Captured" );
 	},
 
-	Forward_flag_Allies_Captured = function( trigger )
+	Forward_flag_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "Forward_flag_Allies_Captured" );
 	},

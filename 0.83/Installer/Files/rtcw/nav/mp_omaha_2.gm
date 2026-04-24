@@ -16,7 +16,7 @@ global Map =
 
 	DontDispenseAmmo = true,
 
-	Sea_Wall_breach_Destroyed = function( trigger )
+	Sea_Wall_breach_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG_Secret_Documents" );
 		if ( Map.WoodStatus == false ) {
@@ -24,20 +24,20 @@ global Map =
 			SetAvailableMapGoals( TEAM.AXIS, true, "MOUNTMG42_mg42_1_9" );  // Pillbox facing far side
 		}
 	},
-	Sea_Wall_breach_Planted = function( trigger )
+	Sea_Wall_breach_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Sea_Wall_breach.*" );
 	},
 
-	a_weak_stair_Destroyed = function( trigger )
+	a_weak_stair_Destroyed = function()
 	{
 	},
 
-	a_weak_stair_Planted = function( trigger )
+	a_weak_stair_Planted = function()
 	{
 	},
 
-	wooden_gate_Destroyed = function( trigger )
+	wooden_gate_Destroyed = function()
 	{
 		Map.WoodStatus = true;
 
@@ -60,18 +60,18 @@ global Map =
 			Map.CourtyardDefense();
 		}
 	},
-	wooden_gate_Planted = function( trigger )
+	wooden_gate_Planted = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_wooden_gate.*" );
 	},
 
-	Secret_Documents_Taken = function( trigger )
+	Secret_Documents_Taken = function()
 	{
 		Map.DocStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK_bDocs.*" );
 		Util.ChangeSpawn( TEAM.AXIS, 2 );
 	},
-	Secret_Documents_Returned = function( trigger )
+	Secret_Documents_Returned = function()
 	{
 		Map.DocStatus = false;
 
@@ -84,7 +84,7 @@ global Map =
 
 		Util.ChangeSpawn( TEAM.AXIS, 0 );
 	},
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		Map.TwoMins = true;
 		if ( Map.DocStatus == false ) {
@@ -92,7 +92,7 @@ global Map =
 		}
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.DocStatus == false ) {
 			Map.DocsDefense();

@@ -4,186 +4,85 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.357, 0.166, 0.919),
+			Vec3(0.357, 0.166, 0.919),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(1052.000, 1069.000, 426.000),
-		Radius = 32,
 	},
 	AIRSTRIKE_bSeawallAS_2 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.380, 0.305, 0.873),
+			Vec3(0.380, 0.305, 0.873),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(1443.000, -2028.000, 592.000),
-		Radius = 32,
 	},
 	AIRSTRIKE_rSeawallAS_1 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.134, -0.619, 0.774),
+			Vec3(-0.134, -0.619, 0.774),
 		},
-		GoalType = "AIRSTRIKE",
-		MinRadius = 32,
 		Position = Vec3(1914.000, -978.000, 577.000),
-		Radius = 32,
 	},
 	CAPPOINT_1090 = 
 	{
-		GoalType = "CapPoint",
 		Position = Vec3(-2195.700, -716.555, 311.113),
-		Radius = 35,
 	},
 	CHECKPOINT_beach_flag = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "CHECKPOINT",
 		Position = Vec3(1584.000, -1456.000, 610.000),
 	},
 	DEFEND_1099 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.130, 0.989, -0.077),
+			Vec3(-0.130, 0.989, -0.077),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 6,
 		MinCampTime = 2,
 		Position = Vec3(4874.317, 672.455, 416.125),
-		Radius = 35,
 		TeamAvailability = 2,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_1100 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.397, -0.918, -0.018),
+			Vec3(0.397, -0.918, -0.018),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 6,
 		MinCampTime = 2,
 		Position = Vec3(4224.330, 864.406, 416.125),
-		Radius = 35,
 		TeamAvailability = 2,
-		Weapons = 
-		{
-		},
 	},
 	DEFEND_1101 = 
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.824, -0.560, 0.090),
+			Vec3(-0.824, -0.560, 0.090),
 		},
-		GoalType = "Defend",
 		MaxCampTime = 6,
 		MinCampTime = 2,
 		Position = Vec3(5235.944, 1775.135, 192.125),
-		Radius = 35,
 		TeamAvailability = 2,
-		Weapons = 
-		{
-		},
-	},
-	EXPLODE_1022 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(5516.000, 1182.000, 244.000),
-		TagName = "",
-	},
-	EXPLODE_1023 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(5002.000, 944.000, 472.000),
-		TagName = "",
-	},
-	EXPLODE_811 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(-52.002, 136.000, 408.000),
-		TagName = "",
-	},
-	EXPLODE_821 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(-1100.000, 776.000, 352.000),
-		TagName = "",
-	},
-	EXPLODE_835 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(1060.000, 112.000, 456.000),
-		TagName = "",
-	},
-	EXPLODE_918 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(3760.000, 2176.000, 288.000),
-		TagName = "",
-	},
-	EXPLODE_942 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(3552.000, -480.000, 672.000),
-		TagName = "",
-	},
-	EXPLODE_942_1 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(3552.000, -408.000, 640.000),
-		TagName = "",
-	},
-	EXPLODE_943 = 
-	{
-		CreateOnLoad = 0,
-		GoalType = "EXPLODE",
-		Position = Vec3(3384.000, -480.000, 640.000),
-		TagName = "",
 	},
 	FLAG_War_Documents = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "Flag",
 		Position = Vec3(4940.000, 2104.000, 180.000),
-		TagName = "War Documents",
 		TeamAvailability = 4,
 	},
 	MOUNTMG42_1098 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(1776.000, -704.000, 800.000),
-		TagName = "",
 		TeamAvailability = 6,
 	},
 	MOUNTMG42_t370 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(1042.000, 1488.000, 652.000),
@@ -191,11 +90,7 @@ global _MG =
 	},
 	MOUNTMG42_t377 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(1042.000, 1392.000, 652.000),
@@ -203,11 +98,7 @@ global _MG =
 	},
 	MOUNTMG42_t389 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(1426.000, -1352.000, 684.000),
@@ -215,11 +106,7 @@ global _MG =
 	},
 	MOUNTMG42_t399 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(2514.000, 2136.000, 1100.000),
@@ -227,11 +114,7 @@ global _MG =
 	},
 	MOUNTMG42_t400 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(2514.000, 1960.000, 1100.000),
@@ -239,11 +122,7 @@ global _MG =
 	},
 	MOUNTMG42_t401 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(3154.000, 1032.000, 916.000),
@@ -251,11 +130,7 @@ global _MG =
 	},
 	MOUNTMG42_t432 = 
 	{
-		AimVectors = 
-		{
-		},
 		CreateOnLoad = 0,
-		GoalType = "MOUNTMG42",
 		MaxCampTime = 30,
 		MinCampTime = 15,
 		Position = Vec3(1426.000, -1440.000, 684.000),
@@ -263,106 +138,73 @@ global _MG =
 	},
 	PLANT_Allies_Radio_Transmission = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(-2160.000, -764.000, 352.000),
-		TagName = "Allies Radio Transmission",
 		TeamAvailability = 4,
 	},
 	PLANT_Sea_Wall_Breach = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(1408.000, 1024.000, 516.000),
-		TagName = "Sea Wall Breach",
 		TeamAvailability = 4,
 	},
 	PLANT_Sea_Wall_Gate = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(1848.000, -696.000, 516.000),
-		TagName = "Sea Wall Gate",
 		TeamAvailability = 4,
 	},
 	PLANT_South_Front_Bunker_Door = 
 	{
-		CoverSpots = 
-		{
-		},
 		CreateOnLoad = 0,
-		ExplosiveType = 1,
-		GoalType = "PLANT",
 		Position = Vec3(1552.000, -1628.000, 640.000),
-		TagName = "South Front Bunker Door",
 		TeamAvailability = 4,
 	},
 	REPAIRMG42_1098 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(1776.000, -704.000, 800.000),
-		TagName = "",
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t370 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(1042.000, 1488.000, 652.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t377 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(1042.000, 1392.000, 652.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t389 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(1426.000, -1352.000, 684.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t399 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(2514.000, 2136.000, 1100.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t400 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(2514.000, 1960.000, 1100.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t401 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(3154.000, 1032.000, 916.000),
 		TeamAvailability = 6,
 	},
 	REPAIRMG42_t432 = 
 	{
 		CreateOnLoad = 0,
-		GoalType = "REPAIRMG42",
 		Position = Vec3(1426.000, -1440.000, 684.000),
 		TeamAvailability = 6,
 	},
@@ -370,9 +212,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.534, -0.837, -0.119),
+			Vec3(-0.534, -0.837, -0.119),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2487.395, -116.467, 695.658),
@@ -386,9 +227,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.255, 0.965, 0.054),
+			Vec3(0.255, 0.965, 0.054),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2044.448, -1689.188, 630.125),
@@ -402,9 +242,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.227, 0.972, 0.060),
+			Vec3(0.227, 0.972, 0.060),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2218.407, -1646.910, 581.125),
@@ -418,9 +257,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.449, 0.893, -0.029),
+			Vec3(0.449, 0.893, -0.029),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(1858.846, -1211.011, 587.506),
@@ -434,9 +272,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.748, -0.639, -0.179),
+			Vec3(-0.748, -0.639, -0.179),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(3022.126, 1167.470, 832.125),
@@ -450,9 +287,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.981, -0.016, -0.195),
+			Vec3(-0.981, -0.016, -0.195),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2925.875, 567.344, 718.186),
@@ -466,9 +302,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.029, 0.997, 0.075),
+			Vec3(0.029, 0.997, 0.075),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2451.514, -1252.429, 581.156),
@@ -482,9 +317,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(0.993, -0.054, 0.102),
+			Vec3(0.993, -0.054, 0.102),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(1643.114, 214.279, 616.125),
@@ -498,9 +332,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.058, -0.983, -0.176),
+			Vec3(-0.058, -0.983, -0.176),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2165.403, 1122.851, 808.125),
@@ -514,9 +347,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.951, -0.229, -0.210),
+			Vec3(-0.951, -0.229, -0.210),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(3370.125, -315.655, 840.125),
@@ -530,9 +362,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.987, 0.014, -0.159),
+			Vec3(-0.987, 0.014, -0.159),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2873.723, -714.888, 722.274),
@@ -546,9 +377,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.913, 0.369, -0.176),
+			Vec3(-0.913, 0.369, -0.176),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(3026.126, 364.586, 832.125),
@@ -562,9 +392,8 @@ global _MG =
 	{
 		AimVectors = 
 		{
-			[0] = Vec3(-0.347, -0.931, -0.111),
+			Vec3(-0.347, -0.931, -0.111),
 		},
-		GoalType = "Snipe",
 		MaxCampTime = 20,
 		MinCampTime = 10,
 		Position = Vec3(2895.795, 1579.968, 832.125),

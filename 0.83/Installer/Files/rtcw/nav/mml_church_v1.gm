@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	Flag_Holy_Relic = "FLAG_Holy_Relic",
 	Plant_Side_Door = "PLANT_Side_Door",
 	Explode_138 = "EXPLODE_138",
@@ -63,7 +62,7 @@ global Map =
 		},
 	},
 
-	Side_Door_Destroyed = function( trigger )
+	Side_Door_Destroyed = function()
 	{
 		Map.DoorStatus = true;
 		Util.EnableGoal( "ROUTE_door" );
@@ -79,17 +78,17 @@ global Map =
 			"DEFEND_bRelic.*",
 		});
 	},
-	Side_Door_Planted = function( trigger )
+	Side_Door_Planted = function()
 	{
 		if ( Map.RelicStatus == true ) {
 			SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_.*" );
 		}
 	},
-	Side_Door_Defused = function( trigger )
+	Side_Door_Defused = function()
 	{
 	},
 
-	Holy_Relic_Taken = function( trigger )
+	Holy_Relic_Taken = function()
 	{
 		Map.RelicStatus = true;
 
@@ -111,7 +110,7 @@ global Map =
 
 		Util.LimitToTeam( TEAM.ALLIES, "SWITCH_Alarm" );
 	},
-	Holy_Relic_Returned = function( trigger )
+	Holy_Relic_Returned = function()
 	{
 		Map.RelicStatus = false;
 
@@ -154,7 +153,7 @@ global Map =
 			Util.LimitToTeam( TEAM.ALLIES, "SWITCH_Alarm" );
 		}
 	},
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 		RTCWUtil.StopSniping(); // Push inside
 		Map.TwoMinute = true;
@@ -165,7 +164,7 @@ global Map =
 		}
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 		if ( Map.RelicStatus == true ) {
 			return;
@@ -185,12 +184,12 @@ global Map =
 			}
 		}
 	},
-	alarm_on = function( trigger )
+	alarm_on = function()
 	{
 		Map.AlarmStatus = true;
 		Util.LimitToTeam( TEAM.AXIS, "SWITCH_Alarm" );
 	},
-	alarm_off = function( trigger )
+	alarm_off = function()
 	{
 		Map.AlarmStatus = false;
 		Util.LimitToTeam( TEAM.ALLIES, "SWITCH_Alarm" );

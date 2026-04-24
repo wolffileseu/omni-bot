@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	FocusPrimary = true,
 	DocsTaken = false,
 	DontDispenseAmmo = true,
@@ -214,7 +213,7 @@ global Map =
 	Grate_Destroyed = false,
 	Grate_Bot_Count = 0,
 
-	Book_Of_The_Dead_Holding_Chamber_Destroyed = function( trigger )
+	Book_Of_The_Dead_Holding_Chamber_Destroyed = function()
 	{
 		Map.ChurchDoorDestroyed = true;
 		Util.EnableGoal("CAPPOINT_.*");
@@ -233,23 +232,23 @@ global Map =
 		Util.MapDebugPrint( "Book_Of_The_Dead_Holding_Chamber_Destroyed" );
 	},
 
-	Book_Of_The_Dead_Holding_Chamber_Planted = function( trigger )
+	Book_Of_The_Dead_Holding_Chamber_Planted = function()
 	{
 		Util.MapDebugPrint( "Book_Of_The_Dead_Holding_Chamber_Planted" );
 	},
 
-	Book_Of_The_Dead_Holding_Chamber_Defused = function( trigger )
+	Book_Of_The_Dead_Holding_Chamber_Defused = function()
 	{
 		Util.MapDebugPrint( "Book_Of_The_Dead_Holding_Chamber_Defused" );
 	},
 
-	Guardhouse_Door_Destroyed = function( trigger )
+	Guardhouse_Door_Destroyed = function()
 	{
 		DynamicPathsUpdated(TEAM.ALLIES, TEAM.AXIS);
 		Util.MapDebugPrint( "Guardhouse_Door_Destroyed" );
 	},
 
-	Hells_Spawn_Soul_Portal_Destroyed = function( trigger )
+	Hells_Spawn_Soul_Portal_Destroyed = function()
 	{
 		Util.DisableGroup("b_portal", TEAM.ALLIES);
 		Util.EnableGroup("b_traincontrol_shift", TEAM.ALLIES);
@@ -260,7 +259,7 @@ global Map =
 		Util.MapDebugPrint( "Hells_Spawn_Soul_Portal_Destroyed" );
 	},
 
-	Supply_Train_Control_Board_Destroyed = function( trigger )
+	Supply_Train_Control_Board_Destroyed = function()
 	{
 		Util.DisableGroup("b_traincontrol", TEAM.ALLIES);
 		Util.EnableGroup("b_portalshift", TEAM.ALLIES);
@@ -271,7 +270,7 @@ global Map =
 		Util.MapDebugPrint( "Supply_Train_Control_Board_Destroyed" );
 	},
 
-	Book_of_the_Dead_Taken = function( trigger )
+	Book_of_the_Dead_Taken = function()
 	{
 		Map.DocsTaken = true;
 
@@ -282,7 +281,7 @@ global Map =
 		Util.MapDebugPrint( "Book_of_the_Dead_Taken" );
 	},
 
-	Book_of_the_Dead_Returned = function( trigger )
+	Book_of_the_Dead_Returned = function()
 	{
 		Map.DocsTaken = false;
 
@@ -301,35 +300,35 @@ global Map =
 		Util.MapDebugPrint( "Book_of_the_Dead_Returned" );
 	},
 
-	midflag_Axis_Captured = function( trigger )
+	midflag_Axis_Captured = function()
 	{
 		ClearGoalRole( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // allies should focus on it
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SNIPE_alliedroof.*" );
 		Util.MapDebugPrint( "midflag_Axis_Captured" );
 	},
 
-	midflag_Allies_Captured = function( trigger )
+	midflag_Allies_Captured = function()
 	{
 		SetGoalRole( "CHECKPOINT_.*", ROLE.ATTACKER2 ); // limited bots will go for it
 		SetAvailableMapGoals( TEAM.ALLIES, true, "SNIPE_alliedroof.*" );
 		Util.MapDebugPrint( "midflag_Allies_Captured" );
 	},
 
- 	guardhouse_door_open = function( trigger )
+ 	guardhouse_door_open = function()
  	{
 		Map.Switches.lever3.Enabled = false;
 
 		Util.MapDebugPrint("guardhouse door opening");
  	},
 
- 	guardhouse_door_closed = function( trigger )
+ 	guardhouse_door_closed = function()
  	{
 		Map.Switches.lever3.Enabled = true;
 
 		Util.MapDebugPrint("guardhouse door closing");
  	},
 
- 	main_door_open = function( trigger )
+ 	main_door_open = function()
  	{
 		Map.Switches.lever1.Enabled = false;
 		Map.Switches.lever2.Enabled = false;
@@ -337,7 +336,7 @@ global Map =
 		Util.MapDebugPrint("main door opening");
  	},
 
- 	main_door_closed = function( trigger )
+ 	main_door_closed = function()
  	{
 		Map.Switches.lever1.Enabled = true;
 		Map.Switches.lever2.Enabled = true;
@@ -345,7 +344,7 @@ global Map =
 		Util.MapDebugPrint("main door closing");
  	},
 
- 	lift1_down = function( trigger )
+ 	lift1_down = function()
  	{
 		sleep(1.7);
 		Map.Switches.lift1.Enabled = false;
@@ -353,14 +352,14 @@ global Map =
 		Util.MapDebugPrint("lift1 down");
  	},
 
- 	lift1_up = function( trigger )
+ 	lift1_up = function()
  	{
 		Map.Switches.lift1.Enabled = true;
 
 		Util.MapDebugPrint("lift1 up");
  	},
 
- 	lift2_down = function( trigger )
+ 	lift2_down = function()
  	{
 		sleep(2);
 		Map.Switches.lift2.Enabled = false;
@@ -368,7 +367,7 @@ global Map =
 		Util.MapDebugPrint("lift2 down");
  	},
 
- 	lift2_up = function( trigger )
+ 	lift2_up = function()
  	{
 		Map.Switches.lift2.Enabled = true;
 

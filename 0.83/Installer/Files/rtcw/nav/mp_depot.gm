@@ -238,7 +238,7 @@ global Map =
 		},
 	},
 
-	Ops_Destroyed = function( trigger )
+	Ops_Destroyed = function()
 	{
 		if ( TestMap || Map.Ended ) {
 			return;
@@ -249,7 +249,7 @@ global Map =
 		Util.MapDebugPrint( "Ops_Destroyed" );
 	},
 
-	Ops_Planted = function( trigger )
+	Ops_Planted = function()
 	{
 		Map.OpsDyno += 1;
 
@@ -259,7 +259,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, true, "DEFEND_eng_opscover.*" );
 	},
 
-	Ops_Defused = function( trigger )
+	Ops_Defused = function()
 	{
 		Map.OpsDyno -= 1;
 
@@ -277,7 +277,7 @@ global Map =
 		}
 	},
 
-	AA_Destroyed = function( trigger )
+	AA_Destroyed = function()
 	{
 		if ( TestMap || Map.Ended ) {
 			return;
@@ -288,7 +288,7 @@ global Map =
 		Util.MapDebugPrint( "AA_Destroyed" );
 	},
 
-	AA_Planted = function( trigger )
+	AA_Planted = function()
 	{
 		Map.AADyno += 1;
 
@@ -300,7 +300,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, true, "DEFEND_aacover.*" );
 	},
 
-	AA_Defused = function( trigger )
+	AA_Defused = function()
 	{
 		Map.AADyno -= 1;
 
@@ -312,7 +312,7 @@ global Map =
 		}
 	},
 
-	West_Gate_Destroyed = function( trigger )
+	West_Gate_Destroyed = function()
 	{
 		Map.WestGateStatus = true;
 
@@ -323,7 +323,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND_eng_westgate.*" );
 	},
 
-	West_Gate_Planted = function( trigger )
+	West_Gate_Planted = function()
 	{
 		Map.WestDyno += 1;
 
@@ -331,7 +331,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFUSE_West.*" );
 	},
 
-	West_Gate_Defused = function( trigger )
+	West_Gate_Defused = function()
 	{
 		Map.WestDyno -= 1;
 
@@ -340,7 +340,7 @@ global Map =
 		}
 	},
 
-	East_Gate_Destroyed = function( trigger )
+	East_Gate_Destroyed = function()
 	{
 		Map.EastGateStatus = true;
 
@@ -354,7 +354,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.ALLIES, false, "DEFEND_eng_eastgate.*" );
 	},
 
-	East_Gate_Planted = function( trigger )
+	East_Gate_Planted = function()
 	{
 		Map.EastDyno += 1;
 
@@ -362,7 +362,7 @@ global Map =
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_East.*" );
 	},
 
-	East_Gate_Defused = function( trigger )
+	East_Gate_Defused = function()
 	{
 		Map.EastDyno -= 1;
 
@@ -371,7 +371,7 @@ global Map =
 		}
 	},
 
-	CP_Axis_Captured = function( trigger )
+	CP_Axis_Captured = function()
 	{
 		Map.FlagStatus = TEAM.AXIS;
 		Map.DontDispenseAmmo = true;
@@ -418,7 +418,7 @@ global Map =
 		});
 	},
 
-	CP_Allies_Captured = function( trigger )
+	CP_Allies_Captured = function()
 	{
 		Map.FlagStatus = TEAM.ALLIES;
 		Map.DontDispenseAmmo = true;

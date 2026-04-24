@@ -227,7 +227,6 @@ global OnMapLoad = function()
 	});
 
 	Util.SetMaxUsersInProgress( 1, "MOUNTMG42.*" );
-	Util.SetMaxUsersInProgress( 1, "REPAIRMG42.*" );
 	Util.UpdateSwitchData();
 
 	MapRoutes =

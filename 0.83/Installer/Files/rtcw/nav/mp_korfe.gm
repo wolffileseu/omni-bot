@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	DocStatus = 0,
@@ -18,12 +17,12 @@ global Map =
 		},
 	},
 
-	cellar_wall_Destroyed = function( trigger )
+	cellar_wall_Destroyed = function()
 	{
 		Util.MapDebugPrint( "cellar_wall_Destroyed" );
 	},
 
-	keep_gate_Destroyed = function( trigger )
+	keep_gate_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, {
 			"ARTILLERY_S_bFlag.*",
@@ -50,7 +49,7 @@ global Map =
 		Util.MapDebugPrint( "keep_gate_Destroyed" );
 	},
 
-	secret_plans_Taken = function( trigger )
+	secret_plans_Taken = function()
 	{
 		Map.DocStatus = 2;
 
@@ -82,7 +81,7 @@ global Map =
 		Util.MapDebugPrint( "secret_plans_Taken" );
 	},
 
-	secret_plans_Returned = function( trigger )
+	secret_plans_Returned = function()
 	{
 		Map.DocStatus = 1;
 
@@ -90,7 +89,7 @@ global Map =
 	},
 
 
-	bailey_flag_Axis_Captured = function( trigger )
+	bailey_flag_Axis_Captured = function()
 	{
 		Map.FlagStatus = 1;
 
@@ -103,7 +102,7 @@ global Map =
 		Util.MapDebugPrint( "bailey_flag_Axis_Captured" );
 	},
 
-	bailey_flag_Allies_Captured = function( trigger )
+	bailey_flag_Allies_Captured = function()
 	{
 		Map.FlagStatus = 2;
 

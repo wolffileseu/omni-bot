@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DispenseAmmoTime = 10,
 	DontDispenseAmmo = true,
 
@@ -27,32 +26,32 @@ global Map =
 		},
 	},
 
-	transmitter_Destroyed = function( trigger )
+	transmitter_Destroyed = function()
 	{
 		Util.MapDebugPrint( "transmitter_Destroyed" );
 	},
 
-	transmitter_1_Destroyed = function( trigger )
+	transmitter_1_Destroyed = function()
 	{
 		Util.MapDebugPrint( "transmitter_1_Destroyed" );
 	},
 
-	War_Documents_Taken = function( trigger )
+	War_Documents_Taken = function()
 	{
 		Util.MapDebugPrint( "War_Documents_Taken" );
 	},
 
-	War_Documents_1_Taken = function( trigger )
+	War_Documents_1_Taken = function()
 	{
 		Util.MapDebugPrint( "War_Documents_1_Taken" );
 	},
 
-	CAPPOINT_409_Captured = function( trigger )
+	CAPPOINT_409_Captured = function()
 	{
 		Util.MapDebugPrint( "CAPPOINT_409_Captured" );
 	},
 
-	CAPPOINT_410_Captured = function( trigger )
+	CAPPOINT_410_Captured = function()
 	{
 		Util.MapDebugPrint( "CAPPOINT_410_Captured" );
 	},

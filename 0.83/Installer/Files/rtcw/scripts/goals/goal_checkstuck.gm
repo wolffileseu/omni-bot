@@ -114,8 +114,8 @@ this.StuckageLog = function()
 	gmfile = File();
 	assert(gmfile.Open(GetMapName() + "_stuckages.gm", "text", false, true));
 	if (gmfile.FileSize() == 0) {
-		assert(gmfile.Write("global Stuckages = {};", System.NewLine));
+		assert(gmfile.WriteLine("global Stuckages = {};"));
 	}
-	assert(gmfile.Write("Stuckages[tableCount(Stuckages)] = Vec3" + this.Bot.GetPosition() + ";", System.NewLine));
+	assert(gmfile.WriteLine("Stuckages[tableCount(Stuckages)] = Vec3" + this.Bot.GetPosition() + ";"));
 	gmfile.Close();
 };

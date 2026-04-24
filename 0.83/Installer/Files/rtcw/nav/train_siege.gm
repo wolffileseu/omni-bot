@@ -1,7 +1,6 @@
 global Map =
 {
 	Quiet = true,
-	Debug = false,
 	//DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
 	SwitchesAvailable = false, // True when allies have a path to switches.
@@ -26,7 +25,7 @@ global Map =
 		},
 	},
 
-	Loose_Lumber_Destroyed = function( trigger )
+	Loose_Lumber_Destroyed = function()
 	{
 		Wp.SetWaypointFlag( "woodbridge", "closed", false );
 
@@ -47,12 +46,12 @@ global Map =
 		Util.MapDebugPrint( "Loose_Lumber_Destroyed" );
 	},
 
-	Loose_Lumber_Planted = function( trigger )
+	Loose_Lumber_Planted = function()
 	{
 		Util.MapDebugPrint( "Loose_Lumber_Planted" );
 	},
 
-	Weak_Train_Roof_Destroyed = function( trigger )
+	Weak_Train_Roof_Destroyed = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "ATTACK.*" );
 
@@ -71,12 +70,12 @@ global Map =
 		Util.MapDebugPrint( "Weak_Train_Roof_Destroyed" );
 	},
 
-	Weak_Train_Roof_Planted = function( trigger )
+	Weak_Train_Roof_Planted = function()
 	{
 		Util.MapDebugPrint( "Weak_Train_Roof_Planted" );
 	},
 
-	coalcar_switched = function( trigger )
+	coalcar_switched = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SWITCH_coalcar" );
 
@@ -84,7 +83,7 @@ global Map =
 		Util.MapDebugPrint( "coalcar_switched" );
 	},
 
-	boxcar1_switched = function( trigger )
+	boxcar1_switched = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SWITCH_boxcar1" );
 
@@ -92,7 +91,7 @@ global Map =
 		Util.MapDebugPrint( "boxcar1_switched" );
 	},
 
-	boxcar2_switched = function( trigger )
+	boxcar2_switched = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SWITCH_boxcar2" );
 
@@ -100,7 +99,7 @@ global Map =
 		Util.MapDebugPrint( "boxcar2_switched" );
 	},
 
-	boxcar3_switched = function( trigger )
+	boxcar3_switched = function()
 	{
 		SetAvailableMapGoals( TEAM.ALLIES, false, "SWITCH_boxcar3" );
 

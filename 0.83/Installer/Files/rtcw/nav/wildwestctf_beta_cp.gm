@@ -1,6 +1,5 @@
 global Map =
 {
-	Debug = 0,
 	DontDispenseAmmo = true,
 
 	Airstrike =
@@ -15,52 +14,52 @@ global Map =
 		},
 	},
 
-	checkpoint01_Axis_Captured = function( trigger )
+	checkpoint01_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint01_Axis_Captured" );
 	},
 
-	checkpoint01_Allies_Captured = function( trigger )
+	checkpoint01_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint01_Allies_Captured" );
 	},
 
-	checkpoint02_Axis_Captured = function( trigger )
+	checkpoint02_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint02_Axis_Captured" );
 	},
 
-	checkpoint02_Allies_Captured = function( trigger )
+	checkpoint02_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint02_Allies_Captured" );
 	},
 
-	checkpoint03_Axis_Captured = function( trigger )
+	checkpoint03_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint03_Axis_Captured" );
 	},
 
-	checkpoint03_Allies_Captured = function( trigger )
+	checkpoint03_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint03_Allies_Captured" );
 	},
 
-	checkpoint04_Axis_Captured = function( trigger )
+	checkpoint04_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint04_Axis_Captured" );
 	},
 
-	checkpoint04_Allies_Captured = function( trigger )
+	checkpoint04_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint04_Allies_Captured" );
 	},
 
-	checkpoint05_Axis_Captured = function( trigger )
+	checkpoint05_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint05_Axis_Captured" );
 	},
 
-	checkpoint05_Allies_Captured = function( trigger )
+	checkpoint05_Allies_Captured = function()
 	{
 		Util.MapDebugPrint( "checkpoint05_Allies_Captured" );
 	},

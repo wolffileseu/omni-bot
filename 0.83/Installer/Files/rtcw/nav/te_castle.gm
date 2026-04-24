@@ -45,14 +45,14 @@ global Map =
 		},
 	},
 
-	Coffin_Destroyed = function( trigger )
+	Coffin_Destroyed = function()
 	{
 		Map.CoffinStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, true, "FLAG_Sacred_Obelisk" );
 		Map.checkCoffinFallback();
 	},
 
-	Coffin_Planted = function( trigger )
+	Coffin_Planted = function()
 	{
 		Map.CoffinDyno += 1;
 		SetAvailableMapGoals( TEAM.AXIS, false, "CALLARTILLERY_rCoffin.*" );    // Let eng defuse!
@@ -61,7 +61,7 @@ global Map =
 		}
 	},
 
-	Coffin_Defused = function( trigger )
+	Coffin_Defused = function()
 	{
 		Map.CoffinDyno -= 1;
 		if ( Map.CoffinDyno == 0 ) {
@@ -72,7 +72,7 @@ global Map =
 		}
 	},
 
-	Hallway_Gate_Destroyed = function( trigger )
+	Hallway_Gate_Destroyed = function()
 	{
 		Map.HallwayStatus = true;
 		Map.checkCoffinFallback();
@@ -86,17 +86,17 @@ global Map =
 		}
 	},
 
-	Hallway_Gate_Planted = function( trigger )
+	Hallway_Gate_Planted = function()
 	{
 		Map.HallwayDyno += 1;
 	},
 
-	Hallway_Gate_Defused = function( trigger )
+	Hallway_Gate_Defused = function()
 	{
 		Map.HallwayDyno -= 1;
 	},
 
-	West_Gate_Destroyed = function( trigger )
+	West_Gate_Destroyed = function()
 	{
 		Map.WestStatus = true;
 		SetAvailableMapGoals( TEAM.ALLIES, true, "PLANT_Hallway_Gate" );
@@ -115,17 +115,17 @@ global Map =
 		Map.checkCoffinFallback();
 	},
 
-	West_Gate_Planted = function( trigger )
+	West_Gate_Planted = function()
 	{
 		Map.WestDyno += 1;
 	},
 
-	West_Gate_Defused = function( trigger )
+	West_Gate_Defused = function()
 	{
 		Map.WestDyno -= 1;
 	},
 
-	Sacred_Obelisk_Taken = function( trigger )
+	Sacred_Obelisk_Taken = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, "CALLARTILLERY_rCoffin.*" );    // Focus on obelisk
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFEND.*" );
@@ -144,7 +144,7 @@ global Map =
 		}
 	},
 
-	Sacred_Obelisk_Returned = function( trigger )
+	Sacred_Obelisk_Returned = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, true, {
 			"CALLARTILLERY_rCoffin.*",
@@ -171,11 +171,11 @@ global Map =
 			}
 		}
 	},
-	two_minute = function( trigger )
+	two_minute = function()
 	{
 	},
 
-	thirty_second = function( trigger )
+	thirty_second = function()
 	{
 	},
 

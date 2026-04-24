@@ -3,7 +3,6 @@ global Map =
 	//Quiet = true,
 	DispenseAmmoTime = 1,
 	DontDispenseAmmo = true,
-	Debug = 0,
 	DoorStatus = false,
 
 	Airstrike =
@@ -17,7 +16,7 @@ global Map =
 		},
 	},
 
-	Axis_X_Lab_Entrance_Door_Destroyed = function( trigger )
+	Axis_X_Lab_Entrance_Door_Destroyed = function()
 	{
 		Map.DoorStatus = true;
 
@@ -41,60 +40,60 @@ global Map =
 
 	},
 
-	Axis_X_Lab_Entrance_Door_Planted = function( trigger )
+	Axis_X_Lab_Entrance_Door_Planted = function()
 	{
 		Util.MapDebugPrint( "Axis_X_Lab_Entrance_Door_Planted" );
 	},
 
-	Axis_X_Lab_Machinery_Destroyed = function( trigger )
+	Axis_X_Lab_Machinery_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Axis_X_Lab_Machinery_Destroyed" );
 	},
 
-	Axis_X_Lab_Machinery_Planted = function( trigger )
+	Axis_X_Lab_Machinery_Planted = function()
 	{
 		Util.MapDebugPrint( "Axis_X_Lab_Machinery_Planted" );
 	},
 
-	Burnt_House_Broken_Door_Destroyed = function( trigger )
+	Burnt_House_Broken_Door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Burnt_House_Broken_Door_Destroyed" );
 	},
 
-	Burnt_House_Broken_Door_Planted = function( trigger )
+	Burnt_House_Broken_Door_Planted = function()
 	{
 		Util.MapDebugPrint( "Burnt_House_Broken_Door_Planted" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Burnt_House_Broken_Door.*" );
 	},
 
-	Castle_Gate_Destroyed = function( trigger )
+	Castle_Gate_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Castle_Gate_Destroyed" );
 	},
 
-	Castle_Gate_Planted = function( trigger )
+	Castle_Gate_Planted = function()
 	{
 		Util.MapDebugPrint( "Castle_Gate_Planted" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Castle_Gate.*" );
 	},
 
-	Truck_Garage_Door_Destroyed = function( trigger )
+	Truck_Garage_Door_Destroyed = function()
 	{
 		Util.MapDebugPrint( "Truck_Garage_Door_Destroyed" );
 	},
 
-	Truck_Garage_Door_Planted = function( trigger )
+	Truck_Garage_Door_Planted = function()
 	{
 		Util.MapDebugPrint( "Truck_Garage_Door_Planted" );
 		SetAvailableMapGoals( TEAM.AXIS, false, "DEFUSE_Truck_Garage_Door.*" );
 	},
 
-	town_flag_Axis_Captured = function( trigger )
+	town_flag_Axis_Captured = function()
 	{
 		Util.MapDebugPrint( "town_flag_Axis_Captured" );
 	},
 
-	town_flag_Allies_Captured = function( trigger )
+	town_flag_Allies_Captured = function()
 	{
 		SetAvailableMapGoals( TEAM.AXIS, false, {
 			"ARTILLERY_S_rCastle.*",
