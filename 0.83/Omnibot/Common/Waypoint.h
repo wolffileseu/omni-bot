@@ -110,7 +110,7 @@ protected:
 	obuint32			m_Mark;	
 	obuint32			m_UID;
 	GameEntity			m_Entity;
-
+	BitFlag32			m_ClassMask;
 	obuint32			m_OnPathThrough;
 	obuint32			m_OnPathThroughParam;
 

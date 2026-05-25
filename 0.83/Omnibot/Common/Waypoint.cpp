@@ -47,7 +47,7 @@ void Waypoint::Reset()
 	m_GoalIndex = 0;
 	m_Locked = false;
 	m_PathSerial = 0;
-
+	m_ClassMask.ClearAll();
 	m_OnPathThrough = 0;
 	m_OnPathThroughParam = 0;
 }
@@ -215,13 +215,25 @@ void Waypoint::PostLoad()
 	m_OnPathThroughParam = 0;
 
 	String s = GetPropertyMap().GetProperty("paththrough");
-	if(s.size()>1)
+	if(s.size() > 1)
 	{
 		StringVector sv;
-		Utils::Tokenize(s," :",sv);
-		if(sv.size()>1)
-			m_OnPathThroughParam = Utils::MakeHash32(sv[1]); 
+		Utils::Tokenize(s, " :", sv);
+		if(sv.size() > 1)
+			m_OnPathThroughParam = Utils::MakeHash32(sv[1]);
 		if(!sv.empty())
 			m_OnPathThrough = Utils::MakeHash32(sv[0]);
+	}
+
+	m_ClassMask.ClearAll();
+	s = GetPropertyMap().GetProperty("class");
+	if(!s.empty())
+	{
+		StringVector sv;
+		Utils::Tokenize(s, ',', sv);
+		for(String &c : sv)
+		{
+			m_ClassMask.SetFlag(atoi(c.c_str()));
+		}
 	}
 }

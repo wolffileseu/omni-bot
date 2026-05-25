@@ -817,6 +817,9 @@ void PathPlannerWaypoint::_RunDijkstra(const NavFlags _team)
 					continue;
 			}
 
+			if(pNextWp->m_ClassMask.AnyFlagSet() && m_Client && !pNextWp->m_ClassMask.CheckFlag(m_Client->GetClass()))
+				continue;
+
 			// Calculate the successor cost.
 			// Ignore distance to next node if this is flagged as a teleporter.
 			float fSuccesorCost = pCurrentNode->m_FinalCost;
