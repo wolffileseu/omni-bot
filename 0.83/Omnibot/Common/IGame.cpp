@@ -1474,6 +1474,72 @@ void IGame::cmdReloadWeaponDatabase(const StringVector &_args)
 	DispatchGlobalEvent(MessageHelper(MESSAGE_REFRESHALLWEAPONS));
 }
 
+//////////////////////////////////////////////////////////////////////////
+// OMNIBOT_UNIQUE_NAME_FIX
+// Strip ET colour codes (^x) and lowercase a name, so bot and player names
+// are compared the way they are actually rendered on screen.
+static void Omnibot_CleanLower(const char *in, char *out, size_t outsize)
+{
+    size_t o = 0;
+    for (size_t i = 0; in && in[i] && o + 1 < outsize; )
+    {
+        if (in[i] == '^' && in[i + 1] && in[i + 1] != '^') { i += 2; continue; }
+        char c = in[i++];
+        if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+        out[o++] = c;
+    }
+    if (outsize) out[o] = '\0';
+}
+
+// Make sure a bot never spawns with the (colour-stripped, case-insensitive)
+// name of an already connected player - human OR bot. On a clash a numeric
+// suffix is appended (Thor -> Thor2). Runs before the bot connects, so every
+// occupied slot counts as "other"; only connected slots are queried.
+void IGame::EnsureUniqueBotName(char *_name, size_t _size)
+{
+    if (!_name || !_name[0] || !g_EngineFuncs)
+        return;
+
+    obPlayerInfo info;
+    g_EngineFuncs->GetPlayerInfo(info);
+
+    char base[64];
+    Utils::StringCopy(base, _name, sizeof(base));
+
+    for (int attempt = 0; attempt < 64; ++attempt)
+    {
+        char candidate[64];
+        if (attempt == 0)
+            Utils::StringCopy(candidate, base, sizeof(candidate));
+        else
+            Utils::StringCopy(candidate, va("%s%d", base, attempt + 1), sizeof(candidate));
+
+        char candClean[64];
+        Omnibot_CleanLower(candidate, candClean, sizeof(candClean));
+
+        bool taken = false;
+        for (int i = 0; i < obPlayerInfo::MaxPlayers; ++i)
+        {
+            if (info.m_Players[i].m_Team == OB_TEAM_NONE)
+                continue;
+
+            const char *pn = g_EngineFuncs->GetEntityName(g_EngineFuncs->EntityFromID(i));
+            if (!pn || !pn[0])
+                continue;
+
+            char otherClean[64];
+            Omnibot_CleanLower(pn, otherClean, sizeof(otherClean));
+            if (!strcmp(candClean, otherClean)) { taken = true; break; }
+        }
+
+        if (!taken)
+        {
+            Utils::StringCopy(_name, candidate, _size);
+            return;
+        }
+    }
+}
+
 void IGame::AddBot(Msg_Addbot &_addbot, bool _createnow)
 {
 	if(_createnow && !NavigationManager::GetInstance()->GetCurrentPathPlanner()->IsReady())
@@ -1492,6 +1558,7 @@ void IGame::AddBot(Msg_Addbot &_addbot, bool _createnow)
 	OBASSERT(GameStarted(),"Game Not Started Yet");
 	if(_createnow)
 		m_BotJoining = true;
+	EnsureUniqueBotName(_addbot.m_Name, sizeof(_addbot.m_Name)); // OMNIBOT_UNIQUE_NAME_FIX
 	int iGameID = InterfaceFuncs::Addbot(_addbot);
 	if(_createnow)
 		m_BotJoining = false;

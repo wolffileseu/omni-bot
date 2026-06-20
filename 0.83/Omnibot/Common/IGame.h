@@ -107,6 +107,7 @@ public:
 	virtual void GetRoleEnumeration(const IntEnum *&_ptr, int &num);
 
 	virtual void AddBot(Msg_Addbot &_addbot, bool _createnow = true);
+	void EnsureUniqueBotName(char *_name, size_t _size); // OMNIBOT_UNIQUE_NAME_FIX
 	
 	virtual void CheckServerSettings(bool managePlayers = true);
 

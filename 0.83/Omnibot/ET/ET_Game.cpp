@@ -460,6 +460,7 @@ void ET_Game::AddBot(Msg_Addbot &_addbot, bool _createnow)
 	OBASSERT(GameStarted(),"Game Not Started Yet");
 	if(_createnow)
 		m_BotJoining = true;
+	EnsureUniqueBotName(_addbot.m_Name, sizeof(_addbot.m_Name)); // OMNIBOT_UNIQUE_NAME_FIX
 	int iGameID = InterfaceFuncs::Addbot(_addbot);
 	if(_createnow)
 		m_BotJoining = false;
