@@ -1,0 +1,132 @@
+name: Build & Release omni-bot (name fix)
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  ET_URL:   https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_ET.zip
+  RTCW_URL: https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_RTCW.zip
+  ET_SHA:   a1b0cf22e756dcde714078cf691bebf7eadd260adffd92b6d4ec30d60925ec9b
+  RTCW_SHA: 6275af05c97016636aa810b41f7521a74b09655bbf02beda83f862c831bf2418
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: GameMonkey beschaffen (relatives Submodul umgehen)
+        run: |
+          git clone --depth 1 https://github.com/jswigart/gmscriptex.git /tmp/gms
+          rm -rf 0.83/Omnibot/dependencies/gmscriptex
+          mkdir -p 0.83/Omnibot/dependencies/gmscriptex
+          cp -r /tmp/gms/gmsrc_ex 0.83/Omnibot/dependencies/gmscriptex/
+          test -f 0.83/Omnibot/dependencies/gmscriptex/gmsrc_ex/src/gm/gmVariable.h
+
+      - name: Abhängigkeiten (x86_64 + i386)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake zip curl \
+            gcc-multilib g++-multilib \
+            libboost-system-dev libboost-filesystem-dev libboost-regex-dev libboost-date-time-dev \
+            libboost-system1.83-dev:i386 libboost-filesystem1.83-dev:i386 \
+            libboost-regex1.83-dev:i386 libboost-date-time1.83-dev:i386
+
+      - name: Build x86_64
+        run: |
+          cd 0.83/Omnibot
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON -DOMNIBOT_STATIC_BOOST=OFF
+          cmake --build build -j"$(nproc)"
+
+      - name: Build i386
+        run: |
+          cd 0.83/Omnibot
+          cmake -S . -B build32 -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON -DOMNIBOT_STATIC_BOOST=OFF \
+            -DCMAKE_C_FLAGS="-m32" -DCMAKE_CXX_FLAGS="-m32" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-m32" -DCMAKE_EXE_LINKER_FLAGS="-m32"
+          cmake --build build32 -j"$(nproc)"
+
+      - name: Architektur verifizieren
+        run: |
+          file 0.83/Omnibot/build/ET/omnibot_et.x86_64.so     | grep -q "x86-64"      || exit 1
+          file 0.83/Omnibot/build32/ET/omnibot_et.so          | grep -q "Intel 80386" || exit 1
+          file 0.83/Omnibot/build/RTCW/omnibot_rtcw.x86_64.so | grep -q "x86-64"      || exit 1
+          file 0.83/Omnibot/build32/RTCW/omnibot_rtcw.so      | grep -q "Intel 80386" || exit 1
+
+      - name: Offizielle 0.93-Pakete holen + Prüfsumme verifizieren
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          curl -fL -o et.zip   "$ET_URL"
+          curl -fL -o rtcw.zip "$RTCW_URL"
+          echo "$ET_SHA  et.zip"   | sha256sum -c -
+          echo "$RTCW_SHA  rtcw.zip" | sha256sum -c -
+
+      - name: Pakete bauen (offizielles Layout, nur Linux-Libs tauschen)
+        run: |
+          set -e
+          OUT="$GITHUB_WORKSPACE/dist"; rm -rf "$OUT"; mkdir -p "$OUT"
+          B="$GITHUB_WORKSPACE/0.83/Omnibot"
+
+          # --- ET: offizielles Zip entpacken, 2 Linux-Libs ersetzen, neu zippen ---
+          rm -rf et && mkdir et && (cd et && unzip -q ../et.zip)
+          cp "$B/build/ET/omnibot_et.x86_64.so" et/omni-bot/omnibot_et.x86_64.so
+          cp "$B/build32/ET/omnibot_et.so"      et/omni-bot/omnibot_et.so
+          (cd et && zip -rq "$OUT/omni-bot_0_93_namefix_ET.zip" .)
+
+          # --- RtCW: dito (omnibot/-Mod + qagame bleiben unangetastet) ---
+          rm -rf rtcw && mkdir rtcw && (cd rtcw && unzip -q ../rtcw.zip)
+          cp "$B/build/RTCW/omnibot_rtcw.x86_64.so" rtcw/omni-bot/omnibot_rtcw.x86_64.so
+          cp "$B/build32/RTCW/omnibot_rtcw.so"      rtcw/omni-bot/omnibot_rtcw.so
+          (cd rtcw && zip -rq "$OUT/omni-bot_0_93_namefix_RTCW.zip" .)
+
+          # --- Patch (gegen offiziellen 0.93-Tag) + Notes + Checksums ---
+          git fetch --depth 1 https://github.com/jswigart/omni-bot.git refs/tags/0.93:refs/tags/0.93 || true
+          git diff 0.93 -- \
+            0.83/Omnibot/Common/IGame.cpp 0.83/Omnibot/Common/IGame.h \
+            0.83/Omnibot/ET/ET_Game.cpp   0.83/Omnibot/RTCW/RTCW_Game.cpp > "$OUT/omnibot-namefix.patch" || true
+
+          cat > "$OUT/RELEASE_NOTES.md" <<'EOF'
+          # Omni-bot 0.93 — Unique Bot Name patch
+
+          Repackaged from the official 0.93 release. Layout is identical to upstream;
+          only the Linux server libraries (x86_64 + i386) are replaced with a build
+          that prevents bots from spawning under the name of a connected player.
+
+          Fix: IGame::EnsureUniqueBotName() — colour-stripped, case-insensitive
+          comparison against every connected client (human and bot) before the bot
+          connects; numeric suffix on a clash (Thor -> Thor2). Covers ET + RtCW.
+
+          CARRIES THE FIX:    omnibot_et.so (i386), omnibot_et.x86_64.so
+                              omnibot_rtcw.so (i386), omnibot_rtcw.x86_64.so
+          STOCK 0.93 (no fix): aarch64, mac, and Windows binaries — unchanged.
+
+          Status: candidate fix, not yet verified in-game. Keep real player names out
+          of et_botnames_ext.gm and keep the [BOT] prefix. See omnibot-namefix.patch.
+          EOF
+          sed -i 's/^          //' "$OUT/RELEASE_NOTES.md"
+
+          ( cd "$OUT" && sha256sum *.zip omnibot-namefix.patch > SHA256SUMS )
+          ls -la "$OUT"
+
+      - uses: actions/upload-artifact@v4
+        with: { name: omni-bot-namefix, path: dist/* }
+
+      - name: Release (nur bei Tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          body_path: dist/RELEASE_NOTES.md
+          files: |
+            dist/omni-bot_0_93_namefix_ET.zip
+            dist/omni-bot_0_93_namefix_RTCW.zip
+            dist/omnibot-namefix.patch
+            dist/SHA256SUMS
