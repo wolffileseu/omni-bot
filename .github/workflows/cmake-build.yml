@@ -114,7 +114,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release ^
           -DBUILD_SHARED_LIBS=OFF ^
           -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ^
-          "-DBOOST_INCLUDE_LIBRARIES=system;filesystem;regex;date_time" ^
+          "-DBOOST_INCLUDE_LIBRARIES=system;filesystem;regex;date_time;thread;algorithm;array;asio;bind;dynamic_bitset;interprocess;lexical_cast;multi_array;pool;smart_ptr;static_assert" ^
           -DCMAKE_INSTALL_PREFIX="%BOOST_ROOT%"
         if errorlevel 1 exit /b 1
         cmake --build boost-build --config Release -j 4
