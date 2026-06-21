@@ -17,7 +17,22 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Build inside debian:11 (glibc 2.31) so the produced .so loads on old game
+    # servers (ubuntu-latest's GCC pulls in a too-new GLIBCXX/glibc otherwise).
+    container: debian:11
     steps:
+      - name: Toolchain (debian container)
+        # Bare container: install before checkout (needs git). No sudo as root.
+        # Retry apt to ride out transient Debian mirror resets.
+        run: |
+          set -e
+          retry() { for i in 1 2 3 4 5; do "$@" && return 0; echo "retry $i..."; sleep 10; done; return 1; }
+          dpkg --add-architecture i386
+          retry apt-get update
+          retry apt-get install -y --no-install-recommends \
+            ca-certificates git build-essential cmake zip unzip curl file \
+            gcc-multilib g++-multilib
+
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
@@ -29,29 +44,43 @@ jobs:
           cp -r /tmp/gms/gmsrc_ex 0.83/Omnibot/dependencies/gmscriptex/
           test -f 0.83/Omnibot/dependencies/gmscriptex/gmsrc_ex/src/gm/gmVariable.h
 
-      - name: Abhängigkeiten (x86_64 + i386)
+      - name: Boost bauen (x86_64 + i386, statisch, -fPIC)
+        # From-source so the static .a is -fPIC (Debian's system .a is not) and gets
+        # baked into the module -> no external libboost dependency at runtime.
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            build-essential cmake zip curl \
-            gcc-multilib g++-multilib \
-            libboost-system-dev libboost-filesystem-dev libboost-regex-dev libboost-date-time-dev \
-            libboost-system1.83-dev:i386 libboost-filesystem1.83-dev:i386 \
-            libboost-regex1.83-dev:i386 libboost-date-time1.83-dev:i386
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          curl -L -o boost.tar.gz https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
+          tar -xf boost.tar.gz
+          cd boost-1.84.0
+          ./bootstrap.sh --with-libraries=system,filesystem,regex,date_time
+          ./b2 -j"$(nproc)" address-model=64 cxxflags="-fPIC" link=static \
+                --prefix="$GITHUB_WORKSPACE/boost64" install
+          ./b2 -j"$(nproc)" address-model=32 cxxflags="-fPIC" link=static \
+                --prefix="$GITHUB_WORKSPACE/boost32" install
 
       - name: Build x86_64
+        # Static boost + static libstdc++/libgcc baked in (MODULE targets use
+        # CMAKE_MODULE_LINKER_FLAGS) -> no GLIBCXX/boost runtime deps.
         run: |
           cd 0.83/Omnibot
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON -DOMNIBOT_STATIC_BOOST=OFF
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON \
+            -DBOOST_ROOT="$GITHUB_WORKSPACE/boost64" \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_MODULE_LINKER_FLAGS="-static-libstdc++ -static-libgcc" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-static-libstdc++ -static-libgcc"
           cmake --build build -j"$(nproc)"
 
       - name: Build i386
         run: |
           cd 0.83/Omnibot
-          cmake -S . -B build32 -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON -DOMNIBOT_STATIC_BOOST=OFF \
+          cmake -S . -B build32 -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON \
+            -DBOOST_ROOT="$GITHUB_WORKSPACE/boost32" \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
             -DCMAKE_C_FLAGS="-m32" -DCMAKE_CXX_FLAGS="-m32" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-m32" -DCMAKE_EXE_LINKER_FLAGS="-m32"
+            -DCMAKE_MODULE_LINKER_FLAGS="-m32 -static-libstdc++ -static-libgcc" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-m32 -static-libstdc++ -static-libgcc" \
+            -DCMAKE_EXE_LINKER_FLAGS="-m32"
           cmake --build build32 -j"$(nproc)"
 
       - name: Architektur verifizieren
@@ -60,6 +89,32 @@ jobs:
           file 0.83/Omnibot/build32/ET/omnibot_et.so          | grep -q "Intel 80386" || exit 1
           file 0.83/Omnibot/build/RTCW/omnibot_rtcw.x86_64.so | grep -q "x86-64"      || exit 1
           file 0.83/Omnibot/build32/RTCW/omnibot_rtcw.so      | grep -q "Intel 80386" || exit 1
+
+      - name: Verify loadable on old servers (glibc/GLIBCXX/boost)
+        # Fail hard so a non-loadable lib never reaches the release.
+        run: |
+          set -e
+          for lib in 0.83/Omnibot/build/ET/omnibot_et.x86_64.so \
+                     0.83/Omnibot/build32/ET/omnibot_et.so \
+                     0.83/Omnibot/build/RTCW/omnibot_rtcw.x86_64.so \
+                     0.83/Omnibot/build32/RTCW/omnibot_rtcw.so; do
+            echo "== $lib =="
+            if objdump -T "$lib" | grep -q 'GLIBCXX_3\.4\.3'; then
+              echo "FAIL: too-new GLIBCXX"; objdump -T "$lib" | grep 'GLIBCXX_3\.4\.3'; exit 1
+            fi
+            if objdump -p "$lib" | grep -qi 'NEEDED.*libstdc++'; then
+              echo "FAIL: dynamic libstdc++ dependency"; exit 1
+            fi
+            if objdump -p "$lib" | grep -qi libboost; then
+              echo "FAIL: dynamic boost dependency"; objdump -p "$lib" | grep -i libboost; exit 1
+            fi
+            hi=$(objdump -T "$lib" | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sed 's/GLIBC_//' | sort -V | tail -1)
+            echo "highest glibc requirement: ${hi:-none}"
+            if [ -n "$hi" ] && [ "$(printf '%s\n2.31\n' "$hi" | sort -V | tail -1)" != "2.31" ]; then
+              echo "FAIL: glibc floor $hi > 2.31"; exit 1
+            fi
+            echo "OK: $lib"
+          done
 
       - name: Offizielle 0.93-Pakete holen + Prüfsumme verifizieren
         run: |
