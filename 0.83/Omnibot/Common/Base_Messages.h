@@ -373,14 +373,12 @@ struct Event_SystemClientConnected
 
 struct Event_SystemClientDisConnected
 {
-	int			m_GameId;
-
-	// S2: default to -1 like Event_SystemClientConnected, so an unset slot never
-	// indexes m_ClientList[] with stack garbage (see S1 bounds check).
-	Event_SystemClientDisConnected()
-		: m_GameId(-1)
-	{
-	}
+	// S2: default to -1 so an unset slot never indexes m_ClientList[] with stack
+	// garbage (see S1 bounds check). A default member initializer (not a
+	// constructor) keeps the struct an aggregate, so the ET-side aggregate init
+	// "Event_SystemClientDisConnected d = { _client };" in g_etbot_interface.cpp
+	// still compiles.
+	int			m_GameId = -1;
 };
 
 struct Event_SystemGravity
