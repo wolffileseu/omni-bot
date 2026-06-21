@@ -146,25 +146,51 @@ jobs:
           test -f official/omnibot/omnibot_et.pk3   || { echo "FAIL: official omnibot_et.pk3 missing"; exit 1; }
           test -f official/README-omnibot_mod.txt   || { echo "FAIL: official README missing"; exit 1; }
 
-      - name: Mod-Zip im offiziellen Layout bauen (Schritt 3, nur Linux)
-        # Official layout: omnibot/ with the .so libs + omnibot_et.pk3, and
-        # README-omnibot_mod.txt at the zip root. Linux only for now (i386 +
-        # x86_64); windows/mac/arm are a separate later step.
+      - name: Mod-Zip im offiziellen Layout bauen (Block 1c)
+        # Replicate the official layout 1:1, swapping in OUR Linux builds:
+        #   omnibot/         -> qagame loose (i386/x86_64/aarch64 ours; mac/win stock)
+        #   omnibot_et.pk3   -> cgame + ui INSIDE the pk3 (i386/x86_64 ours; mac/win stock)
+        #   README-omnibot_mod.txt at the zip root.
+        # mac/windows are a separate later step (Block 2/3) - they stay stock for now.
         run: |
           set -e
           cd "$GITHUB_WORKSPACE"
           VER=$(grep -oP '#define OMNIBOT_VERSION "\K[^"]+' 0.83/Omnibot/Common/IGame.h)
           VERTAG=$(echo "$VER" | tr '.' '_')
           echo "mod version: $VER -> $VERTAG"
-          rm -rf dist mod && mkdir -p dist mod/omnibot
-          cp modlibs/qagame.mp.i386.so   modlibs/qagame.mp.x86_64.so \
-             modlibs/cgame.mp.i386.so    modlibs/cgame.mp.x86_64.so   mod/omnibot/
-          cp official/omnibot/omnibot_et.pk3 mod/omnibot/
-          cp official/README-omnibot_mod.txt mod/
+          rm -rf dist mod pk3 && mkdir -p dist
+
+          # 1) start from the official mod layout (omnibot/ + README)
+          mkdir mod && (cd mod && unzip -q ../official_mod.zip)
+
+          # 2) qagame: swap our Linux builds loose in omnibot/ (mac/win stay stock)
+          cp modlibs/qagame.mp.i386.so    mod/omnibot/qagame.mp.i386.so
+          cp modlibs/qagame.mp.x86_64.so  mod/omnibot/qagame.mp.x86_64.so
+          cp modlibs/qagame.mp.aarch64.so mod/omnibot/qagame.mp.aarch64.so
+
+          # 3) cgame + ui: swap our Linux builds INSIDE the pk3 (mac/win stay stock)
+          mkdir pk3 && (cd pk3 && unzip -q ../mod/omnibot/omnibot_et.pk3)
+          cp modlibs/cgame.mp.i386.so   pk3/cgame.mp.i386.so
+          cp modlibs/cgame.mp.x86_64.so pk3/cgame.mp.x86_64.so
+          cp modlibs/ui.mp.i386.so      pk3/ui.mp.i386.so
+          cp modlibs/ui.mp.x86_64.so    pk3/ui.mp.x86_64.so
+          rm -f mod/omnibot/omnibot_et.pk3
+          (cd pk3 && zip -rqX ../mod/omnibot/omnibot_et.pk3 .)
+
+          # 4) verify the swap actually put OUR builds in place
+          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so; do
+            cmp -s mod/omnibot/$f modlibs/$f || { echo "FAIL: omnibot/$f is not our build"; exit 1; }
+          done
+          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so; do
+            cmp -s pk3/$f modlibs/$f || { echo "FAIL: pk3/$f is not our build"; exit 1; }
+          done
+
+          # 5) re-zip the whole mod
           ZIP="dist/omni-bot_${VERTAG}_ET_waypoint_mod.zip"
-          (cd mod && zip -rq "../$ZIP" .)
+          (cd mod && zip -rqX "../$ZIP" .)
           ( cd dist && sha256sum *.zip > SHA256SUMS )
           echo "=== zip layout ==="; unzip -l "$ZIP"
+          echo "=== pk3 contents ==="; unzip -l mod/omnibot/omnibot_et.pk3
 
       - uses: actions/upload-artifact@v4
         with:
