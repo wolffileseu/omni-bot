@@ -1483,13 +1483,31 @@ static void Omnibot_CleanLower(const char *in, char *out, size_t outsize)
     size_t o = 0;
     for (size_t i = 0; in && in[i] && o + 1 < outsize; )
     {
-        if (in[i] == '^' && in[i + 1] && in[i + 1] != '^') { i += 2; continue; }
+        if (in[i] == '^')
+        {
+            if (in[i + 1] == '\0')           // dangling trailing caret -> drop it
+                break;
+            if (in[i + 1] != '^')            // ^x colour code -> skip both chars
+            {
+                i += 2;
+                continue;
+            }
+            ++i;                             // ^^ -> emit a single literal caret
+        }
         char c = in[i++];
+        if ((unsigned char)c < 0x20 || (unsigned char)c == 0x7f)
+            continue;                        // drop control / non-printable chars
         if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
         out[o++] = c;
     }
     if (outsize) out[o] = '\0';
 }
+
+// ET and RTCW both define MAX_NETNAME = 36 (game/g_local.h). The engine stores
+// player names in a buffer of that size and silently truncates anything longer -
+// which could drop a numeric suffix and re-introduce a collision - so candidate
+// names are capped to fit.
+static const size_t kMaxNetName = 36;
 
 // Make sure a bot never spawns with the (colour-stripped, case-insensitive)
 // name of an already connected player - human OR bot. On a clash a numeric
@@ -1503,33 +1521,54 @@ void IGame::EnsureUniqueBotName(char *_name, size_t _size)
     obPlayerInfo info;
     g_EngineFuncs->GetPlayerInfo(info);
 
-    char base[64];
+    // Clean every occupied (connected) slot's name ONCE up front, instead of
+    // re-cleaning all of them for each of the up-to-64 candidates
+    // (was O(64 * MaxPlayers), now O(MaxPlayers + 64)).
+    char occupied[obPlayerInfo::MaxPlayers][kMaxNetName];
+    int  occupiedCount = 0;
+    for (int i = 0; i < obPlayerInfo::MaxPlayers; ++i)
+    {
+        if (info.m_Players[i].m_Team == OB_TEAM_NONE)
+            continue;
+
+        const char *pn = g_EngineFuncs->GetEntityName(g_EngineFuncs->EntityFromID(i));
+        if (!pn || !pn[0])
+            continue;
+
+        Omnibot_CleanLower(pn, occupied[occupiedCount++], kMaxNetName);
+    }
+
+    char base[kMaxNetName];
     Utils::StringCopy(base, _name, sizeof(base));
 
     for (int attempt = 0; attempt < 64; ++attempt)
     {
-        char candidate[64];
+        char candidate[kMaxNetName];
         if (attempt == 0)
+        {
             Utils::StringCopy(candidate, base, sizeof(candidate));
+        }
         else
-            Utils::StringCopy(candidate, va("%s%d", base, attempt + 1), sizeof(candidate));
+        {
+            // Build "<base><n>" but keep the suffix: truncate the base so the
+            // whole thing fits in MAX_NETNAME-1 chars and stays NUL terminated.
+            char suffix[12];
+            Utils::StringCopy(suffix, va("%d", attempt + 1), sizeof(suffix));
+            size_t suffixLen = strlen(suffix);
+            size_t baseMax = (suffixLen + 1 < kMaxNetName) ? (kMaxNetName - 1 - suffixLen) : 0;
 
-        char candClean[64];
+            char truncBase[kMaxNetName];
+            Utils::StringCopy(truncBase, base, (int)(baseMax + 1));
+            Utils::StringCopy(candidate, va("%s%s", truncBase, suffix), sizeof(candidate));
+        }
+
+        char candClean[kMaxNetName];
         Omnibot_CleanLower(candidate, candClean, sizeof(candClean));
 
         bool taken = false;
-        for (int i = 0; i < obPlayerInfo::MaxPlayers; ++i)
+        for (int i = 0; i < occupiedCount; ++i)
         {
-            if (info.m_Players[i].m_Team == OB_TEAM_NONE)
-                continue;
-
-            const char *pn = g_EngineFuncs->GetEntityName(g_EngineFuncs->EntityFromID(i));
-            if (!pn || !pn[0])
-                continue;
-
-            char otherClean[64];
-            Omnibot_CleanLower(pn, otherClean, sizeof(otherClean));
-            if (!strcmp(candClean, otherClean)) { taken = true; break; }
+            if (!strcmp(candClean, occupied[i])) { taken = true; break; }
         }
 
         if (!taken)
@@ -1538,6 +1577,10 @@ void IGame::EnsureUniqueBotName(char *_name, size_t _size)
             return;
         }
     }
+
+    // Pathological: all 64 variations are taken. Leave the original name as-is
+    // and make the exhaustion visible rather than failing silently.
+    LOGWARN("EnsureUniqueBotName: no unique name found for '" << _name << "' after 64 attempts");
 }
 
 void IGame::AddBot(Msg_Addbot &_addbot, bool _createnow)
