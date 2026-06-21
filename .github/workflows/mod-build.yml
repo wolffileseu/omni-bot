@@ -60,8 +60,45 @@ jobs:
           path: arm/qagame.mp.aarch64.so
           retention-days: 1
 
+  # Mac libs are built NATIVELY on a macos-latest runner (legit Xcode + SDK, no
+  # osxcross/SDK-licensing problem). Universal x86_64+arm64 Mach-O, like official.
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build + verify mac libs (universal Mach-O)
+        run: |
+          set -e
+          cd 0.83/GameInterfaces/ET/src
+          make -j"$(sysctl -n hw.ncpu)" MAC=1 CC=clang CXX=clang++ qagame cgame ui
+          checkmac() {
+            lib="$1"
+            [ -f "$lib" ] || { echo "FAIL: $lib missing"; exit 1; }
+            file "$lib" | grep -q "Mach-O universal" || { echo "FAIL: $lib not universal: $(file -b "$lib")"; exit 1; }
+            for a in x86_64 arm64; do
+              lipo "$lib" -verify_arch "$a" || { echo "FAIL: $lib missing arch $a"; exit 1; }
+            done
+            nm -gj "$lib" | grep -qx _vmMain   || { echo "FAIL: $lib does not export vmMain";   exit 1; }
+            nm -gj "$lib" | grep -qx _dllEntry || { echo "FAIL: $lib does not export dllEntry"; exit 1; }
+            echo "OK: $lib | $(lipo -archs "$lib") | exports vmMain+dllEntry"
+          }
+          checkmac qagame_mac
+          checkmac cgame_mac
+          checkmac ui_mac
+          mkdir -p "$GITHUB_WORKSPACE/macout"
+          cp qagame_mac cgame_mac ui_mac "$GITHUB_WORKSPACE/macout/"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: et-mac-libs
+          path: macout/*
+          retention-days: 1
+
   build:
-    needs: qagame-aarch64
+    needs: [ qagame-aarch64, mac ]
     runs-on: ubuntu-latest
     # debian:11 (glibc 2.31) for broad compatibility with old ET servers.
     container: debian:11
@@ -113,6 +150,12 @@ jobs:
           name: qagame-aarch64
           path: modlibs
 
+      - name: Download native mac libs
+        uses: actions/download-artifact@v4
+        with:
+          name: et-mac-libs
+          path: modlibs
+
       - name: Verify mod libs (ELF arch, vmMain+dllEntry, sane NEEDED)
         # Mandatory gate: the job fails if any .so is missing, the wrong arch, does
         # not export the ET entry points, or pulls in an unexpected shared library.
@@ -156,6 +199,12 @@ jobs:
           checkwin qagame_mp_x86.dll "Intel 80386"
           checkwin cgame_mp_x86.dll  "Intel 80386"
           checkwin ui_mp_x86.dll     "Intel 80386"
+          # Mac libs: basic Mach-O universal check here (deep check ran in the mac job).
+          for m in qagame_mac cgame_mac ui_mac; do
+            [ -f "$m" ] || { echo "FAIL: $m missing"; exit 1; }
+            file "$m" | grep -q "Mach-O universal" || { echo "FAIL: $m not universal: $(file -b "$m")"; exit 1; }
+            echo "OK: $m | $(file -b "$m" | cut -d, -f1)"
+          done
 
       - uses: actions/upload-artifact@v4
         with:
@@ -175,12 +224,11 @@ jobs:
           test -f official/omnibot/omnibot_et.pk3   || { echo "FAIL: official omnibot_et.pk3 missing"; exit 1; }
           test -f official/README-omnibot_mod.txt   || { echo "FAIL: official README missing"; exit 1; }
 
-      - name: Mod-Zip im offiziellen Layout bauen (Block 1c + 2)
-        # Replicate the official layout 1:1, swapping in OUR builds:
-        #   omnibot/         -> qagame loose (linux i386/x86_64/aarch64 + win x64/x86 ours)
-        #   omnibot_et.pk3   -> cgame + ui INSIDE the pk3 (linux i386/x86_64 + win x64/x86 ours)
+      - name: Mod-Zip im offiziellen Layout bauen (alle 6 Plattformen)
+        # Replicate the official layout 1:1 with OUR builds on every platform:
+        #   omnibot/         -> qagame loose (linux i386/x86_64/aarch64 + win x64/x86 + mac)
+        #   omnibot_et.pk3   -> cgame + ui INSIDE the pk3 (linux i386/x86_64 + win x64/x86 + mac)
         #   README-omnibot_mod.txt at the zip root.
-        # Only mac libs stay stock (Block 3).
         run: |
           set -e
           cd "$GITHUB_WORKSPACE"
@@ -192,28 +240,25 @@ jobs:
           # 1) start from the official mod layout (omnibot/ + README)
           mkdir mod && (cd mod && unzip -q ../official_mod.zip)
 
-          # 2) qagame: swap our builds loose in omnibot/ (mac stays stock)
-          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so \
-                   qagame_mp_x64.dll qagame_mp_x86.dll; do
-            cp modlibs/$f mod/omnibot/$f
-          done
+          # 2) qagame: swap our builds loose in omnibot/ (all platforms)
+          QAGAME_LOOSE="qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so \
+                        qagame_mp_x64.dll qagame_mp_x86.dll qagame_mac"
+          for f in $QAGAME_LOOSE; do cp modlibs/$f mod/omnibot/$f; done
 
-          # 3) cgame + ui: swap our builds INSIDE the pk3 (mac stays stock)
+          # 3) cgame + ui: swap our builds INSIDE the pk3 (all platforms)
+          PK3_LIBS="cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so \
+                    cgame_mp_x64.dll cgame_mp_x86.dll ui_mp_x64.dll ui_mp_x86.dll \
+                    cgame_mac ui_mac"
           mkdir pk3 && (cd pk3 && unzip -q ../mod/omnibot/omnibot_et.pk3)
-          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so \
-                   cgame_mp_x64.dll cgame_mp_x86.dll ui_mp_x64.dll ui_mp_x86.dll; do
-            cp modlibs/$f pk3/$f
-          done
+          for f in $PK3_LIBS; do cp modlibs/$f pk3/$f; done
           rm -f mod/omnibot/omnibot_et.pk3
           (cd pk3 && zip -rqX ../mod/omnibot/omnibot_et.pk3 .)
 
-          # 4) verify the swap actually put OUR builds in place
-          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so \
-                   qagame_mp_x64.dll qagame_mp_x86.dll; do
+          # 4) verify the swap actually put OUR builds in place (every platform)
+          for f in $QAGAME_LOOSE; do
             cmp -s mod/omnibot/$f modlibs/$f || { echo "FAIL: omnibot/$f is not our build"; exit 1; }
           done
-          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so \
-                   cgame_mp_x64.dll cgame_mp_x86.dll ui_mp_x64.dll ui_mp_x86.dll; do
+          for f in $PK3_LIBS; do
             cmp -s pk3/$f modlibs/$f || { echo "FAIL: pk3/$f is not our build"; exit 1; }
           done
 

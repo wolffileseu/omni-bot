@@ -39,6 +39,19 @@ ifdef WIN
   QAGAME_DEF = game/game.def
   CGAME_DEF  = cgame/cgame.def
   UI_DEF     = ui/ui.def
+else ifdef MAC
+  # macOS native (run on a macos-latest runner): universal x86_64+arm64 Mach-O.
+  #   make MAC=1 CC=clang CXX=clang++
+  # Only vmMain/dllEntry are exported (mac symbols carry a leading underscore).
+  CFLAGS     = -arch x86_64 -arch arm64 -O2 -fno-strict-aliasing -fcommon -w \
+               -Dstricmp=strcasecmp -D_stricmp=strcasecmp
+  LDFLAGS    = -arch x86_64 -arch arm64 -dynamiclib \
+               -Wl,-exported_symbols_list,mac_exports.sym
+  QAGAME_XLD =                              # mac dlopen() lives in libSystem
+  CGAME_XLD  =
+  QAGAME_LIB = qagame_mac
+  CGAME_LIB  = cgame_mac
+  UI_LIB     = ui_mac
 else
   ARCH ?= i386
   ifeq ($(ARCH),i386)
