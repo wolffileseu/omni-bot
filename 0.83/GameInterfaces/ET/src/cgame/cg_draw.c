@@ -4666,18 +4666,26 @@ qboolean CG_AddOnScreenText( const char *text, vec3_t origin, int _color, float 
 	return qtrue;
 }
 
+extern vmCvar_t	cg_omnibot_textdistance;
+
 void CG_DrawOnScreenText(void) {
 	onsText_t *worldtext;
 	onsText_t * * whereworldtext;
 	//trace_t	tr;
 	const float fTxtScale = 0.27f;
 	float x,y;
-	union 
+	vec3_t	toText;
+	float	fTextDistSq;
+	union
 	{
 		char		m_RGBA[4];
 		int			m_RGBAi;
 	} ColorUnion;
 	ColorUnion.m_RGBAi = 0xFFFFFFFF;
+
+	// Cull omnibot goal text beyond cg_omnibot_textdistance so the screen stays
+	// readable (squared compare, like the debug lines in cg_omnibot.c).
+	fTextDistSq = (float)cg_omnibot_textdistance.integer * (float)cg_omnibot_textdistance.integer;
 
 	/* Render/Move the world text */
 	worldtext = activeworldtext;
@@ -4701,7 +4709,10 @@ void CG_DrawOnScreenText(void) {
 			}
 		}
 		
-		if(CG_WorldToScreen(worldtext->origin, &x, &y) && trap_R_inPVS(cg.refdef.vieworg, worldtext->origin))
+		VectorSubtract(cg.refdef.vieworg, worldtext->origin, toText);
+		if(VectorLengthSquared(toText) <= fTextDistSq
+		   && CG_WorldToScreen(worldtext->origin, &x, &y)
+		   && trap_R_inPVS(cg.refdef.vieworg, worldtext->origin))
 		{
 			//CG_Trace(&tr, cg.refdef.vieworg, NULL, NULL, worldtext->origin, -1, CONTENTS_SOLID);
 

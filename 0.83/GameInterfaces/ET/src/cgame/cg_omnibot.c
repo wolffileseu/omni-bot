@@ -1,6 +1,6 @@
 #include "cg_local.h"
 
-extern vmCvar_t	cg_omnibotdrawing, cg_omnibot_render_distance;
+extern vmCvar_t	cg_omnibotdrawing, cg_omnibot_render_distance, cg_omnibot_drawtext;
 extern void OmnibotDrawActiveFrame();
 
 const int OMNIBOT_LINES_INCREASE_SIZE = 256;
@@ -443,7 +443,9 @@ qboolean CG_AddOnScreenText( const char *text, vec3_t origin, int _color, float 
 
 void DrawDebugText(float *_start, const char *_msg, int _duration, int _color)
 {
-	if(cg_omnibotdrawing.integer){
+	// cg_omnibot_drawtext lets you switch off the (overlapping) goal world-text
+	// while keeping the debug lines (those only check cg_omnibotdrawing).
+	if(cg_omnibotdrawing.integer && cg_omnibot_drawtext.integer){
 		if(_start && !VectorCompare(_start, vec3_origin))
 		{
 			vec3_t v3;
