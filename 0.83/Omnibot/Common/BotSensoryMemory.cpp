@@ -2,6 +2,7 @@
 #include "IGameManager.h"
 #include "ScriptManager.h"
 #include "Base_Messages.h"
+#include "PerfTimer.h"
 
 namespace AiState
 {
@@ -122,6 +123,7 @@ namespace AiState
 	void SensoryMemory::UpdateEntities()
 	{
 		Prof(UpdateEntities);
+		OB_PERF_SCOPE(g_PerfTimer.m_SensoryMs);
 
 		bool bFoundEntity = false;
 		

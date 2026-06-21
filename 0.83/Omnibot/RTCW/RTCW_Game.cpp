@@ -638,3 +638,8 @@ int RTCW_Game::GetLogSize()
 {
 	return InterfaceFuncs::GetCvar("omnibot_logsize");
 }
+
+int RTCW_Game::GetPerfTimingCvar() const
+{
+	return InterfaceFuncs::GetCvar("omnibot_perf");
+}

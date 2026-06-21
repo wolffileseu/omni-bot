@@ -824,6 +824,11 @@ int ET_Game::GetLogSize()
 	return InterfaceFuncs::GetCvar("omnibot_logsize");
 }
 
+int ET_Game::GetPerfTimingCvar() const
+{
+	return InterfaceFuncs::GetCvar("omnibot_perf");
+}
+
 int ET_Game::ConvertWeaponId(int weaponId)
 {
 	if(IsNoQuarter)

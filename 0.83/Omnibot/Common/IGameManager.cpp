@@ -2,6 +2,7 @@
 #include "IGameManager.h"
 #include "IGame.h"
 #include "mdump.h"
+#include "PerfTimer.h"
 
 #include "NavigationManager.h"
 #include "GoalManager.h"
@@ -235,6 +236,39 @@ omnibot_error IGameManager::CreateGame(IEngineInterface *_pEngineFuncs, int _ver
 	return BOT_ERROR_NONE;
 }
 
+#if OMNIBOT_ENABLE_PERFTIMER
+PerfTimerState g_PerfTimer;
+
+void PerfTimer_Frame(IGame *_game)
+{
+	const int now = IGame::GetTime();
+	if(g_PerfTimer.m_NextPollMsec == 0)
+		g_PerfTimer.m_NextPollMsec = now + 5000;
+
+	g_PerfTimer.m_Ticks++;
+
+	if(now >= g_PerfTimer.m_NextPollMsec)
+	{
+		// Flush the window that just ended (only if timing was on for it).
+		if(g_PerfTimer.m_Enabled && g_PerfTimer.m_Ticks > 0)
+		{
+			const double inv = 1.0 / (double)g_PerfTimer.m_Ticks;
+			LOG("PERF: UpdateGame avg " << (g_PerfTimer.m_UpdateGameMs * inv)
+				<< " ms/tick, davon Targeting " << (g_PerfTimer.m_TargetingMs * inv)
+				<< " ms, Sensory " << (g_PerfTimer.m_SensoryMs * inv)
+				<< " ms over " << g_PerfTimer.m_Ticks << " ticks");
+		}
+		// Re-read the cvar for the next window, then reset accumulators.
+		g_PerfTimer.m_Enabled = (_game && _game->GetPerfTimingCvar() != 0);
+		g_PerfTimer.m_UpdateGameMs = 0.0;
+		g_PerfTimer.m_TargetingMs  = 0.0;
+		g_PerfTimer.m_SensoryMs    = 0.0;
+		g_PerfTimer.m_Ticks        = 0;
+		g_PerfTimer.m_NextPollMsec = now + 5000;
+	}
+}
+#endif
+
 void IGameManager::UpdateGame()
 {
 	InterProcess::Update();
@@ -249,7 +283,10 @@ void IGameManager::UpdateGame()
 		m_Game->UpdateTime();
 		m_ScriptManager->Update();
 		m_PathPlanner->Update();
-		m_Game->UpdateGame();		
+		{
+			OB_PERF_SCOPE(g_PerfTimer.m_UpdateGameMs);
+			m_Game->UpdateGame();
+		}
 		m_GoalManager->Update();
 		TriggerManager::GetInstance()->Update();
 
@@ -314,6 +351,10 @@ void IGameManager::UpdateGame()
 
 #ifdef ENABLE_FILE_DOWNLOADER
 	FileDownloader::Poll();
+#endif
+
+#if OMNIBOT_ENABLE_PERFTIMER
+	PerfTimer_Frame(m_Game);
 #endif
 
 	EngineFuncs::FlushAsyncMessages();

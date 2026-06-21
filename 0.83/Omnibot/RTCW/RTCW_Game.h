@@ -42,6 +42,7 @@ public:
 	void GetWeaponEnumeration(const IntEnum *&_ptr, int &num);
 
 	int GetLogSize();
+	int GetPerfTimingCvar() const;
 
 	RTCW_Game() {};
 	virtual ~RTCW_Game() {};

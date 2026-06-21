@@ -1,5 +1,6 @@
 #include "PrecompCommon.h"
 #include "Client.h"
+#include "PerfTimer.h"
 
 namespace AiState
 {
@@ -57,6 +58,7 @@ namespace AiState
 	State::StateStatus TargetingSystem::Update(float fDt)
 	{
 		Prof(TargetingSystem);
+		OB_PERF_SCOPE(g_PerfTimer.m_TargetingMs);
 		{
 			Prof(UpdateTargeting);
 

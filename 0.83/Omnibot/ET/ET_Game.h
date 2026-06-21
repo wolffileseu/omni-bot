@@ -48,6 +48,7 @@ public:
 	virtual int ConvertWeaponId(int weaponId);
 
 	int GetLogSize();
+	int GetPerfTimingCvar() const;
 
 	static int CLASSEXoffset;
 	static bool IsETBlight, IsBastardmod, IsNoQuarter;

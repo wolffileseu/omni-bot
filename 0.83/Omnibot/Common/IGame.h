@@ -179,6 +179,10 @@ public:
 
 	virtual inline int GetLogSize() { return 0; }
 
+	// Block-2 perf timing toggle: reads the omnibot_perf cvar (0 = off). Base
+	// returns 0 so timing stays off unless a game overrides it. See PerfTimer.h.
+	virtual inline int GetPerfTimingCvar() const { return 0; }
+
 	IGame();
 	virtual ~IGame();
 protected:	
