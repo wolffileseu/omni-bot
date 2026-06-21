@@ -11,34 +11,57 @@
 #    make ARCH=x86_64-> 64-bit statt 32-bit bauen
 # ============================================================
 
-# --- Architektur (Standard: i386 = 32-bit, passend zum Server) ---
-ARCH ?= i386
-ifeq ($(ARCH),i386)
-  ARCHFLAG := -m32
-  SOSUFFIX := i386
-else ifeq ($(ARCH),x86_64)
-  ARCHFLAG := -m64
-  SOSUFFIX := x86_64
-else
-  # cross targets (e.g. aarch64): the toolchain itself selects the arch, so no
-  # -m32/-m64 (invalid). Pass CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++.
-  ARCHFLAG :=
-  SOSUFFIX := $(ARCH)
-endif
-
 CC      ?= gcc
 CXX     ?= g++
 BUILD    = build
-# -fno-strict-aliasing + -w : alter ET-Code bricht sonst / spammt Warnungen.
-# -fcommon : alter Code hat mehrfach-definierte globals (GCC10+ braucht das).
-CFLAGS   = $(ARCHFLAG) -fPIC -O2 -fno-strict-aliasing -fcommon -w \
-           -Dstricmp=strcasecmp -D_stricmp=strcasecmp
-LDFLAGS  = $(ARCHFLAG) -shared -lm
-
 # omni-bot interface: qagame embeds the C++ glue (g_etbot_interface.cpp) plus the
-# runtime loader (Omnibot/Common/BotLoadLibrary.cpp) so it can dlopen omnibot_et.so
-# and drive the bots - like the official qagame (hence libstdc++ + -ldl).
+# runtime loader (Omnibot/Common/BotLoadLibrary.cpp) so it can load omnibot_et and
+# drive the bots - like the official qagame (hence libstdc++).
 OB_INC   = -I../../../Omnibot/Common -I../../../Omnibot/ET
+
+# --- Ziel: Linux (.so) ODER Windows-DLL via MinGW-Cross ---
+# Linux:   make ARCH=i386|x86_64|aarch64
+#            -> qagame.mp.<arch>.so   cgame.mp.<arch>.so   ui.mp.<arch>.so
+# Windows: make WIN=x64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++
+#          make WIN=x86 CC=i686-w64-mingw32-gcc   CXX=i686-w64-mingw32-g++
+#            -> qagame_mp_<win>.dll   cgame_mp_<win>.dll   ui_mp_<win>.dll
+ifdef WIN
+  # MinGW cross -> self-contained Windows DLL. Static runtime (libgcc/libstdc++
+  # baked in) so the dll needs no MinGW runtime DLLs. Exports come from the .def.
+  CFLAGS     = -O2 -fno-strict-aliasing -fcommon -w
+  LDFLAGS    = -shared -static -static-libgcc
+  # qagame + cgame are C++ (omni-bot interface / interprocess) -> bake in libstdc++.
+  QAGAME_XLD = -static-libstdc++
+  CGAME_XLD  = -static-libstdc++
+  QAGAME_LIB = qagame_mp_$(WIN).dll
+  CGAME_LIB  = cgame_mp_$(WIN).dll
+  UI_LIB     = ui_mp_$(WIN).dll
+  QAGAME_DEF = game/game.def
+  CGAME_DEF  = cgame/cgame.def
+  UI_DEF     = ui/ui.def
+else
+  ARCH ?= i386
+  ifeq ($(ARCH),i386)
+    ARCHFLAG := -m32
+    SOSUFFIX := i386
+  else ifeq ($(ARCH),x86_64)
+    ARCHFLAG := -m64
+    SOSUFFIX := x86_64
+  else
+    # cross targets (e.g. aarch64): the toolchain selects the arch, no -m flag.
+    ARCHFLAG :=
+    SOSUFFIX := $(ARCH)
+  endif
+  # -fno-strict-aliasing + -w: alter ET-Code. -fcommon: mehrfach-def. globals (GCC10+).
+  CFLAGS     = $(ARCHFLAG) -fPIC -O2 -fno-strict-aliasing -fcommon -w \
+               -Dstricmp=strcasecmp -D_stricmp=strcasecmp
+  LDFLAGS    = $(ARCHFLAG) -shared -lm
+  QAGAME_XLD = -ldl                         # dlopen() of omnibot_et.so
+  CGAME_XLD  =                              # cgame is C++ (libstdc++ via g++ link)
+  QAGAME_LIB = qagame.mp.$(SOSUFFIX).so
+  CGAME_LIB  = cgame.mp.$(SOSUFFIX).so
+  UI_LIB     = ui.mp.$(SOSUFFIX).so
+endif
 
 # ------------------------------------------------------------
 #  Quelldateien (1:1 aus den SConscripts uebernommen)
@@ -75,7 +98,7 @@ CGAME_SRC = \
   cgame/cg_playerstate.c cgame/cg_polybus.c cgame/cg_popupmessages.c cgame/cg_predict.c \
   cgame/cg_scoreboard.c cgame/cg_servercmds.c cgame/cg_snapshot.c cgame/cg_sound.c \
   cgame/cg_spawn.c cgame/cg_statsranksmedals.c cgame/cg_syscalls.c cgame/cg_trails.c \
-  cgame/cg_view.c cgame/cg_weapons.c cgame/cg_window.c \
+  cgame/cg_view.c cgame/cg_weapons.c cgame/cg_window.c cgame/cg_omnibot.c \
   game/bg_animation.c game/bg_animgroup.c game/bg_character.c game/bg_classes.c \
   game/bg_misc.c game/bg_pmove.c game/bg_slidemove.c game/bg_sscript.c game/bg_stats.c \
   game/bg_tracemap.c game/q_math.c game/q_shared.c \
@@ -98,10 +121,8 @@ UI_OBJ     = $(addprefix $(BUILD)/ui/,$(UI_SRC:.c=.o))
 # qagame C++ objects: the omni-bot glue (in game/) + the loader (in Omnibot/Common).
 QAGAME_CPP_OBJ = $(BUILD)/qagame/game/g_etbot_interface.o \
                  $(BUILD)/qagame/ob/BotLoadLibrary.o
-
-QAGAME_LIB = qagame.mp.$(SOSUFFIX).so
-CGAME_LIB  = cgame.mp.$(SOSUFFIX).so
-UI_LIB     = ui.mp.$(SOSUFFIX).so
+# cgame C++ object: the omni-bot interprocess/export glue.
+CGAME_CPP_OBJ  = $(BUILD)/cgame/cgame/Omnibot_Interprocess.o
 
 .PHONY: all qagame cgame ui clean
 all: qagame cgame ui
@@ -112,12 +133,12 @@ ui:     $(UI_LIB)
 
 $(QAGAME_LIB): $(QAGAME_OBJ) $(QAGAME_CPP_OBJ)
 	@echo "==> Linking $@"
-	$(CXX) $(QAGAME_OBJ) $(QAGAME_CPP_OBJ) $(LDFLAGS) -ldl -o $@
+	$(CXX) $(QAGAME_OBJ) $(QAGAME_CPP_OBJ) $(LDFLAGS) $(QAGAME_XLD) $(QAGAME_DEF) -o $@
 	@echo "==> Fertig: $@"
 
-$(CGAME_LIB): $(CGAME_OBJ)
+$(CGAME_LIB): $(CGAME_OBJ) $(CGAME_CPP_OBJ)
 	@echo "==> Linking $@"
-	$(CC) $(CGAME_OBJ) $(LDFLAGS) -o $@
+	$(CXX) $(CGAME_OBJ) $(CGAME_CPP_OBJ) $(LDFLAGS) $(CGAME_XLD) $(CGAME_DEF) -o $@
 	@echo "==> Fertig: $@"
 
 # qagame-Objekte brauchen -DGAMEDLL
@@ -140,9 +161,14 @@ $(BUILD)/cgame/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -DCGAMEDLL -c $< -o $@
 
+# cgame C++ glue (omni-bot interprocess) - braucht die Omnibot-Header.
+$(BUILD)/cgame/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CFLAGS) $(OB_INC) -DCGAMEDLL -c $< -o $@
+
 $(UI_LIB): $(UI_OBJ)
 	@echo "==> Linking $@"
-	$(CC) $(UI_OBJ) $(LDFLAGS) -o $@
+	$(CC) $(UI_OBJ) $(LDFLAGS) $(UI_DEF) -o $@
 	@echo "==> Fertig: $@"
 
 # ui-Objekte brauchen -DUIDLL
