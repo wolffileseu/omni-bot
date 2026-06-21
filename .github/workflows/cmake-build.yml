@@ -28,6 +28,7 @@ jobs:
             cpp_compiler: g++
             bits: 64
             arm: true
+            container: debian:11
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
@@ -93,14 +94,8 @@ jobs:
               link=static --prefix=${{ steps.strings.outputs.BOOST_ROOT }} \
               install
 
-    - name: Install boost on linux (arm, system pkg)
-      if: matrix.os == 'ubuntu-24.04-arm'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libboost-system-dev libboost-filesystem-dev libboost-regex-dev libboost-date-time-dev
-
     - name: Install boost on linux
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.container != ''
       id: install-boost-linux
       run: |
         mkdir -p ${{ steps.strings.outputs.build-libs-dir }}
@@ -157,17 +152,21 @@ jobs:
         BOOST_ROOT: ${{ steps.install-boost-windows.outputs.BOOST_ROOT || steps.strings.outputs.BOOST_ROOT }}
 
     - name: Configure CMake Linux ARM
-      # No -m32/-m64 (invalid on aarch64); system Boost (no BOOST_ROOT override).
-      # Debian's static Boost .a libs are not -fPIC, so link Boost dynamically
-      # (the system .so libs are PIC) to avoid "dangerous relocation" link errors.
+      # No -m32/-m64 (invalid on aarch64). Static libstdc++/libgcc + static boost
+      # (built from source with -fPIC, so no "dangerous relocation") so the .so
+      # carries no GLIBCXX/boost deps and loads on old ARM servers.
       if: matrix.os == 'ubuntu-24.04-arm'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+        "-DCMAKE_SHARED_LINKER_FLAGS=-static-libstdc++ -static-libgcc"
+        "-DCMAKE_MODULE_LINKER_FLAGS=-static-libstdc++ -static-libgcc"
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DOMNIBOT_STATIC_BOOST=OFF
         -S $GITHUB_WORKSPACE/0.83/Omnibot
+      env:
+        BOOST_ROOT: ${{ steps.strings.outputs.BOOST_ROOT }}
 
     - name: Configure CMake Linux
       # -static-libstdc++/-static-libgcc bake the C++ runtime in so the .so carries
@@ -220,7 +219,7 @@ jobs:
       # A green build is not enough: the .so must load on an old game server. Fail
       # hard here so a broken lib never reaches the release. Checks: no too-new
       # GLIBCXX, glibc floor <= 2.31, and boost statically linked (no libboost dep).
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.container != ''
       run: |
         set -e
         B="${{ steps.strings.outputs.build-output-dir }}"
