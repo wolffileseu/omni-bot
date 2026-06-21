@@ -1,7 +1,8 @@
 name: ET mod build (waypoint mod)
 
-# Builds the ET mod libraries (qagame + cgame) via the Makefile and verifies them.
-# Linux only for now (i386 + x86_64). Windows/Mac/ARM are a separate later step.
+# Builds the ET mod libraries (qagame + cgame + ui) via the Makefile and verifies
+# them, then assembles the official waypoint-mod zip layout. Linux for now
+# (i386 + x86_64 + aarch64); Windows/Mac are a separate later step.
 # Independent of the bot-engine workflows (cmake-build.yml / release.yml).
 
 on:
@@ -22,7 +23,45 @@ permissions:
   contents: write   # for the pre-release on a mod-v* tag
 
 jobs:
+  # aarch64 qagame is built NATIVELY on an arm runner (debian:11) - cross-compiling
+  # for arm64 from x86 fights Debian's header layout. Official ships only qagame for
+  # arm64 (no aarch64 cgame/ui).
+  qagame-aarch64:
+    runs-on: ubuntu-24.04-arm
+    container: debian:11
+    steps:
+      - name: Toolchain (debian container)
+        run: |
+          set -e
+          retry() { for i in 1 2 3 4 5; do "$@" && return 0; echo "retry $i..."; sleep 10; done; return 1; }
+          retry apt-get update
+          retry apt-get install -y --no-install-recommends \
+            ca-certificates git build-essential make file
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build + verify qagame.mp.aarch64.so (native)
+        run: |
+          set -e
+          cd 0.83/GameInterfaces/ET/src
+          make -j"$(nproc)" ARCH=aarch64 qagame
+          lib=qagame.mp.aarch64.so
+          file "$lib" | grep -q "ARM aarch64" || { echo "FAIL: wrong arch $(file -b "$lib")"; exit 1; }
+          nm -D --defined-only "$lib" | grep -qw vmMain   || { echo "FAIL: no vmMain";   exit 1; }
+          nm -D --defined-only "$lib" | grep -qw dllEntry || { echo "FAIL: no dllEntry"; exit 1; }
+          echo "OK: $lib | $(file -b "$lib" | cut -d, -f1-2)"
+          mkdir -p "$GITHUB_WORKSPACE/arm" && cp "$lib" "$GITHUB_WORKSPACE/arm/"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qagame-aarch64
+          path: arm/qagame.mp.aarch64.so
+          retention-days: 1
+
   build:
+    needs: qagame-aarch64
     runs-on: ubuntu-latest
     # debian:11 (glibc 2.31) for broad compatibility with old ET servers.
     container: debian:11
@@ -37,12 +76,6 @@ jobs:
           retry apt-get install -y --no-install-recommends \
             ca-certificates git build-essential make gcc-multilib g++-multilib \
             zip unzip curl file
-          # aarch64 cross: install the VERSIONED packages directly - the unversioned
-          # metapackage (gcc-aarch64-linux-gnu) has a broken dep chain on bullseye.
-          # libc6-dev-arm64-cross pulls the arm64 libc + kernel headers (asm/*) that
-          # --no-install-recommends would otherwise skip.
-          retry apt-get install -y --no-install-recommends \
-            gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu libc6-dev-arm64-cross
 
       - uses: actions/checkout@v4
         with:
@@ -58,14 +91,15 @@ jobs:
           make -j"$(nproc)" ARCH=i386   qagame cgame ui
           rm -rf build
           make -j"$(nproc)" ARCH=x86_64 qagame cgame ui
-          rm -rf build
-          # aarch64: official ships only qagame for arm64 (no cgame/ui), cross-compiled.
-          make -j"$(nproc)" ARCH=aarch64 CC=aarch64-linux-gnu-gcc-10 CXX=aarch64-linux-gnu-g++-10 qagame
           mkdir -p "$GITHUB_WORKSPACE/modlibs"
           cp qagame.mp.i386.so   cgame.mp.i386.so   ui.mp.i386.so \
-             qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so \
-             qagame.mp.aarch64.so "$GITHUB_WORKSPACE/modlibs/"
-          ls -la "$GITHUB_WORKSPACE/modlibs"
+             qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
+
+      - name: Download native aarch64 qagame
+        uses: actions/download-artifact@v4
+        with:
+          name: qagame-aarch64
+          path: modlibs
 
       - name: Verify mod libs (ELF arch, vmMain+dllEntry, sane NEEDED)
         # Mandatory gate: the job fails if any .so is missing, the wrong arch, does
@@ -73,6 +107,7 @@ jobs:
         run: |
           set -e
           cd "$GITHUB_WORKSPACE/modlibs"
+          ls -la
           check() {
             lib="$1"; want="$2"
             [ -f "$lib" ] || { echo "FAIL: $lib missing"; exit 1; }
@@ -85,12 +120,12 @@ jobs:
             glibc=$(objdump -T "$lib" | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sed 's/GLIBC_//' | sort -V | tail -1)
             echo "OK: $lib | $(file -b "$lib" | cut -d, -f1-2) | exports vmMain+dllEntry | glibc floor ${glibc:-none}"
           }
-          check qagame.mp.i386.so   "Intel 80386"
-          check cgame.mp.i386.so    "Intel 80386"
-          check ui.mp.i386.so       "Intel 80386"
-          check qagame.mp.x86_64.so "x86-64"
-          check cgame.mp.x86_64.so  "x86-64"
-          check ui.mp.x86_64.so     "x86-64"
+          check qagame.mp.i386.so    "Intel 80386"
+          check cgame.mp.i386.so     "Intel 80386"
+          check ui.mp.i386.so        "Intel 80386"
+          check qagame.mp.x86_64.so  "x86-64"
+          check cgame.mp.x86_64.so   "x86-64"
+          check ui.mp.x86_64.so      "x86-64"
           check qagame.mp.aarch64.so "ARM aarch64"
 
       - uses: actions/upload-artifact@v4
