@@ -48,13 +48,16 @@ jobs:
       # No sudo in the container; apt runs as root.
       if: matrix.container != ''
       run: |
-        apt-get update
-        apt-get install -y --no-install-recommends \
+        set -e
+        # Retry apt to ride out transient Debian mirror resets (connection reset by peer).
+        retry() { for i in 1 2 3 4 5; do "$@" && return 0; echo "retry $i..."; sleep 10; done; return 1; }
+        retry apt-get update
+        retry apt-get install -y --no-install-recommends \
           ca-certificates git build-essential cmake zip curl
         if [ "${{ matrix.bits }}" = "32" ]; then
           dpkg --add-architecture i386
-          apt-get update
-          apt-get install -y --no-install-recommends gcc-multilib g++-multilib
+          retry apt-get update
+          retry apt-get install -y --no-install-recommends gcc-multilib g++-multilib
         fi
 
     - uses: actions/checkout@v4
