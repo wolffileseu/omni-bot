@@ -120,12 +120,15 @@ jobs:
 
     - name: Configure CMake Linux ARM
       # No -m32/-m64 (invalid on aarch64); system Boost (no BOOST_ROOT override).
+      # Debian's static Boost .a libs are not -fPIC, so link Boost dynamically
+      # (the system .so libs are PIC) to avoid "dangerous relocation" link errors.
       if: matrix.os == 'ubuntu-24.04-arm'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DOMNIBOT_STATIC_BOOST=OFF
         -S ${{ github.workspace }}/0.83/Omnibot
 
     - name: Configure CMake Linux
