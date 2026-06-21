@@ -970,6 +970,14 @@ void IGame::ClientJoined(const Event_SystemClientConnected *_msg)
 		CheckGameState();
 		OBASSERT(GameStarted(),"Game Not Started Yet");
 		OBASSERT(_msg->m_GameId < Constants::MAX_PLAYERS && _msg->m_GameId >= 0, "Invalid Client Index!");
+		// S1: OBASSERT is a no-op in the Linux release build, so guard at runtime.
+		// If this warning ever appears on a server it proves the engine sends
+		// invalid client ids (the unproven link from the crash analysis).
+		if(_msg->m_GameId < 0 || _msg->m_GameId >= Constants::MAX_PLAYERS)
+		{
+			LOGWARN("ClientJoined: ignoring invalid GameId " << _msg->m_GameId);
+			return;
+		}
 		// If a bot isn't created by now, it has probably been a map change,
 		// and the game has re-added the clients itself.
 
@@ -996,6 +1004,12 @@ void IGame::ClientLeft(const Event_SystemClientDisConnected *_msg)
 {
 	Utils::OutputDebug(kInfo, "Client Left Game, ClientNum: %d", _msg->m_GameId);
 	OBASSERT(_msg->m_GameId < Constants::MAX_PLAYERS && _msg->m_GameId >= 0, "Invalid Client Index!");
+	// S1: OBASSERT is a no-op in the Linux release build, so guard at runtime.
+	if(_msg->m_GameId < 0 || _msg->m_GameId >= Constants::MAX_PLAYERS)
+	{
+		LOGWARN("ClientLeft: ignoring invalid GameId " << _msg->m_GameId);
+		return;
+	}
 
 	ClientPtr &cp = GetClientFromCorrectedGameId(_msg->m_GameId);
 	if(cp)
@@ -1686,9 +1700,19 @@ ClientPtr IGame::GetClientByIndex(int _index)
 	return ClientPtr();
 }
 
-ClientPtr &IGame::GetClientFromCorrectedGameId(int _gameid) 
+ClientPtr &IGame::GetClientFromCorrectedGameId(int _gameid)
 {
-	return m_ClientList[_gameid]; 
+	// Defensive bounds check (S1): the engine can hand us an out-of-range / -1
+	// client id, e.g. around a failed bot connect. m_ClientList has MAX_PLAYERS
+	// slots; an unchecked index here was a real OOB read/write. Callers also guard
+	// and LOGWARN; this is the last line of defence - never index out of bounds.
+	if(_gameid < 0 || _gameid >= Constants::MAX_PLAYERS)
+	{
+		static ClientPtr s_invalidSlot;
+		s_invalidSlot.reset();
+		return s_invalidSlot;
+	}
+	return m_ClientList[_gameid];
 }
 
 bool IGame::CreateCriteria(gmThread *_thread, CheckCriteria &_criteria, StringStr &err)

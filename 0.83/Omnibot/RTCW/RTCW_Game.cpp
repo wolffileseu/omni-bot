@@ -528,6 +528,12 @@ void RTCW_Game::ClientJoined(const Event_SystemClientConnected *_msg)
 		CheckGameState();
 		OBASSERT(GameStarted(),"Game Not Started Yet");
 		OBASSERT(_msg->m_GameId < Constants::MAX_PLAYERS && _msg->m_GameId >= 0, "Invalid Client Index!");
+		// S1: OBASSERT is a no-op in the Linux release build, so guard at runtime.
+		if(_msg->m_GameId < 0 || _msg->m_GameId >= Constants::MAX_PLAYERS)
+		{
+			LOGWARN("ClientJoined: ignoring invalid GameId " << _msg->m_GameId);
+			return;
+		}
 		// If a bot isn't created by now, it has probably been a map change,
 		// and the game has re-added the clients itself.
 		ClientPtr &cp = GetClientFromCorrectedGameId(_msg->m_GameId);
