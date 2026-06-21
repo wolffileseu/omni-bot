@@ -16,8 +16,13 @@ ARCH ?= i386
 ifeq ($(ARCH),i386)
   ARCHFLAG := -m32
   SOSUFFIX := i386
-else
+else ifeq ($(ARCH),x86_64)
   ARCHFLAG := -m64
+  SOSUFFIX := x86_64
+else
+  # cross targets (e.g. aarch64): the toolchain itself selects the arch, so no
+  # -m32/-m64 (invalid). Pass CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++.
+  ARCHFLAG :=
   SOSUFFIX := $(ARCH)
 endif
 
