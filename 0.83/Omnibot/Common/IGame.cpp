@@ -54,7 +54,7 @@ IGame::~IGame()
 
 const char *IGame::GetVersion() const
 {
-	return "0.93";
+	return "0.94a";
 }
 
 const char *IGame::GetVersionDateTime() const
@@ -1581,6 +1581,33 @@ void IGame::EnsureUniqueBotName(char *_name, size_t _size)
     // Pathological: all 64 variations are taken. Leave the original name as-is
     // and make the exhaustion visible rather than failing silently.
     LOGWARN("EnsureUniqueBotName: no unique name found for '" << _name << "' after 64 attempts");
+}
+
+// Report an add-bot on the CONSOLE channel (so it lands in the server's own log,
+// which every operator has even without omnibot_logsize) plus the bot log file.
+// Highlights when the unique-name fix had to rename the bot.
+void IGame::LogBotAdd(const char *_requestedName, const Msg_Addbot &_addbot, int _gameId)
+{
+	const bool nameChanged = _requestedName && strcmp(_requestedName, _addbot.m_Name) != 0;
+
+	if (_gameId == -1)
+	{
+		EngineFuncs::ConsoleMessage(va("Omni-bot addbot FAILED: name='%s' team=%d class=%d",
+			_addbot.m_Name, _addbot.m_Team, _addbot.m_Class));
+	}
+	else if (nameChanged)
+	{
+		EngineFuncs::ConsoleMessage(va("Omni-bot addbot: '%s' -> '%s' (name clash resolved) team=%d class=%d id=%d",
+			_requestedName, _addbot.m_Name, _addbot.m_Team, _addbot.m_Class, _gameId));
+	}
+	else
+	{
+		EngineFuncs::ConsoleMessage(va("Omni-bot addbot: '%s' team=%d class=%d id=%d",
+			_addbot.m_Name, _addbot.m_Team, _addbot.m_Class, _gameId));
+	}
+
+	LOG("addbot: requested='" << (_requestedName ? _requestedName : "") << "' final='" << _addbot.m_Name
+		<< "' team=" << _addbot.m_Team << " class=" << _addbot.m_Class << " id=" << _gameId);
 }
 
 void IGame::AddBot(Msg_Addbot &_addbot, bool _createnow)

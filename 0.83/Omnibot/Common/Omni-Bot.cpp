@@ -53,6 +53,28 @@ void SetThreadName( DWORD dwThreadID, char* threadName)
 #endif
 
 //////////////////////////////////////////////////////////////////////////
+// Compile-time platform/arch tags for the startup banner.
+#if defined(_WIN32) || defined(WIN32)
+#	define OB_PLATFORM "windows"
+#elif defined(__APPLE__)
+#	define OB_PLATFORM "macos"
+#elif defined(__linux__)
+#	define OB_PLATFORM "linux"
+#else
+#	define OB_PLATFORM "unknown-os"
+#endif
+
+#if defined(__aarch64__) || defined(_M_ARM64)
+#	define OB_ARCH "aarch64"
+#elif defined(__x86_64__) || defined(_M_X64)
+#	define OB_ARCH "x86_64"
+#elif defined(__i386__) || defined(_M_IX86) || defined(i386)
+#	define OB_ARCH "x86"
+#else
+#	define OB_ARCH "unknown-arch"
+#endif
+
+//////////////////////////////////////////////////////////////////////////
 
 omnibot_error BotInitialise71(IEngineInterface71 *_pEngineFuncs, int _version)
 {
@@ -76,8 +98,15 @@ omnibot_error BotInitialise(IEngineInterface *_pEngineFuncs, int _version)
 	
 	if(result==BOT_ERROR_NONE)
 	{
-		EngineFuncs::ConsoleMessage(va("Omni-bot %s initialized in %.2f seconds.", g_GameManager->GetGame()->GetVersion(), loadTime.GetElapsedSeconds()));
-		LOG("Bot Initialized in " << loadTime.GetElapsedSeconds() << " seconds.");
+		const char *version = g_GameManager->GetGame()->GetVersion();
+		// Distinct banner on the CONSOLE channel so this custom build is
+		// unmistakable in the server's own log, not just the omni-bot log file.
+		EngineFuncs::ConsoleMessage("==================================================");
+		EngineFuncs::ConsoleMessage(va("Omni-bot %s  [wolffiles namefix]  (%s %s)", version, OB_PLATFORM, OB_ARCH));
+		EngineFuncs::ConsoleMessage(va("  build %s - unique bot names vs. connected players (Thor -> Thor2)", __DATE__ " " __TIME__));
+		EngineFuncs::ConsoleMessage("==================================================");
+		EngineFuncs::ConsoleMessage(va("Omni-bot %s initialized in %.2f seconds.", version, loadTime.GetElapsedSeconds()));
+		LOG("Bot Initialized in " << loadTime.GetElapsedSeconds() << " seconds. [wolffiles namefix " << OB_PLATFORM << " " << OB_ARCH << "]");
 	}
 	return result;
 }

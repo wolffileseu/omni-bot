@@ -108,6 +108,9 @@ public:
 
 	virtual void AddBot(Msg_Addbot &_addbot, bool _createnow = true);
 	void EnsureUniqueBotName(char *_name, size_t _size); // OMNIBOT_UNIQUE_NAME_FIX
+	// Log an add-bot to the game console (and the bot log). Call after Addbot();
+	// _requestedName is the name as it was before EnsureUniqueBotName ran.
+	void LogBotAdd(const char *_requestedName, const Msg_Addbot &_addbot, int _gameId);
 	
 	virtual void CheckServerSettings(bool managePlayers = true);
 

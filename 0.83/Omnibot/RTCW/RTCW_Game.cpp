@@ -307,12 +307,17 @@ void RTCW_Game::AddBot(Msg_Addbot &_addbot, bool _createnow)
 	OBASSERT(GameStarted(),"Game Not Started Yet");
 	if(_createnow)
 		m_BotJoining = true;
+	// Remember the requested name (post name-selection) so we can report when the
+	// unique-name fix renames the bot.
+	char requestedName[64];
+	Utils::StringCopy(requestedName, _addbot.m_Name, sizeof(requestedName));
 	// OMNIBOT_UNIQUE_NAME_FIX: shared impl in IGame::EnsureUniqueBotName. Strips
 	// colours, compares case-insensitively against every connected player (human
 	// and bot), appends a numeric suffix on a clash, and caps the result to
 	// MAX_NETNAME (36) so the engine cannot truncate the suffix away.
 	EnsureUniqueBotName(_addbot.m_Name, sizeof(_addbot.m_Name));
 	int iGameID = InterfaceFuncs::Addbot(_addbot);
+	LogBotAdd(requestedName, _addbot, iGameID);
 	if(_createnow)
 		m_BotJoining = false;
 	if(iGameID != -1 && _createnow)
