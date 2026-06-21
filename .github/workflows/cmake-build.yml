@@ -210,9 +210,14 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     needs: [ build ]
+    env:
+      ET_URL:   https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_ET.zip
+      RTCW_URL: https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_RTCW.zip
+      ET_SHA:   a1b0cf22e756dcde714078cf691bebf7eadd260adffd92b6d4ec30d60925ec9b
+      RTCW_SHA: 6275af05c97016636aa810b41f7521a74b09655bbf02beda83f862c831bf2418
     steps:
       - uses: actions/download-artifact@v4
-        name: download all artifacts
+        name: download all build artifacts
         with:
           path: packages
           merge-multiple: true
@@ -222,16 +227,46 @@ jobs:
           name: |
             *bit-omnibot-*
 
-      - uses: actions/upload-artifact@v4
-        name: Upload final ET artifact
-        with:
-          name: "omnibot-ET"
-          path: "${{ github.workspace }}/packages/omnibot_et*"
-          retention-days: 1
+      - name: Fetch official 0.93 packages + verify checksums
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          curl -fL -o et.zip   "$ET_URL"
+          curl -fL -o rtcw.zip "$RTCW_URL"
+          echo "$ET_SHA  et.zip"     | sha256sum -c -
+          echo "$RTCW_SHA  rtcw.zip" | sha256sum -c -
+
+      - name: Assemble official layout (swap in freshly-built binaries)
+        # Start from the official 0.93 zip (omni-bot/ root) and overwrite each
+        # platform binary with our CI build that carries the EnsureUniqueBotName
+        # patch. Any platform we did NOT build keeps its stock 0.93 binary.
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          OUT="$GITHUB_WORKSPACE/dist"; rm -rf "$OUT"; mkdir -p "$OUT"
+
+          swap() { # $1=game (et|rtcw) $2=zip $3=outzip
+            local game="$1" zip="$2" outname="$3" d="stage_$1"
+            rm -rf "$d" && mkdir "$d" && (cd "$d" && unzip -q "../$zip")
+            local n=0
+            for f in packages/omnibot_${game}*.so packages/omnibot_${game}*.dll; do
+              [ -e "$f" ] || continue
+              cp -v "$f" "$d/omni-bot/$(basename "$f")"
+              n=$((n+1))
+            done
+            echo "swapped $n $game binaries"
+            [ "$n" -gt 0 ] || { echo "ERROR: no $game binaries found in packages/"; exit 1; }
+            (cd "$d" && zip -rq "$OUT/$outname" .)
+          }
+
+          swap et   et.zip   omni-bot_0_93_namefix_ET.zip
+          swap rtcw rtcw.zip omni-bot_0_93_namefix_RTCW.zip
+
+          ( cd "$OUT" && sha256sum *.zip > SHA256SUMS )
+          ls -la "$OUT"
 
       - uses: actions/upload-artifact@v4
-        name: Upload final RTCW artifact
+        name: Upload assembled namefix packages
         with:
-          name: "omnibot-RTCW"
-          path: "${{ github.workspace }}/packages/omnibot_rtcw*"
-          retention-days: 1
+          name: omni-bot-namefix
+          path: dist/*
+          retention-days: 7
