@@ -68,9 +68,12 @@ jobs:
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/0.83/Omnibot/build" >> "$GITHUB_OUTPUT"
-        echo "build-libs-dir=${{ github.workspace }}/build/libs/download" >> "$GITHUB_OUTPUT"
-        echo "BOOST_ROOT=${{ github.workspace }}/build/libs/boost-1.84.0" >> "$GITHUB_OUTPUT"
+        # Use the runtime $GITHUB_WORKSPACE (not the ${{ github.workspace }} template):
+        # in container jobs the repo is mounted at /__w while the template expands to
+        # the host path /home/runner/work, which would not exist inside the container.
+        echo "build-output-dir=$GITHUB_WORKSPACE/0.83/Omnibot/build" >> "$GITHUB_OUTPUT"
+        echo "build-libs-dir=$GITHUB_WORKSPACE/build/libs/download" >> "$GITHUB_OUTPUT"
+        echo "BOOST_ROOT=$GITHUB_WORKSPACE/build/libs/boost-1.84.0" >> "$GITHUB_OUTPUT"
 
     - name: Install boost on macos
       if: matrix.os == 'macos-latest'
@@ -161,7 +164,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DOMNIBOT_STATIC_BOOST=OFF
-        -S ${{ github.workspace }}/0.83/Omnibot
+        -S $GITHUB_WORKSPACE/0.83/Omnibot
 
     - name: Configure CMake Linux
       # -static-libstdc++/-static-libgcc bake the C++ runtime in so the .so carries
@@ -177,7 +180,7 @@ jobs:
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
         "-DCMAKE_SHARED_LINKER_FLAGS=-m${{ matrix.bits }} -static-libstdc++ -static-libgcc"
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}/0.83/Omnibot
+        -S $GITHUB_WORKSPACE/0.83/Omnibot
       env:
         BOOST_ROOT: ${{ steps.install-boost-windows.outputs.BOOST_ROOT || steps.strings.outputs.BOOST_ROOT }}
 
