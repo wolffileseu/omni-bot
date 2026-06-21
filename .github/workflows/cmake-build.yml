@@ -95,15 +95,30 @@ jobs:
               --prefix=${{ steps.strings.outputs.BOOST_ROOT }} \
               install
 
-    - name: Install boost on windows (prebuilt)
+    - name: Build boost on windows (static runtime, from source)
+      # Prebuilt boost only ships shared-runtime (/MD) libs tagged vc143 and 32-bit
+      # only; the runner's MSVC 14.51 (VS2026) can't be matched to those. Build a
+      # newer boost from source with the native toolset, static libs + static
+      # runtime (/MT) to satisfy Boost_USE_STATIC_RUNTIME=ON in CMakeLists.txt.
       if: matrix.os == 'windows-latest'
-      uses: MarkusJx/install-boost@v2
       id: install-boost-windows
-      with:
-        boost_version: 1.84.0
-        platform_version: 2022
-        toolset: msvc
-        arch: x86
+      shell: cmd
+      run: |
+        if not exist "%BUILD_LIBS%" mkdir "%BUILD_LIBS%"
+        cd /d "%BUILD_LIBS%"
+        curl -L -o boost.tar.gz https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0.tar.gz
+        tar -xf boost.tar.gz
+        cd boost-1.88.0
+        call bootstrap.bat
+        if errorlevel 1 exit /b 1
+        b2 -j4 toolset=msvc address-model=%ADDRMODEL% variant=release ^
+           link=static runtime-link=static threading=multi ^
+           --with-system --with-filesystem --with-regex --with-date_time ^
+           --prefix="%BOOST_ROOT%" install
+      env:
+        BUILD_LIBS: ${{ steps.strings.outputs.build-libs-dir }}
+        BOOST_ROOT: ${{ steps.strings.outputs.BOOST_ROOT }}
+        ADDRMODEL: ${{ matrix.bits }}
 
     - name: Configure CMake macOS
       if: matrix.os == 'macos-latest'
