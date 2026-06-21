@@ -20,6 +20,11 @@ jobs:
         build_type: [Release]
         bits: [64, 32]
         include:
+          - os: ubuntu-24.04-arm
+            c_compiler: gcc
+            cpp_compiler: g++
+            bits: 64
+            arm: true
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
@@ -70,6 +75,12 @@ jobs:
               link=static --prefix=${{ steps.strings.outputs.BOOST_ROOT }} \
               install
 
+    - name: Install boost on linux (arm, system pkg)
+      if: matrix.os == 'ubuntu-24.04-arm'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libboost-system-dev libboost-filesystem-dev libboost-regex-dev libboost-date-time-dev
+
     - name: Install boost on linux
       if: matrix.os == 'ubuntu-latest'
       id: install-boost-linux
@@ -107,6 +118,16 @@ jobs:
       env:
         BOOST_ROOT: ${{ steps.install-boost-windows.outputs.BOOST_ROOT || steps.strings.outputs.BOOST_ROOT }}
 
+    - name: Configure CMake Linux ARM
+      # No -m32/-m64 (invalid on aarch64); system Boost (no BOOST_ROOT override).
+      if: matrix.os == 'ubuntu-24.04-arm'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}/0.83/Omnibot
+
     - name: Configure CMake Linux
       if: matrix.os == 'ubuntu-latest'
       run: >
@@ -133,8 +154,14 @@ jobs:
       env:
         BOOST_ROOT: ${{ steps.install-boost-windows.outputs.BOOST_ROOT || steps.strings.outputs.BOOST_ROOT }}
 
-    - name: Build
-      # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+    - name: Build (Unix)
+      # Unix Makefiles is a single-config generator; --config is invalid there.
+      if: matrix.os != 'windows-latest'
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} -j
+
+    - name: Build (Windows)
+      # Windows default generator (Visual Studio) is multi-config, so --config is required.
+      if: matrix.os == 'windows-latest'
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Test
