@@ -36,8 +36,11 @@ jobs:
           retry apt-get update
           retry apt-get install -y --no-install-recommends \
             ca-certificates git build-essential make gcc-multilib g++-multilib \
-            gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
             zip unzip curl file
+          # aarch64 cross: install the VERSIONED packages directly - the unversioned
+          # metapackage (gcc-aarch64-linux-gnu) has a broken dep chain on bullseye.
+          retry apt-get install -y --no-install-recommends \
+            gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu
 
       - uses: actions/checkout@v4
         with:
@@ -55,7 +58,7 @@ jobs:
           make -j"$(nproc)" ARCH=x86_64 qagame cgame ui
           rm -rf build
           # aarch64: official ships only qagame for arm64 (no cgame/ui), cross-compiled.
-          make -j"$(nproc)" ARCH=aarch64 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ qagame
+          make -j"$(nproc)" ARCH=aarch64 CC=aarch64-linux-gnu-gcc-10 CXX=aarch64-linux-gnu-g++-10 qagame
           mkdir -p "$GITHUB_WORKSPACE/modlibs"
           cp qagame.mp.i386.so   cgame.mp.i386.so   ui.mp.i386.so \
              qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so \
