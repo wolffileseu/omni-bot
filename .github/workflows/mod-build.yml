@@ -75,6 +75,7 @@ jobs:
           retry apt-get update
           retry apt-get install -y --no-install-recommends \
             ca-certificates git build-essential make gcc-multilib g++-multilib \
+            gcc-mingw-w64 g++-mingw-w64 \
             zip unzip curl file
 
       - uses: actions/checkout@v4
@@ -94,6 +95,17 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/modlibs"
           cp qagame.mp.i386.so   cgame.mp.i386.so   ui.mp.i386.so \
              qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
+
+      - name: Build Windows DLLs (MinGW cross, x64 + x86)
+        run: |
+          set -e
+          cd 0.83/GameInterfaces/ET/src
+          rm -rf build
+          make -j"$(nproc)" WIN=x64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ qagame cgame ui
+          rm -rf build
+          make -j"$(nproc)" WIN=x86 CC=i686-w64-mingw32-gcc   CXX=i686-w64-mingw32-g++   qagame cgame ui
+          cp qagame_mp_x64.dll cgame_mp_x64.dll ui_mp_x64.dll \
+             qagame_mp_x86.dll cgame_mp_x86.dll ui_mp_x86.dll "$GITHUB_WORKSPACE/modlibs/"
 
       - name: Download native aarch64 qagame
         uses: actions/download-artifact@v4
@@ -127,6 +139,23 @@ jobs:
           check cgame.mp.x86_64.so   "x86-64"
           check ui.mp.x86_64.so      "x86-64"
           check qagame.mp.aarch64.so "ARM aarch64"
+          # Windows DLLs: PE arch, vmMain+dllEntry exports, no MinGW runtime DLLs.
+          checkwin() {
+            dll="$1"; want="$2"
+            [ -f "$dll" ] || { echo "FAIL: $dll missing"; exit 1; }
+            file "$dll" | grep -q "$want" || { echo "FAIL: $dll wrong arch: $(file -b "$dll")"; exit 1; }
+            objdump -p "$dll" | grep -qw vmMain   || { echo "FAIL: $dll does not export vmMain"; exit 1; }
+            objdump -p "$dll" | grep -qw dllEntry || { echo "FAIL: $dll does not export dllEntry"; exit 1; }
+            bad=$(objdump -p "$dll" | awk '/DLL Name:/{print $3}' | grep -iE 'libgcc|libstdc|libwinpthread' || true)
+            [ -z "$bad" ] || { echo "FAIL: $dll needs a MinGW runtime DLL: $bad"; exit 1; }
+            echo "OK: $dll | $(file -b "$dll" | cut -d, -f1-2) | exports vmMain+dllEntry | imports $(objdump -p "$dll" | awk '/DLL Name:/{print $3}' | tr '\n' ' ')"
+          }
+          checkwin qagame_mp_x64.dll "x86-64"
+          checkwin cgame_mp_x64.dll  "x86-64"
+          checkwin ui_mp_x64.dll     "x86-64"
+          checkwin qagame_mp_x86.dll "Intel i386"
+          checkwin cgame_mp_x86.dll  "Intel i386"
+          checkwin ui_mp_x86.dll     "Intel i386"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -146,12 +175,12 @@ jobs:
           test -f official/omnibot/omnibot_et.pk3   || { echo "FAIL: official omnibot_et.pk3 missing"; exit 1; }
           test -f official/README-omnibot_mod.txt   || { echo "FAIL: official README missing"; exit 1; }
 
-      - name: Mod-Zip im offiziellen Layout bauen (Block 1c)
-        # Replicate the official layout 1:1, swapping in OUR Linux builds:
-        #   omnibot/         -> qagame loose (i386/x86_64/aarch64 ours; mac/win stock)
-        #   omnibot_et.pk3   -> cgame + ui INSIDE the pk3 (i386/x86_64 ours; mac/win stock)
+      - name: Mod-Zip im offiziellen Layout bauen (Block 1c + 2)
+        # Replicate the official layout 1:1, swapping in OUR builds:
+        #   omnibot/         -> qagame loose (linux i386/x86_64/aarch64 + win x64/x86 ours)
+        #   omnibot_et.pk3   -> cgame + ui INSIDE the pk3 (linux i386/x86_64 + win x64/x86 ours)
         #   README-omnibot_mod.txt at the zip root.
-        # mac/windows are a separate later step (Block 2/3) - they stay stock for now.
+        # Only mac libs stay stock (Block 3).
         run: |
           set -e
           cd "$GITHUB_WORKSPACE"
@@ -163,25 +192,28 @@ jobs:
           # 1) start from the official mod layout (omnibot/ + README)
           mkdir mod && (cd mod && unzip -q ../official_mod.zip)
 
-          # 2) qagame: swap our Linux builds loose in omnibot/ (mac/win stay stock)
-          cp modlibs/qagame.mp.i386.so    mod/omnibot/qagame.mp.i386.so
-          cp modlibs/qagame.mp.x86_64.so  mod/omnibot/qagame.mp.x86_64.so
-          cp modlibs/qagame.mp.aarch64.so mod/omnibot/qagame.mp.aarch64.so
+          # 2) qagame: swap our builds loose in omnibot/ (mac stays stock)
+          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so \
+                   qagame_mp_x64.dll qagame_mp_x86.dll; do
+            cp modlibs/$f mod/omnibot/$f
+          done
 
-          # 3) cgame + ui: swap our Linux builds INSIDE the pk3 (mac/win stay stock)
+          # 3) cgame + ui: swap our builds INSIDE the pk3 (mac stays stock)
           mkdir pk3 && (cd pk3 && unzip -q ../mod/omnibot/omnibot_et.pk3)
-          cp modlibs/cgame.mp.i386.so   pk3/cgame.mp.i386.so
-          cp modlibs/cgame.mp.x86_64.so pk3/cgame.mp.x86_64.so
-          cp modlibs/ui.mp.i386.so      pk3/ui.mp.i386.so
-          cp modlibs/ui.mp.x86_64.so    pk3/ui.mp.x86_64.so
+          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so \
+                   cgame_mp_x64.dll cgame_mp_x86.dll ui_mp_x64.dll ui_mp_x86.dll; do
+            cp modlibs/$f pk3/$f
+          done
           rm -f mod/omnibot/omnibot_et.pk3
           (cd pk3 && zip -rqX ../mod/omnibot/omnibot_et.pk3 .)
 
           # 4) verify the swap actually put OUR builds in place
-          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so; do
+          for f in qagame.mp.i386.so qagame.mp.x86_64.so qagame.mp.aarch64.so \
+                   qagame_mp_x64.dll qagame_mp_x86.dll; do
             cmp -s mod/omnibot/$f modlibs/$f || { echo "FAIL: omnibot/$f is not our build"; exit 1; }
           done
-          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so; do
+          for f in cgame.mp.i386.so cgame.mp.x86_64.so ui.mp.i386.so ui.mp.x86_64.so \
+                   cgame_mp_x64.dll cgame_mp_x86.dll ui_mp_x64.dll ui_mp_x86.dll; do
             cmp -s pk3/$f modlibs/$f || { echo "FAIL: pk3/$f is not our build"; exit 1; }
           done
 
