@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    # Linux jobs build inside an old-glibc container (debian:11 = glibc 2.31) so the
+    # produced .so loads on old game servers. Empty for win/mac -> runs on the host.
+    container: ${{ matrix.container }}
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -31,6 +34,7 @@ jobs:
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            container: debian:11
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
@@ -39,6 +43,20 @@ jobs:
             bits: 32
 
     steps:
+    - name: Install toolchain (debian container)
+      # Runs before checkout because the bare container has no git for submodules.
+      # No sudo in the container; apt runs as root.
+      if: matrix.container != ''
+      run: |
+        apt-get update
+        apt-get install -y --no-install-recommends \
+          ca-certificates git build-essential cmake zip curl
+        if [ "${{ matrix.bits }}" = "32" ]; then
+          dpkg --add-architecture i386
+          apt-get update
+          apt-get install -y --no-install-recommends gcc-multilib g++-multilib
+        fi
+
     - uses: actions/checkout@v4
       with:
         submodules: true
@@ -53,12 +71,6 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/0.83/Omnibot/build" >> "$GITHUB_OUTPUT"
         echo "build-libs-dir=${{ github.workspace }}/build/libs/download" >> "$GITHUB_OUTPUT"
         echo "BOOST_ROOT=${{ github.workspace }}/build/libs/boost-1.84.0" >> "$GITHUB_OUTPUT"
-
-    - name: Install Linux multilib
-      if: matrix.os == 'ubuntu-latest' && matrix.bits == 32
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt install -y gcc-multilib g++-multilib
 
     - name: Install boost on macos
       if: matrix.os == 'macos-latest'
@@ -152,6 +164,9 @@ jobs:
         -S ${{ github.workspace }}/0.83/Omnibot
 
     - name: Configure CMake Linux
+      # -static-libstdc++/-static-libgcc bake the C++ runtime in so the .so carries
+      # no GLIBCXX dependency (old servers ship older libstdc++). PIC is required
+      # because the from-source static boost is linked into a shared object.
       if: matrix.os == 'ubuntu-latest'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
@@ -159,7 +174,8 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_C_FLAGS=-m${{ matrix.bits }}
         -DCMAKE_CXX_FLAGS=-m${{ matrix.bits }}
-        -DCMAKE_SHARED_LINKER_FLAGS=-m${{ matrix.bits }}
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+        "-DCMAKE_SHARED_LINKER_FLAGS=-m${{ matrix.bits }} -static-libstdc++ -static-libgcc"
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}/0.83/Omnibot
       env:
@@ -192,6 +208,35 @@ jobs:
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }} || echo "no tests"
+
+    - name: Verify Linux binaries (loadable on old servers)
+      # A green build is not enough: the .so must load on an old game server. Fail
+      # hard here so a broken lib never reaches the release. Checks: no too-new
+      # GLIBCXX, glibc floor <= 2.31, and boost statically linked (no libboost dep).
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        set -e
+        B="${{ steps.strings.outputs.build-output-dir }}"
+        libs=$(ls "$B"/ET/omnibot_et*.so "$B"/RTCW/omnibot_rtcw*.so 2>/dev/null)
+        [ -n "$libs" ] || { echo "FAIL: no Linux .so built"; exit 1; }
+        for lib in $libs; do
+          echo "== $lib =="
+          if objdump -T "$lib" | grep -q 'GLIBCXX_3\.4\.3'; then
+            echo "FAIL: depends on too-new GLIBCXX_3.4.3x"; objdump -T "$lib" | grep 'GLIBCXX_3\.4\.3'; exit 1
+          fi
+          if objdump -p "$lib" | grep -qi 'NEEDED.*libstdc++'; then
+            echo "FAIL: dynamic libstdc++ dependency (not statically linked)"; exit 1
+          fi
+          if objdump -p "$lib" | grep -qi libboost; then
+            echo "FAIL: dynamic boost dependency"; objdump -p "$lib" | grep -i libboost; exit 1
+          fi
+          hi=$(objdump -T "$lib" | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sed 's/GLIBC_//' | sort -V | tail -1)
+          echo "highest glibc requirement: ${hi:-none}"
+          if [ -n "$hi" ] && [ "$(printf '%s\n2.31\n' "$hi" | sort -V | tail -1)" != "2.31" ]; then
+            echo "FAIL: glibc floor $hi > 2.31"; exit 1
+          fi
+          echo "OK: $lib"
+        done
 
     - uses: actions/upload-artifact@v4
       name: Upload ET artifacts
