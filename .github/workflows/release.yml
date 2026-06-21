@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: read   # needed to download the cmake-build artifact (win/mac/arm libs)
 
 env:
   ET_URL:   https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_ET.zip
@@ -30,7 +31,7 @@ jobs:
           dpkg --add-architecture i386
           retry apt-get update
           retry apt-get install -y --no-install-recommends \
-            ca-certificates git build-essential cmake zip unzip curl file \
+            ca-certificates git build-essential cmake zip unzip curl file jq \
             gcc-multilib g++-multilib
 
       - uses: actions/checkout@v4
@@ -124,23 +125,56 @@ jobs:
           echo "$ET_SHA  et.zip"   | sha256sum -c -
           echo "$RTCW_SHA  rtcw.zip" | sha256sum -c -
 
-      - name: Pakete bauen (offizielles Layout, nur Linux-Libs tauschen)
+      - name: Fixed win/mac/arm binaries aus dem CI-Build holen (alle 6 Plattformen)
+        # The Linux libs are built+verified above. The windows/mac/arm64 libs that
+        # also carry the fix come from the cmake-build "omni-bot-namefix" artifact
+        # for THIS commit (its collect job assembles all 6 into the official layout).
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          API="https://api.github.com/repos/$GITHUB_REPOSITORY"
+          AUTH="Authorization: Bearer $GH_TOKEN"
+          RID=$(curl -fsSL -H "$AUTH" "$API/actions/workflows/cmake-build.yml/runs?head_sha=$GITHUB_SHA&status=success&per_page=1" | jq -r '.workflow_runs[0].id // empty')
+          test -n "$RID" || { echo "FAIL: no successful cmake-build run for commit $GITHUB_SHA"; exit 1; }
+          echo "using cmake-build run $RID"
+          AURL=$(curl -fsSL -H "$AUTH" "$API/actions/runs/$RID/artifacts" | jq -r '.artifacts[] | select(.name=="omni-bot-namefix") | .archive_download_url')
+          test -n "$AURL" || { echo "FAIL: omni-bot-namefix artifact missing/expired on run $RID"; exit 1; }
+          curl -fsSL -H "$AUTH" -o ci-artifact.zip "$AURL"
+          rm -rf ci && mkdir ci && (cd ci && unzip -q ../ci-artifact.zip)
+          mkdir -p ci/et ci/rtcw
+          (cd ci/et   && unzip -q ../omni-bot_0_93_namefix_ET.zip)
+          (cd ci/rtcw && unzip -q ../omni-bot_0_93_namefix_RTCW.zip)
+
+      - name: Pakete bauen (offizielles Layout, alle 6 Bot-Libs tauschen)
         run: |
           set -e
           OUT="$GITHUB_WORKSPACE/dist"; rm -rf "$OUT"; mkdir -p "$OUT"
           B="$GITHUB_WORKSPACE/0.83/Omnibot"
 
-          # --- ET: offizielles Zip entpacken, 2 Linux-Libs ersetzen, neu zippen ---
-          rm -rf et && mkdir et && (cd et && unzip -q ../et.zip)
-          cp "$B/build/ET/omnibot_et.x86_64.so" et/omni-bot/omnibot_et.x86_64.so
-          cp "$B/build32/ET/omnibot_et.so"      et/omni-bot/omnibot_et.so
-          (cd et && zip -rq "$OUT/omni-bot_0_94b_namefix_ET.zip" .)
+          # Swap every bot lib with a fixed one: the two Linux libs from our own
+          # build (static, old-glibc, verified above), the rest from the CI build.
+          # game=et|rtcw  src_official=et.zip  ci_dir=ci/et  out=<name>.zip
+          swap_all() {
+            local game="$1" official="$2" cidir="$3" outname="$4" d="$5"
+            rm -rf "$d" && mkdir "$d" && (cd "$d" && unzip -q "../$official")
+            cp "$B/build/$(echo $game | tr a-z A-Z)/omnibot_${game}.x86_64.so" "$d/omni-bot/omnibot_${game}.x86_64.so"
+            cp "$B/build32/$(echo $game | tr a-z A-Z)/omnibot_${game}.so"      "$d/omni-bot/omnibot_${game}.so"
+            # everything else (windows/mac/arm64) from CI - skip our own Linux libs
+            for f in "$cidir"/omni-bot/omnibot_${game}*; do
+              local base; base=$(basename "$f")
+              case "$base" in
+                omnibot_${game}.x86_64.so|omnibot_${game}.so) continue;;
+              esac
+              cp "$f" "$d/omni-bot/$base"
+            done
+            ls -la "$d/omni-bot/omnibot_${game}"* | awk '{print "  "$NF}'
+            (cd "$d" && zip -rq "$OUT/$outname" .)
+          }
 
-          # --- RtCW: dito (omnibot/-Mod + qagame bleiben unangetastet) ---
-          rm -rf rtcw && mkdir rtcw && (cd rtcw && unzip -q ../rtcw.zip)
-          cp "$B/build/RTCW/omnibot_rtcw.x86_64.so" rtcw/omni-bot/omnibot_rtcw.x86_64.so
-          cp "$B/build32/RTCW/omnibot_rtcw.so"      rtcw/omni-bot/omnibot_rtcw.so
-          (cd rtcw && zip -rq "$OUT/omni-bot_0_94b_namefix_RTCW.zip" .)
+          swap_all et   et.zip   ci/et   omni-bot_0_94b_namefix_ET.zip   et
+          swap_all rtcw rtcw.zip ci/rtcw omni-bot_0_94b_namefix_RTCW.zip rtcw
 
           # --- Patch gegen offiziellen 0.93-Tag: nur erzeugen wenn nicht leer ---
           # Fetch the upstream 0.93 tag under a dedicated ref and diff our sources
