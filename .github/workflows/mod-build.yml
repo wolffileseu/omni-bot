@@ -79,3 +79,41 @@ jobs:
           name: et-mod-libs
           path: modlibs/*
           retention-days: 7
+
+      - name: pk3 + README aus offiziellem 0.93-Mod-Zip holen (Schritt 2)
+        # No omnibot_et.pk3 source exists in the repo, so take the official asset
+        # pk3 (and README) from the official ET waypoint mod as the source.
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          curl -fL -o official_mod.zip \
+            https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_ET_waypoint_mod.zip
+          rm -rf official && mkdir official && (cd official && unzip -q ../official_mod.zip)
+          test -f official/omnibot/omnibot_et.pk3   || { echo "FAIL: official omnibot_et.pk3 missing"; exit 1; }
+          test -f official/README-omnibot_mod.txt   || { echo "FAIL: official README missing"; exit 1; }
+
+      - name: Mod-Zip im offiziellen Layout bauen (Schritt 3, nur Linux)
+        # Official layout: omnibot/ with the .so libs + omnibot_et.pk3, and
+        # README-omnibot_mod.txt at the zip root. Linux only for now (i386 +
+        # x86_64); windows/mac/arm are a separate later step.
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          VER=$(grep -oP '#define OMNIBOT_VERSION "\K[^"]+' 0.83/Omnibot/Common/IGame.h)
+          VERTAG=$(echo "$VER" | tr '.' '_')
+          echo "mod version: $VER -> $VERTAG"
+          rm -rf dist mod && mkdir -p dist mod/omnibot
+          cp modlibs/qagame.mp.i386.so   modlibs/qagame.mp.x86_64.so \
+             modlibs/cgame.mp.i386.so    modlibs/cgame.mp.x86_64.so   mod/omnibot/
+          cp official/omnibot/omnibot_et.pk3 mod/omnibot/
+          cp official/README-omnibot_mod.txt mod/
+          ZIP="dist/omni-bot_${VERTAG}_ET_waypoint_mod.zip"
+          (cd mod && zip -rq "../$ZIP" .)
+          ( cd dist && sha256sum *.zip > SHA256SUMS )
+          echo "=== zip layout ==="; unzip -l "$ZIP"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: et-waypoint-mod
+          path: dist/*
+          retention-days: 7
