@@ -374,6 +374,13 @@ struct Event_SystemClientConnected
 struct Event_SystemClientDisConnected
 {
 	int			m_GameId;
+
+	// S2: default to -1 like Event_SystemClientConnected, so an unset slot never
+	// indexes m_ClientList[] with stack garbage (see S1 bounds check).
+	Event_SystemClientDisConnected()
+		: m_GameId(-1)
+	{
+	}
 };
 
 struct Event_SystemGravity
