@@ -1,4 +1,12 @@
-name: Build & Release omni-bot (name fix)
+name: Release omni-bot (engine + waypoint mod)
+
+# One tag (v*) builds EVERYTHING and publishes ONE pre-release:
+#   omni-bot_<ver>_ET.zip              (bot-engine ET)
+#   omni-bot_<ver>_RTCW.zip            (bot-engine RtCW)
+#   omni-bot_<ver>_ET_waypoint_mod.zip (waypoint mod, all 6 platforms)
+#   SHA256SUMS                         (over all three zips)
+# <ver> is derived from OMNIBOT_VERSION in IGame.h - nothing hardcoded.
+# workflow_dispatch runs the full build/verify but skips the publish (no tag).
 
 on:
   push:
@@ -6,8 +14,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: read   # needed to download the cmake-build artifact (win/mac/arm libs)
+  contents: write   # publish the release
+  actions: read     # download the cmake-build artifact (win/mac/arm engine libs)
 
 env:
   ET_URL:   https://github.com/jswigart/omni-bot/releases/download/0.93/omni-bot_0_93_ET.zip
@@ -16,15 +24,14 @@ env:
   RTCW_SHA: 6275af05c97016636aa810b41f7521a74b09655bbf02beda83f862c831bf2418
 
 jobs:
-  build:
+  # ---- Bot engine (ET + RtCW), all 6 platforms ----------------------------
+  engine:
     runs-on: ubuntu-latest
     # Build inside debian:11 (glibc 2.31) so the produced .so loads on old game
     # servers (ubuntu-latest's GCC pulls in a too-new GLIBCXX/glibc otherwise).
     container: debian:11
     steps:
       - name: Toolchain (debian container)
-        # Bare container: install before checkout (needs git). No sudo as root.
-        # Retry apt to ride out transient Debian mirror resets.
         run: |
           set -e
           retry() { for i in 1 2 3 4 5; do "$@" && return 0; echo "retry $i..."; sleep 10; done; return 1; }
@@ -35,7 +42,7 @@ jobs:
             gcc-multilib g++-multilib
 
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with: { fetch-depth: 1 }
 
       - name: GameMonkey beschaffen (relatives Submodul umgehen)
         run: |
@@ -46,8 +53,6 @@ jobs:
           test -f 0.83/Omnibot/dependencies/gmscriptex/gmsrc_ex/src/gm/gmVariable.h
 
       - name: Boost bauen (x86_64 + i386, statisch, -fPIC)
-        # From-source so the static .a is -fPIC (Debian's system .a is not) and gets
-        # baked into the module -> no external libboost dependency at runtime.
         run: |
           set -e
           cd "$GITHUB_WORKSPACE"
@@ -61,8 +66,6 @@ jobs:
                 --prefix="$GITHUB_WORKSPACE/boost32" install
 
       - name: Build x86_64
-        # Static boost + static libstdc++/libgcc baked in (MODULE targets use
-        # CMAKE_MODULE_LINKER_FLAGS) -> no GLIBCXX/boost runtime deps.
         run: |
           cd 0.83/Omnibot
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOMNIBOT_ET=ON -DOMNIBOT_RTCW=ON \
@@ -92,7 +95,6 @@ jobs:
           file 0.83/Omnibot/build32/RTCW/omnibot_rtcw.so      | grep -q "Intel 80386" || exit 1
 
       - name: Verify loadable on old servers (glibc/GLIBCXX/boost)
-        # Fail hard so a non-loadable lib never reaches the release.
         run: |
           set -e
           for lib in 0.83/Omnibot/build/ET/omnibot_et.x86_64.so \
@@ -122,13 +124,12 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           curl -fL -o et.zip   "$ET_URL"
           curl -fL -o rtcw.zip "$RTCW_URL"
-          echo "$ET_SHA  et.zip"   | sha256sum -c -
+          echo "$ET_SHA  et.zip"     | sha256sum -c -
           echo "$RTCW_SHA  rtcw.zip" | sha256sum -c -
 
       - name: Fixed win/mac/arm binaries aus dem CI-Build holen (alle 6 Plattformen)
-        # The Linux libs are built+verified above. The windows/mac/arm64 libs that
-        # also carry the fix come from the cmake-build "omni-bot-namefix" artifact
-        # for THIS commit (its collect job assembles all 6 into the official layout).
+        # Linux libs are built+verified above; windows/mac/arm64 come from the
+        # cmake-build "omni-bot-namefix" artifact for THIS commit (all 6 assembled).
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -147,113 +148,107 @@ jobs:
           (cd ci/et   && unzip -q ../omni-bot_0_93_namefix_ET.zip)
           (cd ci/rtcw && unzip -q ../omni-bot_0_93_namefix_RTCW.zip)
 
-      - name: Pakete bauen (offizielles Layout, alle 6 Bot-Libs tauschen)
+      - name: Engine-Pakete bauen (offizielles Layout, alle 6 Bot-Libs tauschen)
         run: |
           set -e
-          OUT="$GITHUB_WORKSPACE/dist"; rm -rf "$OUT"; mkdir -p "$OUT"
+          cd "$GITHUB_WORKSPACE"
+          OUT="$GITHUB_WORKSPACE/engine-dist"; rm -rf "$OUT"; mkdir -p "$OUT"
           B="$GITHUB_WORKSPACE/0.83/Omnibot"
+          VER=$(grep -oP '#define OMNIBOT_VERSION "\K[^"]+' 0.83/Omnibot/Common/IGame.h)
+          VERTAG=$(echo "$VER" | tr '.' '_')
+          echo "engine version: $VER -> $VERTAG"
 
-          # Swap every bot lib with a fixed one: the two Linux libs from our own
-          # build (static, old-glibc, verified above), the rest from the CI build.
-          # game=et|rtcw  src_official=et.zip  ci_dir=ci/et  out=<name>.zip
+          # Swap every bot lib: the two Linux libs from our own static old-glibc
+          # build, the rest (win/mac/arm64) from the CI build.
           swap_all() {
-            local game="$1" official="$2" cidir="$3" outname="$4" d="$5"
+            game="$1"; official="$2"; cidir="$3"; outname="$4"; d="$5"
             rm -rf "$d" && mkdir "$d" && (cd "$d" && unzip -q "../$official")
             cp "$B/build/$(echo $game | tr a-z A-Z)/omnibot_${game}.x86_64.so" "$d/omni-bot/omnibot_${game}.x86_64.so"
             cp "$B/build32/$(echo $game | tr a-z A-Z)/omnibot_${game}.so"      "$d/omni-bot/omnibot_${game}.so"
-            # everything else (windows/mac/arm64) from CI - skip our own Linux libs
             for f in "$cidir"/omni-bot/omnibot_${game}*; do
-              local base; base=$(basename "$f")
+              base=$(basename "$f")
               case "$base" in
                 omnibot_${game}.x86_64.so|omnibot_${game}.so) continue;;
               esac
               cp "$f" "$d/omni-bot/$base"
             done
-            ls -la "$d/omni-bot/omnibot_${game}"* | awk '{print "  "$NF}'
             (cd "$d" && zip -rq "$OUT/$outname" .)
           }
-
-          swap_all et   et.zip   ci/et   omni-bot_0_94b_namefix_ET.zip   et
-          swap_all rtcw rtcw.zip ci/rtcw omni-bot_0_94b_namefix_RTCW.zip rtcw
-
-          # --- Patch gegen offiziellen 0.93-Tag: nur erzeugen wenn nicht leer ---
-          # Fetch the upstream 0.93 tag under a dedicated ref and diff our sources
-          # against it. (safe.directory avoids git's "dubious ownership" refusal in
-          # the container, which previously left a 0-byte patch.)
-          git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
-          PATCH="$OUT/omnibot-namefix.patch"
-          if git fetch --depth 1 https://github.com/jswigart/omni-bot.git "+refs/tags/0.93:refs/tags/omni093"; then
-            git diff omni093 -- \
-              0.83/Omnibot/Common/Omni-Bot.cpp \
-              0.83/Omnibot/Common/IGame.cpp 0.83/Omnibot/Common/IGame.h \
-              0.83/Omnibot/ET/ET_Game.cpp   0.83/Omnibot/RTCW/RTCW_Game.cpp > "$PATCH" || true
-          fi
-          # Ship a real diff or nothing at all - never a 0-byte file.
-          if [ ! -s "$PATCH" ]; then
-            echo "omnibot-namefix.patch empty / not generated - omitting"
-            rm -f "$PATCH"
-          fi
-
-          cat > "$OUT/RELEASE_NOTES.md" <<'EOF'
-          # Omni-bot 0.94b — Unique Bot Name fix
-
-          Repackaged from the official 0.93 release. The base content — waypoints,
-          scripts, nav, GUI, everything under omni-bot/ — is the UNCHANGED official
-          0.93. Only the bot server libraries are the 0.94b build that carries the fix.
-
-          What changed since 0.94a:
-            - the startup banner build line was shortened.
-            - extra hardening against a possible crash on invalid client ids: a bounds
-              check in the client-slot handling, so an out-of-range / -1 GameId from the
-              engine can no longer corrupt memory (S1/S2).
-
-          Main fix (unchanged): a bot never connects under the (colour-stripped,
-          case-insensitive) name of an already connected client, human OR bot; on a
-          clash a numeric suffix is appended (Thor -> Thor2). Covers ET + RtCW.
-
-          === IF SOMETHING GOES WRONG ON YOUR SERVER, PLEASE HELP US DIAGNOSE ===
-          If Omni-bot crashes, OR a bot still takes the name of a real player, add
-          these lines to your server.cfg so we get a log of what happened:
-
-              set omnibot_logsize 2048
-              set omnibot_perf 1
-
-          The banner and the add-bot lines (requested -> final name) show up in the
-          normal server log (qconsole) anyway. On a resolved name clash you will see
-          e.g.  'Thor' -> 'Thor2' (name clash resolved). If you suspect a crash, watch
-          for a warning about an invalid GameId. Please send us those log lines so we
-          can place the problem.
-
-          All 6 platforms carry the fix (ET + RtCW): windows x86/x64, linux i386/
-          x86_64, arm64, mac. The Linux libs are statically linked (libstdc++ + boost
-          baked in, glibc floor 2.29), so they load on old servers.
-
-          Status: candidate fix, please test in-game. Belt and braces: keep real
-          player names out of et_botnames_ext.gm and keep the [BOT] prefix on bots.
-          The full source diff vs official 0.93 is included as omnibot-namefix.patch
-          (when present); sources are on the 'stable' branch of wolffileseu/omni-bot.
-          EOF
-          sed -i 's/^          //' "$OUT/RELEASE_NOTES.md"
-
-          ( cd "$OUT"
-            if [ -f omnibot-namefix.patch ]; then
-              sha256sum *.zip omnibot-namefix.patch > SHA256SUMS
-            else
-              sha256sum *.zip > SHA256SUMS
-            fi )
+          swap_all et   et.zip   ci/et   "omni-bot_${VERTAG}_ET.zip"   et
+          swap_all rtcw rtcw.zip ci/rtcw "omni-bot_${VERTAG}_RTCW.zip" rtcw
           ls -la "$OUT"
 
       - uses: actions/upload-artifact@v4
-        with: { name: omni-bot-namefix, path: dist/* }
+        with:
+          name: engine-zips
+          path: engine-dist/*
+          retention-days: 7
 
-      - name: Release (nur bei Tag)
-        if: startsWith(github.ref, 'refs/tags/')
+  # ---- Waypoint mod (all 6 platforms) via the reusable mod workflow --------
+  mod:
+    uses: ./.github/workflows/mod-build.yml
+
+  # ---- Collect everything into ONE pre-release -----------------------------
+  release:
+    needs: [ engine, mod ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Engine zips holen
+        uses: actions/download-artifact@v4
+        with:
+          name: engine-zips
+          path: incoming
+
+      - name: Mod zip holen
+        uses: actions/download-artifact@v4
+        with:
+          name: et-waypoint-mod
+          path: incoming
+
+      - name: Alle Zips sammeln + SHA256SUMS + Notes
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          rm -rf out && mkdir out
+          # only the three release zips (ignore the mod's own SHA256SUMS)
+          cp incoming/omni-bot_*_ET.zip \
+             incoming/omni-bot_*_RTCW.zip \
+             incoming/omni-bot_*_ET_waypoint_mod.zip out/
+          ( cd out && sha256sum *.zip > SHA256SUMS )
+          VERTAG=$(ls out/omni-bot_*_ET.zip | sed -E 's#.*omni-bot_([0-9a-z_]+)_ET\.zip#\1#')
+          VER=$(echo "$VERTAG" | tr '_' '.')
+          {
+            echo "# Omni-bot $VER"
+            echo
+            echo "Repackaged from the official 0.93 release; only the bot libraries are"
+            echo "the $VER build. All 6 platforms (windows x86/x64, linux i386/x86_64/arm64,"
+            echo "mac) carry the unique-bot-name fix; the Linux libs are statically linked"
+            echo "(glibc floor 2.29) so they load on old servers."
+            echo
+            echo "Contents:"
+            echo "  - omni-bot_${VERTAG}_ET.zip              bot engine (ET)"
+            echo "  - omni-bot_${VERTAG}_RTCW.zip            bot engine (RtCW)"
+            echo "  - omni-bot_${VERTAG}_ET_waypoint_mod.zip waypoint mod (qagame/cgame/ui, all 6 platforms)"
+            echo
+            echo "Diagnostics on a server: set omnibot_logsize 2048 and set omnibot_perf 1."
+            echo "Status: candidate fix, please test in-game."
+          } > out/RELEASE_NOTES.md
+          ls -la out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omni-bot-release
+          path: out/*
+          retention-days: 7
+
+      - name: Pre-Release (nur bei v* Tag)
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          body_path: dist/RELEASE_NOTES.md
+          body_path: out/RELEASE_NOTES.md
           files: |
-            dist/omni-bot_0_94b_namefix_ET.zip
-            dist/omni-bot_0_94b_namefix_RTCW.zip
-            dist/omnibot-namefix.patch
-            dist/SHA256SUMS
+            out/omni-bot_*_ET.zip
+            out/omni-bot_*_RTCW.zip
+            out/omni-bot_*_ET_waypoint_mod.zip
+            out/SHA256SUMS
