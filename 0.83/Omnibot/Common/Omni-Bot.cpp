@@ -102,11 +102,11 @@ omnibot_error BotInitialise(IEngineInterface *_pEngineFuncs, int _version)
 		// Distinct banner on the CONSOLE channel so this custom build is
 		// unmistakable in the server's own log, not just the omni-bot log file.
 		EngineFuncs::ConsoleMessage("==================================================");
-		EngineFuncs::ConsoleMessage(va("Omni-bot %s  [wolffiles namefix]  (%s %s)", version, OB_PLATFORM, OB_ARCH));
+		EngineFuncs::ConsoleMessage(va("Omni-bot %s  [Edit by Wolffiles.eu]  (%s %s)", version, OB_PLATFORM, OB_ARCH));
 		EngineFuncs::ConsoleMessage(va("  build %s - unique bot names vs. connected players (Thor -> Thor2)", __DATE__ " " __TIME__));
 		EngineFuncs::ConsoleMessage("==================================================");
 		EngineFuncs::ConsoleMessage(va("Omni-bot %s initialized in %.2f seconds.", version, loadTime.GetElapsedSeconds()));
-		LOG("Bot Initialized in " << loadTime.GetElapsedSeconds() << " seconds. [wolffiles namefix " << OB_PLATFORM << " " << OB_ARCH << "]");
+		LOG("Bot Initialized in " << loadTime.GetElapsedSeconds() << " seconds. [Edit by Wolffiles.eu " << OB_PLATFORM << " " << OB_ARCH << "]");
 	}
 	return result;
 }

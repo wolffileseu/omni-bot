@@ -181,7 +181,7 @@ jobs:
 
           New diagnostics (console channel — visible in the server log even without
           omnibot_logsize):
-            - startup banner: "Omni-bot 0.94a  [wolffiles namefix]  (<os> <arch>)".
+            - startup banner: "Omni-bot 0.94a  [Edit by Wolffiles.eu]  (<os> <arch>)".
             - per add-bot line: requested -> final name, team, class, game id; a
               clash fixup is flagged, e.g. "'Thor' -> 'Thor2' (name clash resolved)".
 
