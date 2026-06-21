@@ -1,0 +1,73 @@
+name: ET mod build (waypoint mod)
+
+# Builds the ET mod libraries (qagame + cgame) via the Makefile and verifies them.
+# Linux only for now (i386 + x86_64). Windows/Mac/ARM are a separate later step.
+# Independent of the bot-engine workflows (cmake-build.yml / release.yml).
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # debian:11 (glibc 2.31) for broad compatibility with old ET servers.
+    container: debian:11
+    steps:
+      - name: Toolchain (debian container)
+        # Bare container: install before checkout (needs git). No sudo as root.
+        run: |
+          set -e
+          retry() { for i in 1 2 3 4 5; do "$@" && return 0; echo "retry $i..."; sleep 10; done; return 1; }
+          dpkg --add-architecture i386
+          retry apt-get update
+          retry apt-get install -y --no-install-recommends \
+            ca-certificates git build-essential make gcc-multilib g++-multilib \
+            zip unzip curl file
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build mod libs (i386 + x86_64)
+        # The Makefile uses a shared build/ obj dir without arch in the path, so the
+        # obj dir MUST be wiped between architectures (else 32-bit objects would be
+        # relinked for 64-bit). The .so outputs live in src/ and are not under build/.
+        run: |
+          set -e
+          cd 0.83/GameInterfaces/ET/src
+          make -j"$(nproc)" ARCH=i386   qagame cgame
+          rm -rf build
+          make -j"$(nproc)" ARCH=x86_64 qagame cgame
+          mkdir -p "$GITHUB_WORKSPACE/modlibs"
+          cp qagame.mp.i386.so   cgame.mp.i386.so \
+             qagame.mp.x86_64.so cgame.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
+          ls -la "$GITHUB_WORKSPACE/modlibs"
+
+      - name: Verify mod libs (ELF arch, vmMain+dllEntry, sane NEEDED)
+        # Mandatory gate: the job fails if any .so is missing, the wrong arch, does
+        # not export the ET entry points, or pulls in an unexpected shared library.
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE/modlibs"
+          check() {
+            lib="$1"; want="$2"
+            [ -f "$lib" ] || { echo "FAIL: $lib missing"; exit 1; }
+            file "$lib" | grep -q "$want" || { echo "FAIL: $lib wrong arch: $(file -b "$lib")"; exit 1; }
+            nm -D --defined-only "$lib" | grep -qw vmMain   || { echo "FAIL: $lib does not export vmMain"; exit 1; }
+            nm -D --defined-only "$lib" | grep -qw dllEntry || { echo "FAIL: $lib does not export dllEntry"; exit 1; }
+            # Only standard C/C++ runtime libs are allowed in NEEDED.
+            bad=$(objdump -p "$lib" | awk '/NEEDED/{print $2}' | grep -vE '^lib(c|m|dl|pthread|stdc\+\+|gcc_s)\.so' || true)
+            [ -z "$bad" ] || { echo "FAIL: $lib has unexpected NEEDED: $bad"; exit 1; }
+            glibc=$(objdump -T "$lib" | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sed 's/GLIBC_//' | sort -V | tail -1)
+            echo "OK: $lib | $(file -b "$lib" | cut -d, -f1-2) | exports vmMain+dllEntry | glibc floor ${glibc:-none}"
+          }
+          check qagame.mp.i386.so   "Intel 80386"
+          check cgame.mp.i386.so    "Intel 80386"
+          check qagame.mp.x86_64.so "x86-64"
+          check cgame.mp.x86_64.so  "x86-64"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: et-mod-libs
+          path: modlibs/*
+          retention-days: 7
