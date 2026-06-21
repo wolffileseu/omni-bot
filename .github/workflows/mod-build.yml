@@ -5,6 +5,11 @@ name: ET mod build (waypoint mod)
 # Independent of the bot-engine workflows (cmake-build.yml / release.yml).
 
 on:
+  push:
+    branches: [ stable ]
+    paths:
+      - '.github/workflows/mod-build.yml'
+      - '0.83/GameInterfaces/ET/src/**'
   workflow_dispatch:
 
 jobs:
