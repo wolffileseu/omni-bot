@@ -134,13 +134,13 @@ jobs:
           rm -rf et && mkdir et && (cd et && unzip -q ../et.zip)
           cp "$B/build/ET/omnibot_et.x86_64.so" et/omni-bot/omnibot_et.x86_64.so
           cp "$B/build32/ET/omnibot_et.so"      et/omni-bot/omnibot_et.so
-          (cd et && zip -rq "$OUT/omni-bot_0_94a_namefix_ET.zip" .)
+          (cd et && zip -rq "$OUT/omni-bot_0_94b_namefix_ET.zip" .)
 
           # --- RtCW: dito (omnibot/-Mod + qagame bleiben unangetastet) ---
           rm -rf rtcw && mkdir rtcw && (cd rtcw && unzip -q ../rtcw.zip)
           cp "$B/build/RTCW/omnibot_rtcw.x86_64.so" rtcw/omni-bot/omnibot_rtcw.x86_64.so
           cp "$B/build32/RTCW/omnibot_rtcw.so"      rtcw/omni-bot/omnibot_rtcw.so
-          (cd rtcw && zip -rq "$OUT/omni-bot_0_94a_namefix_RTCW.zip" .)
+          (cd rtcw && zip -rq "$OUT/omni-bot_0_94b_namefix_RTCW.zip" .)
 
           # --- Patch gegen offiziellen 0.93-Tag: nur erzeugen wenn nicht leer ---
           # Fetch the upstream 0.93 tag under a dedicated ref and diff our sources
@@ -214,7 +214,7 @@ jobs:
           prerelease: true
           body_path: dist/RELEASE_NOTES.md
           files: |
-            dist/omni-bot_0_94a_namefix_ET.zip
-            dist/omni-bot_0_94a_namefix_RTCW.zip
+            dist/omni-bot_0_94b_namefix_ET.zip
+            dist/omni-bot_0_94b_namefix_RTCW.zip
             dist/omnibot-namefix.patch
             dist/SHA256SUMS

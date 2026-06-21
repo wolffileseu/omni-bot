@@ -9,7 +9,7 @@
 // Consumed by IGame::GetVersion(); shown in the startup banner and `version`.
 // (This is the RELEASE version, NOT the interface/protocol GetVersionNum().)
 // ---------------------------------------------------------------------------
-#define OMNIBOT_VERSION "0.94a"
+#define OMNIBOT_VERSION "0.94b"
 
 #include "CommandReciever.h"
 #include "EventReciever.h"
