@@ -22,12 +22,18 @@ else
 endif
 
 CC      ?= gcc
+CXX     ?= g++
 BUILD    = build
 # -fno-strict-aliasing + -w : alter ET-Code bricht sonst / spammt Warnungen.
 # -fcommon : alter Code hat mehrfach-definierte globals (GCC10+ braucht das).
 CFLAGS   = $(ARCHFLAG) -fPIC -O2 -fno-strict-aliasing -fcommon -w \
            -Dstricmp=strcasecmp -D_stricmp=strcasecmp
 LDFLAGS  = $(ARCHFLAG) -shared -lm
+
+# omni-bot interface: qagame embeds the C++ glue (g_etbot_interface.cpp) plus the
+# runtime loader (Omnibot/Common/BotLoadLibrary.cpp) so it can dlopen omnibot_et.so
+# and drive the bots - like the official qagame (hence libstdc++ + -ldl).
+OB_INC   = -I../../../Omnibot/Common -I../../../Omnibot/ET
 
 # ------------------------------------------------------------
 #  Quelldateien (1:1 aus den SConscripts uebernommen)
@@ -76,6 +82,10 @@ CGAME_SRC = \
 QAGAME_OBJ = $(addprefix $(BUILD)/qagame/,$(QAGAME_SRC:.c=.o))
 CGAME_OBJ  = $(addprefix $(BUILD)/cgame/,$(CGAME_SRC:.c=.o))
 
+# qagame C++ objects: the omni-bot glue (in game/) + the loader (in Omnibot/Common).
+QAGAME_CPP_OBJ = $(BUILD)/qagame/game/g_etbot_interface.o \
+                 $(BUILD)/qagame/ob/BotLoadLibrary.o
+
 QAGAME_LIB = qagame.mp.$(SOSUFFIX).so
 CGAME_LIB  = cgame.mp.$(SOSUFFIX).so
 
@@ -85,9 +95,9 @@ all: qagame cgame
 qagame: $(QAGAME_LIB)
 cgame:  $(CGAME_LIB)
 
-$(QAGAME_LIB): $(QAGAME_OBJ)
+$(QAGAME_LIB): $(QAGAME_OBJ) $(QAGAME_CPP_OBJ)
 	@echo "==> Linking $@"
-	$(CC) $(QAGAME_OBJ) $(LDFLAGS) -o $@
+	$(CXX) $(QAGAME_OBJ) $(QAGAME_CPP_OBJ) $(LDFLAGS) -ldl -o $@
 	@echo "==> Fertig: $@"
 
 $(CGAME_LIB): $(CGAME_OBJ)
@@ -99,6 +109,16 @@ $(CGAME_LIB): $(CGAME_OBJ)
 $(BUILD)/qagame/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -DGAMEDLL -c $< -o $@
+
+# qagame C++ glue (omni-bot interface) - braucht die Omnibot-Header.
+$(BUILD)/qagame/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CFLAGS) $(OB_INC) -DGAMEDLL -c $< -o $@
+
+# Loader liegt ausserhalb von src/ (in Omnibot/Common) - eigene Regel.
+$(BUILD)/qagame/ob/BotLoadLibrary.o: ../../../Omnibot/Common/BotLoadLibrary.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CFLAGS) $(OB_INC) -DGAMEDLL -c $< -o $@
 
 # cgame-Objekte brauchen -DCGAMEDLL
 $(BUILD)/cgame/%.o: %.c

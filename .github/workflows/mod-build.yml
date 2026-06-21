@@ -10,6 +10,9 @@ on:
     paths:
       - '.github/workflows/mod-build.yml'
       - '0.83/GameInterfaces/ET/src/**'
+      # qagame embeds the omni-bot interface/loader + headers from these dirs:
+      - '0.83/Omnibot/Common/**'
+      - '0.83/Omnibot/ET/**'
   workflow_dispatch:
 
 jobs:
