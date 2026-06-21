@@ -95,31 +95,35 @@ jobs:
               --prefix=${{ steps.strings.outputs.BOOST_ROOT }} \
               install
 
-    - name: Build boost on windows (static runtime, from source)
-      # Prebuilt boost only ships shared-runtime (/MD) libs tagged vc143 and 32-bit
-      # only; the runner's MSVC 14.51 (VS2026) can't be matched to those. Build a
-      # newer boost from source with the native toolset, static libs + static
-      # runtime (/MT) to satisfy Boost_USE_STATIC_RUNTIME=ON in CMakeLists.txt.
+    - name: Build boost on windows (cmake, static runtime)
+      # Prebuilt boost only ships shared-runtime (/MD) libs tagged vc143, 32-bit
+      # only. b2's bootstrap can't map the runner's MSVC 14.51 (VS2026) toolset
+      # ("Unknown toolset: vcunk"). So build boost via its own CMake build system
+      # (CMake detects MSVC 14.51 fine), static libs with static runtime (/MT) to
+      # satisfy Boost_USE_STATIC_RUNTIME=ON in CMakeLists.txt.
       if: matrix.os == 'windows-latest'
       id: install-boost-windows
       shell: cmd
       run: |
         if not exist "%BUILD_LIBS%" mkdir "%BUILD_LIBS%"
         cd /d "%BUILD_LIBS%"
-        curl -L -o boost.tar.gz https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-b2-nodocs.tar.gz
+        curl -L -o boost.tar.gz https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.gz
         tar -xf boost.tar.gz
         if errorlevel 1 exit /b 1
-        cd boost-1.90.0
-        call bootstrap.bat
+        cmake -S boost-1.90.0 -B boost-build -A %CMAKE_ARCH% ^
+          -DCMAKE_BUILD_TYPE=Release ^
+          -DBUILD_SHARED_LIBS=OFF ^
+          -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded ^
+          "-DBOOST_INCLUDE_LIBRARIES=system;filesystem;regex;date_time" ^
+          -DCMAKE_INSTALL_PREFIX="%BOOST_ROOT%"
         if errorlevel 1 exit /b 1
-        b2 -j4 toolset=msvc address-model=%ADDRMODEL% variant=release ^
-           link=static runtime-link=static threading=multi ^
-           --with-system --with-filesystem --with-regex --with-date_time ^
-           --prefix="%BOOST_ROOT%" install
+        cmake --build boost-build --config Release -j 4
+        if errorlevel 1 exit /b 1
+        cmake --install boost-build --config Release
       env:
         BUILD_LIBS: ${{ steps.strings.outputs.build-libs-dir }}
         BOOST_ROOT: ${{ steps.strings.outputs.BOOST_ROOT }}
-        ADDRMODEL: ${{ matrix.bits }}
+        CMAKE_ARCH: ${{ matrix.bits == 32 && 'Win32' || 'x64' }}
 
     - name: Configure CMake macOS
       if: matrix.os == 'macos-latest'
