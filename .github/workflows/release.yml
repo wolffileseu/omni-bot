@@ -142,11 +142,23 @@ jobs:
           cp "$B/build32/RTCW/omnibot_rtcw.so"      rtcw/omni-bot/omnibot_rtcw.so
           (cd rtcw && zip -rq "$OUT/omni-bot_0_94a_namefix_RTCW.zip" .)
 
-          # --- Patch (gegen offiziellen 0.93-Tag) + Notes + Checksums ---
-          git fetch --depth 1 https://github.com/jswigart/omni-bot.git refs/tags/0.93:refs/tags/0.93 || true
-          git diff 0.93 -- \
-            0.83/Omnibot/Common/IGame.cpp 0.83/Omnibot/Common/IGame.h \
-            0.83/Omnibot/ET/ET_Game.cpp   0.83/Omnibot/RTCW/RTCW_Game.cpp > "$OUT/omnibot-namefix.patch" || true
+          # --- Patch gegen offiziellen 0.93-Tag: nur erzeugen wenn nicht leer ---
+          # Fetch the upstream 0.93 tag under a dedicated ref and diff our sources
+          # against it. (safe.directory avoids git's "dubious ownership" refusal in
+          # the container, which previously left a 0-byte patch.)
+          git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
+          PATCH="$OUT/omnibot-namefix.patch"
+          if git fetch --depth 1 https://github.com/jswigart/omni-bot.git "+refs/tags/0.93:refs/tags/omni093"; then
+            git diff omni093 -- \
+              0.83/Omnibot/Common/Omni-Bot.cpp \
+              0.83/Omnibot/Common/IGame.cpp 0.83/Omnibot/Common/IGame.h \
+              0.83/Omnibot/ET/ET_Game.cpp   0.83/Omnibot/RTCW/RTCW_Game.cpp > "$PATCH" || true
+          fi
+          # Ship a real diff or nothing at all - never a 0-byte file.
+          if [ ! -s "$PATCH" ]; then
+            echo "omnibot-namefix.patch empty / not generated - omitting"
+            rm -f "$PATCH"
+          fi
 
           cat > "$OUT/RELEASE_NOTES.md" <<'EOF'
           # Omni-bot 0.94a — Unique Bot Name fix
@@ -184,7 +196,12 @@ jobs:
           EOF
           sed -i 's/^          //' "$OUT/RELEASE_NOTES.md"
 
-          ( cd "$OUT" && sha256sum *.zip omnibot-namefix.patch > SHA256SUMS )
+          ( cd "$OUT"
+            if [ -f omnibot-namefix.patch ]; then
+              sha256sum *.zip omnibot-namefix.patch > SHA256SUMS
+            else
+              sha256sum *.zip > SHA256SUMS
+            fi )
           ls -la "$OUT"
 
       - uses: actions/upload-artifact@v4
