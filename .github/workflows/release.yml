@@ -195,33 +195,38 @@ jobs:
           fi
 
           cat > "$OUT/RELEASE_NOTES.md" <<'EOF'
-          # Omni-bot 0.94a — Unique Bot Name fix
+          # Omni-bot 0.94b — Unique Bot Name fix
 
           Repackaged from the official 0.93 release. The base content — waypoints,
           scripts, nav, GUI, everything under omni-bot/ — is the UNCHANGED official
-          0.93. Only the bot server libraries are replaced with a 0.94a build that
-          carries the fix plus some diagnostics.
+          0.93. Only the bot server libraries are the 0.94b build that carries the fix.
 
-          Main fix: IGame::EnsureUniqueBotName() — a bot never connects under the
-          (colour-stripped, case-insensitive) name of an already connected client,
-          human OR bot; on a clash a numeric suffix is appended (Thor -> Thor2).
-          Covers ET + RtCW.
+          What changed since 0.94a:
+            - the startup banner build line was shortened.
+            - extra hardening against a possible crash on invalid client ids: a bounds
+              check in the client-slot handling, so an out-of-range / -1 GameId from the
+              engine can no longer corrupt memory (S1/S2).
 
-          Code-review hardening in this build:
-            - name cleaning: drop a dangling trailing '^', collapse '^^', and strip
-              non-printable / control characters before comparing.
-            - suffix safety: cap the result to MAX_NETNAME (36) so the engine cannot
-              truncate the numeric suffix away and re-create a clash.
+          Main fix (unchanged): a bot never connects under the (colour-stripped,
+          case-insensitive) name of an already connected client, human OR bot; on a
+          clash a numeric suffix is appended (Thor -> Thor2). Covers ET + RtCW.
 
-          New diagnostics (console channel — visible in the server log even without
-          omnibot_logsize):
-            - startup banner: "Omni-bot 0.94a  [Edit by Wolffiles.eu]  (<os> <arch>)".
-            - per add-bot line: requested -> final name, team, class, game id; a
-              clash fixup is flagged, e.g. "'Thor' -> 'Thor2' (name clash resolved)".
+          === IF SOMETHING GOES WRONG ON YOUR SERVER, PLEASE HELP US DIAGNOSE ===
+          If Omni-bot crashes, OR a bot still takes the name of a real player, add
+          these lines to your server.cfg so we get a log of what happened:
 
-          Carries the fix (Linux): omnibot_et.so + omnibot_et.x86_64.so,
-          omnibot_rtcw.so + omnibot_rtcw.x86_64.so.
-          Stock official 0.93 (no fix): aarch64, mac and Windows binaries.
+              set omnibot_logsize 2048
+              set omnibot_perf 1
+
+          The banner and the add-bot lines (requested -> final name) show up in the
+          normal server log (qconsole) anyway. On a resolved name clash you will see
+          e.g.  'Thor' -> 'Thor2' (name clash resolved). If you suspect a crash, watch
+          for a warning about an invalid GameId. Please send us those log lines so we
+          can place the problem.
+
+          All 6 platforms carry the fix (ET + RtCW): windows x86/x64, linux i386/
+          x86_64, arm64, mac. The Linux libs are statically linked (libstdc++ + boost
+          baked in, glibc floor 2.29), so they load on old servers.
 
           Status: candidate fix, please test in-game. Belt and braces: keep real
           player names out of et_botnames_ext.gm and keep the [BOT] prefix on bots.
