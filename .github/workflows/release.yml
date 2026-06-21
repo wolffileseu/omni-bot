@@ -149,22 +149,38 @@ jobs:
             0.83/Omnibot/ET/ET_Game.cpp   0.83/Omnibot/RTCW/RTCW_Game.cpp > "$OUT/omnibot-namefix.patch" || true
 
           cat > "$OUT/RELEASE_NOTES.md" <<'EOF'
-          # Omni-bot 0.93 — Unique Bot Name patch
+          # Omni-bot 0.94a — Unique Bot Name fix
 
-          Repackaged from the official 0.93 release. Layout is identical to upstream;
-          only the Linux server libraries (x86_64 + i386) are replaced with a build
-          that prevents bots from spawning under the name of a connected player.
+          Repackaged from the official 0.93 release. The base content — waypoints,
+          scripts, nav, GUI, everything under omni-bot/ — is the UNCHANGED official
+          0.93. Only the bot server libraries are replaced with a 0.94a build that
+          carries the fix plus some diagnostics.
 
-          Fix: IGame::EnsureUniqueBotName() — colour-stripped, case-insensitive
-          comparison against every connected client (human and bot) before the bot
-          connects; numeric suffix on a clash (Thor -> Thor2). Covers ET + RtCW.
+          Main fix: IGame::EnsureUniqueBotName() — a bot never connects under the
+          (colour-stripped, case-insensitive) name of an already connected client,
+          human OR bot; on a clash a numeric suffix is appended (Thor -> Thor2).
+          Covers ET + RtCW.
 
-          CARRIES THE FIX:    omnibot_et.so (i386), omnibot_et.x86_64.so
-                              omnibot_rtcw.so (i386), omnibot_rtcw.x86_64.so
-          STOCK 0.93 (no fix): aarch64, mac, and Windows binaries — unchanged.
+          Code-review hardening in this build:
+            - name cleaning: drop a dangling trailing '^', collapse '^^', and strip
+              non-printable / control characters before comparing.
+            - suffix safety: cap the result to MAX_NETNAME (36) so the engine cannot
+              truncate the numeric suffix away and re-create a clash.
 
-          Status: candidate fix, not yet verified in-game. Keep real player names out
-          of et_botnames_ext.gm and keep the [BOT] prefix. See omnibot-namefix.patch.
+          New diagnostics (console channel — visible in the server log even without
+          omnibot_logsize):
+            - startup banner: "Omni-bot 0.94a  [wolffiles namefix]  (<os> <arch>)".
+            - per add-bot line: requested -> final name, team, class, game id; a
+              clash fixup is flagged, e.g. "'Thor' -> 'Thor2' (name clash resolved)".
+
+          Carries the fix (Linux): omnibot_et.so + omnibot_et.x86_64.so,
+          omnibot_rtcw.so + omnibot_rtcw.x86_64.so.
+          Stock official 0.93 (no fix): aarch64, mac and Windows binaries.
+
+          Status: candidate fix, please test in-game. Belt and braces: keep real
+          player names out of et_botnames_ext.gm and keep the [BOT] prefix on bots.
+          The full source diff vs official 0.93 is included as omnibot-namefix.patch
+          (when present); sources are on the 'stable' branch of wolffileseu/omni-bot.
           EOF
           sed -i 's/^          //' "$OUT/RELEASE_NOTES.md"
 
