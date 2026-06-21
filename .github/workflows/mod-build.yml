@@ -49,12 +49,12 @@ jobs:
         run: |
           set -e
           cd 0.83/GameInterfaces/ET/src
-          make -j"$(nproc)" ARCH=i386   qagame cgame
+          make -j"$(nproc)" ARCH=i386   qagame cgame ui
           rm -rf build
-          make -j"$(nproc)" ARCH=x86_64 qagame cgame
+          make -j"$(nproc)" ARCH=x86_64 qagame cgame ui
           mkdir -p "$GITHUB_WORKSPACE/modlibs"
-          cp qagame.mp.i386.so   cgame.mp.i386.so \
-             qagame.mp.x86_64.so cgame.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
+          cp qagame.mp.i386.so   cgame.mp.i386.so   ui.mp.i386.so \
+             qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
           ls -la "$GITHUB_WORKSPACE/modlibs"
 
       - name: Verify mod libs (ELF arch, vmMain+dllEntry, sane NEEDED)
@@ -77,8 +77,10 @@ jobs:
           }
           check qagame.mp.i386.so   "Intel 80386"
           check cgame.mp.i386.so    "Intel 80386"
+          check ui.mp.i386.so       "Intel 80386"
           check qagame.mp.x86_64.so "x86-64"
           check cgame.mp.x86_64.so  "x86-64"
+          check ui.mp.x86_64.so     "x86-64"
 
       - uses: actions/upload-artifact@v4
         with:

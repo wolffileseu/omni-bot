@@ -76,11 +76,19 @@ CGAME_SRC = \
   game/bg_tracemap.c game/q_math.c game/q_shared.c \
   ui/ui_shared.c
 
+# --- ui: ui/ + einige game/ (1:1 aus SConscript.ui, Define UIDLL) ---
+UI_SRC = \
+  ui/ui_atoms.c ui/ui_gameinfo.c ui/ui_loadpanel.c ui/ui_main.c \
+  ui/ui_players.c ui/ui_shared.c ui/ui_syscalls.c ui/ui_util.c \
+  game/bg_campaign.c game/bg_classes.c game/bg_misc.c \
+  game/q_math.c game/q_shared.c
+
 # ------------------------------------------------------------
 #  Objekt-Listen (in build/ gespiegelt)
 # ------------------------------------------------------------
 QAGAME_OBJ = $(addprefix $(BUILD)/qagame/,$(QAGAME_SRC:.c=.o))
 CGAME_OBJ  = $(addprefix $(BUILD)/cgame/,$(CGAME_SRC:.c=.o))
+UI_OBJ     = $(addprefix $(BUILD)/ui/,$(UI_SRC:.c=.o))
 
 # qagame C++ objects: the omni-bot glue (in game/) + the loader (in Omnibot/Common).
 QAGAME_CPP_OBJ = $(BUILD)/qagame/game/g_etbot_interface.o \
@@ -88,12 +96,14 @@ QAGAME_CPP_OBJ = $(BUILD)/qagame/game/g_etbot_interface.o \
 
 QAGAME_LIB = qagame.mp.$(SOSUFFIX).so
 CGAME_LIB  = cgame.mp.$(SOSUFFIX).so
+UI_LIB     = ui.mp.$(SOSUFFIX).so
 
-.PHONY: all qagame cgame clean
-all: qagame cgame
+.PHONY: all qagame cgame ui clean
+all: qagame cgame ui
 
 qagame: $(QAGAME_LIB)
 cgame:  $(CGAME_LIB)
+ui:     $(UI_LIB)
 
 $(QAGAME_LIB): $(QAGAME_OBJ) $(QAGAME_CPP_OBJ)
 	@echo "==> Linking $@"
@@ -125,5 +135,15 @@ $(BUILD)/cgame/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -DCGAMEDLL -c $< -o $@
 
+$(UI_LIB): $(UI_OBJ)
+	@echo "==> Linking $@"
+	$(CC) $(UI_OBJ) $(LDFLAGS) -o $@
+	@echo "==> Fertig: $@"
+
+# ui-Objekte brauchen -DUIDLL
+$(BUILD)/ui/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -DUIDLL -c $< -o $@
+
 clean:
-	rm -rf $(BUILD) $(QAGAME_LIB) $(CGAME_LIB)
+	rm -rf $(BUILD) $(QAGAME_LIB) $(CGAME_LIB) $(UI_LIB)
