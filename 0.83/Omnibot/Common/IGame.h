@@ -1,6 +1,16 @@
 #ifndef __IGAME_H__
 #define __IGAME_H__
 
+// ---------------------------------------------------------------------------
+// Omni-bot release version - THE single source of truth. A bump is one line.
+// Scheme:
+//   small change / bugfix  -> increment the letter  (0.94a -> 0.94b -> 0.94c)
+//   larger change          -> increment the number  (0.94x -> 0.95a -> 0.96a)
+// Consumed by IGame::GetVersion(); shown in the startup banner and `version`.
+// (This is the RELEASE version, NOT the interface/protocol GetVersionNum().)
+// ---------------------------------------------------------------------------
+#define OMNIBOT_VERSION "0.94a"
+
 #include "CommandReciever.h"
 #include "EventReciever.h"
 #include "PathPlannerWaypoint.h"

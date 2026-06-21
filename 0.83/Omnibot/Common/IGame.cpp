@@ -54,7 +54,7 @@ IGame::~IGame()
 
 const char *IGame::GetVersion() const
 {
-	return "0.94a";
+	return OMNIBOT_VERSION;
 }
 
 const char *IGame::GetVersionDateTime() const
