@@ -69,8 +69,11 @@ else
   CFLAGS     = $(ARCHFLAG) -fPIC -O2 -fno-strict-aliasing -fcommon -w \
                -Dstricmp=strcasecmp -D_stricmp=strcasecmp
   LDFLAGS    = $(ARCHFLAG) -shared -lm
-  QAGAME_XLD = -ldl                         # dlopen() of omnibot_et.so
-  CGAME_XLD  =                              # cgame is C++ (libstdc++ via g++ link)
+  # qagame + cgame are C++ -> bake libstdc++/libgcc in so the lib does NOT depend on
+  # the host's (newer) libstdc++/libgcc_s. Without this, ET:Legacy crashes loading a
+  # mod lib that needs a newer GLIBCXX than the host provides. (Same as the engine.)
+  QAGAME_XLD = -ldl -static-libstdc++ -static-libgcc   # + dlopen() of omnibot_et.so
+  CGAME_XLD  = -static-libstdc++ -static-libgcc         # Omnibot_Interprocess.cpp
   QAGAME_LIB = qagame.mp.$(SOSUFFIX).so
   CGAME_LIB  = cgame.mp.$(SOSUFFIX).so
   UI_LIB     = ui.mp.$(SOSUFFIX).so
