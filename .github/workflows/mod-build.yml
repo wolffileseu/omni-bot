@@ -167,8 +167,10 @@ jobs:
             nm -D --defined-only "$lib" | grep -qw dllEntry || { echo "FAIL: $lib does not export dllEntry"; exit 1; }
             # Only standard C/C++ runtime libs are allowed in NEEDED.
             # libstdc++/libgcc_s must be STATICALLY linked (else ET:Legacy crashes on
-            # a too-new GLIBCXX) - so they must NOT appear as a dynamic NEEDED.
-            bad=$(objdump -p "$lib" | awk '/NEEDED/{print $2}' | grep -vE '^lib(c|m|dl|pthread)\.so' || true)
+            # a too-new GLIBCXX) - so they must NOT appear as a dynamic NEEDED. Allow
+            # only the base system libs + the dynamic linker (ld-linux*, which
+            # -static-libgcc surfaces as a NEEDED on i386).
+            bad=$(objdump -p "$lib" | awk '/NEEDED/{print $2}' | grep -vE '^(lib(c|m|dl|pthread)\.so|ld-linux)' || true)
             [ -z "$bad" ] || { echo "FAIL: $lib has unexpected NEEDED (dynamic libstdc++/libgcc_s?): $bad"; exit 1; }
             glibc=$(objdump -T "$lib" | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sed 's/GLIBC_//' | sort -V | tail -1)
             echo "OK: $lib | $(file -b "$lib" | cut -d, -f1-2) | exports vmMain+dllEntry | glibc floor ${glibc:-none}"
