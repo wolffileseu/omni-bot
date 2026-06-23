@@ -64,7 +64,7 @@ static qboolean Menu_OverActiveItem(menuDef_t *menu, float x, float y);
 #ifdef CGAME
 #define MEM_POOL_SIZE  128 * 1024
 #else
-#define MEM_POOL_SIZE  1536 * 1024	// Arnout: was 1024
+#define MEM_POOL_SIZE  8192 * 1024	// Arnout: was 1024; raised 1536->8192 for the full menu set (stock + Omni-bot DMS + credits, ~147 menuDefs)
 #endif
 
 static char		memoryPool[MEM_POOL_SIZE];
