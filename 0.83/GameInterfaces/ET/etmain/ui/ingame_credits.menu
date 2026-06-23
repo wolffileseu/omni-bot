@@ -1,0 +1,100 @@
+#include "ui/menudef.h"
+// =============================================================================
+// ingame_credits.menu  —  Omni-bot Mod credits
+// Vorlage: ingame_serverinfo.menu (popup, 640x480, onESC -> ingame_main)
+// =============================================================================
+{
+    menuDef
+    {
+        name        "ingame_credits"
+        visible        0
+        fullscreen    0
+        rect        214 102 212 276
+        focusColor    1 .68 .2 1
+        style        WINDOW_STYLE_FILLED
+        popup
+        onESC
+        {
+            close ingame_credits ;
+            open ingame_main
+        }
+        // --- abgedunkelter Hintergrund (wie serverinfo) ---
+        itemDef
+        {
+            name        "fadebox"
+            rect        0 0 640 480
+            style        WINDOW_STYLE_SHADER
+            background    "ui/assets/fadebox.tga"
+            forecolor    1 1 1 1
+            visible        1
+            decoration
+        }
+        // --- Fenster-Rahmen ---
+        itemDef
+        {
+            name        "windowborder"
+            rect        214 102 212 276
+            style        WINDOW_STYLE_FILLED
+            backcolor    0 0 0 .6
+            forecolor    1 1 1 1
+            border        WINDOW_BORDER_FULL
+            bordercolor    .5 .5 .5 .5
+            visible        1
+            decoration
+        }
+        // --- Titel ---
+        itemDef
+        {
+            name        "title"
+            rect        214 109 212 18
+            text        "CREDITS"
+            textfont    UI_FONT_COURBD_21
+            textscale    .28
+            textalignx    106
+            textaligny    14
+            textalign    ITEM_ALIGN_CENTER
+            forecolor    1 .68 .2 1
+            visible        1
+            decoration
+        }
+        // --- Omni-bot (Original) ---
+        itemDef
+        {
+            name        "l1"
+            rect        224 138 192 12
+            text        "^9Omni-bot"
+            textfont    UI_FONT_COURBD_21
+            textscale    .2
+            forecolor    1 .68 .2 1
+            visible        1
+            decoration
+        }
+        itemDef { name "l2" rect 224 152 192 10 text "^3Jeremy Swigart (jswigart)" textfont UI_FONT_COURBD_21 textscale .18 forecolor 1 1 1 1 visible 1 decoration }
+        itemDef { name "l3" rect 224 164 192 10 text "^3Petr Lastovicka (plastovicka)" textfont UI_FONT_COURBD_21 textscale .18 forecolor 1 1 1 1 visible 1 decoration }
+        itemDef { name "l4" rect 224 176 192 10 text "^3Michal Mitter (mittermichal)" textfont UI_FONT_COURBD_21 textscale .18 forecolor 1 1 1 1 visible 1 decoration }
+        // --- Wolffiles.eu ---
+        itemDef { name "l5" rect 224 200 192 12 text "^9Edit & Maintenance" textfont UI_FONT_COURBD_21 textscale .2 forecolor 1 .68 .2 1 visible 1 decoration }
+        itemDef { name "l6" rect 224 214 192 10 text "^3Wolffiles.eu" textfont UI_FONT_COURBD_21 textscale .18 forecolor 1 1 1 1 visible 1 decoration }
+        // --- wahke.lu ---
+        itemDef { name "l7" rect 224 238 192 12 text "^9Build & Development" textfont UI_FONT_COURBD_21 textscale .2 forecolor 1 .68 .2 1 visible 1 decoration }
+        itemDef { name "l8" rect 224 252 192 10 text "^3wahke (wahke.lu)" textfont UI_FONT_COURBD_21 textscale .18 forecolor 1 1 1 1 visible 1 decoration }
+        // --- BACK Button ---
+        itemDef
+        {
+            name        "back"
+            text        "BACK"
+            type        ITEM_TYPE_BUTTON
+            textfont    UI_FONT_COURBD_21
+            textscale    .24
+            rect        214 350 212 18
+            textalignx    106
+            textaligny    14
+            textalign    ITEM_ALIGN_CENTER
+            forecolor    .6 .6 .6 1
+            visible        1
+            action        { close ingame_credits ; open ingame_main }
+            mouseEnter    { setitemcolor back forecolor 1 1 1 1 }
+            mouseExit    { setitemcolor back forecolor .6 .6 .6 1 }
+        }
+    }
+}
