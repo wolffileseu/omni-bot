@@ -1,4 +1,6 @@
 	  #include "ui/menudef.h"
+	  #include "ui/menumacros.h"			// stock BUTTON/NAMEDBUTTON macros (main DMS menu only)
+	  #define GROUP_NAME "grpOmnibotDMS"	// required by BUTTON/NAMEDBUTTON; unused by the QM_* submenus
 
 	  #define DEFAULT_TEXT_SCALE 0.25
 	  #define ORIGIN_QUICKMESSAGE		10 10
@@ -78,25 +80,67 @@ menuDef {													\
 	  }													\
 	  execKey KEY { ACTION }
 
-QM_MENU_START( "omnibot" )
+// =============================================================================
+// Main DMS menu - rebuilt as a tabbed BUTTON interface (stock options style).
+// Tab bar switches content groups via "hide tabc_* ; show tabc_<tab>" and the
+// active-tab marker via "hide tabhl_* ; show tabhl_<tab>". The 13 submenus below
+// are UNCHANGED and still opened by "open <name>".
+// =============================================================================
+menuDef {
+	name		"omnibot"
+	visible		0
+	fullscreen	0
+	rect		80 96 480 196
+	focusColor	1 .68 .2 1
+	style		WINDOW_STYLE_FILLED
+	popup
+	onOpen	{ setCvar cl_bypassMouseInput "1" ; hide tabc_* ; show tabc_wp ; hide tabhl_* ; show tabhl_wp }
+	onClose	{ setCvar cl_bypassMouseInput "0" }
+	onEsc	{ close omnibot }
 
-	QM_MENU_ITEM( "^c 1. Waypoints",				close omnibot;					open wm_waypoints_alt,					"1", 0 )
-	QM_MENU_ITEM( "^o 2. Draw Map Goals",			close omnibot;					open wm_drawgoals_alt,					"2", 1 )
-	QM_MENU_ITEM( "^o 3. Draw Weapon Goals",			close omnibot;					open wm_drawgoals2_alt,					"3", 2 )
-	QM_MENU_ITEM( "^h 4. Create Camp Goals / BotRoles",	close omnibot;					open wm_creategoals2_alt,				"4", 3 )
-	QM_MENU_ITEM( "^h 5. Create Map Goals",			close omnibot;					open wm_creategoals1_alt,				"5", 4 )
-	QM_MENU_ITEM( "^h 6. Create Weapon Goals",		close omnibot;					open wm_creategoals3_alt,				"6", 5 )
-	QM_MENU_ITEM( "^d 7. Edit Goals",				close omnibot;					open wm_editgoals_alt,					"7", 6 )
-	QM_MENU_ITEM( "^d 8. Editing Commands",			close omnibot;					open wm_editcommands_alt,				"8", 7 )
-	QM_MENU_ITEM( "^d 9. Goal Options",				close omnibot;					open wm_goaloptions_alt,				"9", 8 )
-	QM_MENU_ITEM( "^8 0. Omnibot Commands",			close omnibot;					open wm_commands_alt,					"0", 9 )
-	QM_MENU_ITEM( "^8 -. Add Bots",				close omnibot;					open wm_addbots_alt,					"-", 10 )
-	QM_MENU_ITEM( "^b =. Cheats Menu",				close omnibot;					open ingame_vote_bots_fun,				"=", 11 )
-	QM_MENU_ITEM( "^b [. Debug Menu",				close omnibot;					open wm_debug_alt,					"[", 12 )
-	QM_MENU_ITEM( "^b ]. CVAR's Menu",				close omnibot;					open wm_cvars_alt,					"]", 13 )
-	QM_MENU_ITEM( "^7 Z. Close",					close omnibot,													"z", 15 )
+	itemDef { name "fadebox" rect 0 0 640 480 style WINDOW_STYLE_SHADER background "ui/assets/fadebox.tga" forecolor 1 1 1 1 visible 1 decoration }
+	itemDef { name "border" rect 80 96 480 196 style WINDOW_STYLE_FILLED backcolor 0 0 0 .8 forecolor 1 1 1 1 border WINDOW_BORDER_FULL bordercolor .5 .5 .5 .5 visible 1 decoration }
+	itemDef { name "title" rect 80 101 480 16 text "^3Omni-Bot DMS" textfont UI_FONT_COURBD_21 textscale .3 textalign ITEM_ALIGN_CENTER textalignx 240 textaligny 13 forecolor 1 .68 .2 1 visible 1 decoration }
 
-QM_MENU_END
+	// --- tab bar ---
+	BUTTON( 82,  124, 78, 18, "Waypoints", .2, 11, hide tabc_* ; show tabc_wp ; hide tabhl_* ; show tabhl_wp )
+	BUTTON( 162, 124, 78, 18, "Draw",      .2, 11, hide tabc_* ; show tabc_draw ; hide tabhl_* ; show tabhl_draw )
+	BUTTON( 242, 124, 78, 18, "Create",    .2, 11, hide tabc_* ; show tabc_create ; hide tabhl_* ; show tabhl_create )
+	BUTTON( 322, 124, 78, 18, "Edit",      .2, 11, hide tabc_* ; show tabc_edit ; hide tabhl_* ; show tabhl_edit )
+	BUTTON( 402, 124, 78, 18, "Bots",      .2, 11, hide tabc_* ; show tabc_bots ; hide tabhl_* ; show tabhl_bots )
+	BUTTON( 482, 124, 76, 18, "CVars",     .2, 11, hide tabc_* ; show tabc_cvars ; hide tabhl_* ; show tabhl_cvars )
+
+	// --- active-tab markers (one shown at a time) ---
+	itemDef { name "tabhl_wp"     rect 82  143 78 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+	itemDef { name "tabhl_draw"   rect 162 143 78 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+	itemDef { name "tabhl_create" rect 242 143 78 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+	itemDef { name "tabhl_edit"   rect 322 143 78 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+	itemDef { name "tabhl_bots"   rect 402 143 78 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+	itemDef { name "tabhl_cvars"  rect 482 143 76 2 style WINDOW_STYLE_FILLED backcolor 1 .68 .2 1 forecolor 1 .68 .2 1 visible 0 decoration }
+
+	// --- content: Waypoints ---
+	NAMEDBUTTON( "tabc_wp",     100, 156, 440, 18, "Waypoints", .25, 12, close omnibot ; open wm_waypoints_alt )
+	// --- content: Draw ---
+	NAMEDBUTTON( "tabc_draw",   100, 156, 440, 18, "Draw Map Goals", .25, 12, close omnibot ; open wm_drawgoals_alt )
+	NAMEDBUTTON( "tabc_draw",   100, 178, 440, 18, "Draw Weapon Goals", .25, 12, close omnibot ; open wm_drawgoals2_alt )
+	// --- content: Create ---
+	NAMEDBUTTON( "tabc_create", 100, 156, 440, 18, "Create Map Goals", .25, 12, close omnibot ; open wm_creategoals1_alt )
+	NAMEDBUTTON( "tabc_create", 100, 178, 440, 18, "Create Camp Goals / BotRoles", .25, 12, close omnibot ; open wm_creategoals2_alt )
+	NAMEDBUTTON( "tabc_create", 100, 200, 440, 18, "Create Weapon Goals", .25, 12, close omnibot ; open wm_creategoals3_alt )
+	// --- content: Edit ---
+	NAMEDBUTTON( "tabc_edit",   100, 156, 440, 18, "Edit Goals", .25, 12, close omnibot ; open wm_editgoals_alt )
+	NAMEDBUTTON( "tabc_edit",   100, 178, 440, 18, "Editing Commands", .25, 12, close omnibot ; open wm_editcommands_alt )
+	NAMEDBUTTON( "tabc_edit",   100, 200, 440, 18, "Goal Options", .25, 12, close omnibot ; open wm_goaloptions_alt )
+	// --- content: Bots ---
+	NAMEDBUTTON( "tabc_bots",   100, 156, 440, 18, "Add Bots", .25, 12, close omnibot ; open wm_addbots_alt )
+	NAMEDBUTTON( "tabc_bots",   100, 178, 440, 18, "Omnibot Commands", .25, 12, close omnibot ; open wm_commands_alt )
+	// --- content: CVars ---
+	NAMEDBUTTON( "tabc_cvars",  100, 156, 440, 18, "CVAR's Menu", .25, 12, close omnibot ; open wm_cvars_alt )
+	NAMEDBUTTON( "tabc_cvars",  100, 178, 440, 18, "Debug Menu", .25, 12, close omnibot ; open wm_debug_alt )
+
+	// --- close ---
+	BUTTON( 180, 256, 280, 18, "Close", .25, 12, close omnibot )
+}
 
 QM_MENU_START( "wm_waypoints_alt" )
 
