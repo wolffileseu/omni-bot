@@ -298,29 +298,28 @@ jobs:
                     cgame_mac ui_mac"
           mkdir pk3 && (cd pk3 && unzip -q ../mod/omnibot/omnibot_et.pk3)
           for f in $PK3_LIBS; do cp modlibs/$f pk3/$f; done
+          # Merge our menus + menus.txt + dms.cfg INTO the SAME pk3. jswigart's
+          # omnibot_et.pk3 stays the base (his content is preserved verbatim); we
+          # only add menu files and replace the libs. One pk3 ships - no separate
+          # menu pk3, no duplicate menus.
+          UI=0.83/GameInterfaces/ET/etmain/ui
+          mkdir -p pk3/ui
+          cp "$UI"/*.menu "$UI"/menus.txt pk3/ui/
+          cp 0.83/GameInterfaces/ET/etmain/dms.cfg pk3/dms.cfg
           rm -f mod/omnibot/omnibot_et.pk3
           (cd pk3 && zip -rqX ../mod/omnibot/omnibot_et.pk3 .)
 
-          # 3b) separate, self-contained menu pk3 (Vorbild: OB_DMS.pk3): our full
-          #     superset menus.txt + every etmain/ui menu (stock + Omni-bot DMS +
-          #     credits) + dms.cfg. jswigart's omnibot_et.pk3 is NOT opened for
-          #     menus; this pk3 rides alongside it (z_ name -> loads with priority).
-          UI=0.83/GameInterfaces/ET/etmain/ui
-          rm -rf menupk3 && mkdir -p menupk3/ui
-          cp "$UI"/*.menu "$UI"/menus.txt menupk3/ui/
-          cp 0.83/GameInterfaces/ET/etmain/dms.cfg menupk3/dms.cfg
-          (cd menupk3 && zip -rqX ../mod/omnibot/z_omnibot_dms.pk3 .)
-          # the menu pk3 must carry our new/changed files...
+          # 3b) the single pk3 must carry our new/changed files and be self-contained:
+          #     every menus.txt loadMenu target must be a file INSIDE omnibot_et.pk3.
           for need in ui/omnibot.menu ui/ingame_credits.menu ui/ingame_main.menu ui/menus.txt dms.cfg; do
-            unzip -l mod/omnibot/z_omnibot_dms.pk3 | awk '{print $4}' | grep -qx "$need" \
-              || { echo "FAIL: $need missing from menu pk3"; exit 1; }
+            unzip -l mod/omnibot/omnibot_et.pk3 | awk '{print $4}' | grep -qx "$need" \
+              || { echo "FAIL: $need missing from omnibot_et.pk3"; exit 1; }
           done
-          # ...and be self-contained: every menus.txt loadMenu target is inside it.
-          for m in $(sed -E 's#//.*##' menupk3/ui/menus.txt | grep -oE 'ui/[A-Za-z0-9_]+\.menu' | sort -u); do
-            unzip -l mod/omnibot/z_omnibot_dms.pk3 | awk '{print $4}' | grep -qx "$m" \
-              || { echo "FAIL: menus.txt references $m but it is not in the menu pk3"; exit 1; }
+          for m in $(sed -E 's#//.*##' pk3/ui/menus.txt | grep -oE 'ui/[A-Za-z0-9_]+\.menu' | sort -u); do
+            unzip -l mod/omnibot/omnibot_et.pk3 | awk '{print $4}' | grep -qx "$m" \
+              || { echo "FAIL: menus.txt references $m but it is not in omnibot_et.pk3"; exit 1; }
           done
-          echo "menu pk3 OK: $(unzip -l mod/omnibot/z_omnibot_dms.pk3 | grep -c '\.menu') menus + menus.txt + dms.cfg"
+          echo "pk3 menus OK: $(unzip -l mod/omnibot/omnibot_et.pk3 | grep -c '\.menu') menus + menus.txt + dms.cfg merged into omnibot_et.pk3"
 
           # 4) verify the swap actually put OUR builds in place (every platform)
           for f in $QAGAME_LOOSE; do
@@ -335,8 +334,7 @@ jobs:
           (cd mod && zip -rqX "../$ZIP" .)
           ( cd dist && sha256sum *.zip > SHA256SUMS )
           echo "=== zip layout ==="; unzip -l "$ZIP"
-          echo "=== omnibot_et.pk3 (libs only) ==="; unzip -l mod/omnibot/omnibot_et.pk3
-          echo "=== z_omnibot_dms.pk3 (menus) ==="; unzip -l mod/omnibot/z_omnibot_dms.pk3
+          echo "=== omnibot_et.pk3 (libs + menus + dms.cfg, single pk3) ==="; unzip -l mod/omnibot/omnibot_et.pk3
 
       - uses: actions/upload-artifact@v4
         with:
