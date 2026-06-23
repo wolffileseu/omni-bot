@@ -93,8 +93,56 @@ jobs:
           path: macout/*
           retention-days: 1
 
+  # Windows libs built with MSVC (v143) via the existing vcxproj, so they share the
+  # MSVC C++ ABI of omnibot_et.dll. MinGW (GCC ABI) crashed ET:Legacy at waypoint
+  # drawing (this in ECX vs on-stack mismatch across the IClientInterface vtable).
+  windows-msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build mod DLLs (MSVC v143, vcxproj)
+        shell: pwsh
+        env:
+          # vcxproj reference $(REPO_ROOT)\Omnibot\Common; $(BOOST) is referenced but
+          # the mod C++ does not actually include boost, so a dummy path is fine.
+          REPO_ROOT: ${{ github.workspace }}\0.83
+          BOOST: ${{ github.workspace }}\0.83
+        run: |
+          cd 0.83\GameInterfaces\ET\src
+          $projects = @("cgame\cgame.vcxproj","game\game.vcxproj","ui\ui.vcxproj")
+          foreach ($p in $projects) {
+            foreach ($plat in @("Win32","x64")) {
+              Write-Host "==> msbuild $p $plat"
+              # Release pins v120_xp (not on the runner) -> override to v143.
+              # PostBuildEvent copies into a local ET install -> disable in CI.
+              msbuild $p /p:Configuration=Release /p:Platform=$plat /p:PlatformToolset=v143 /p:PostBuildEventUseInBuild=false /m /v:m /nologo
+              if ($LASTEXITCODE -ne 0) { throw "msbuild failed: $p $plat" }
+            }
+          }
+          $out = "$env:GITHUB_WORKSPACE\winlibs"; New-Item -ItemType Directory -Force -Path $out | Out-Null
+          Get-ChildItem -Recurse -Path build -Filter "*_mp_*.dll" | ForEach-Object {
+            Write-Host "found $($_.FullName)"; Copy-Item $_.FullName $out -Force
+          }
+          foreach ($n in "qagame_mp_x86.dll","cgame_mp_x86.dll","ui_mp_x86.dll",
+                         "qagame_mp_x64.dll","cgame_mp_x64.dll","ui_mp_x64.dll") {
+            if (!(Test-Path "$out\$n")) { throw "missing $n" }
+          }
+          Get-ChildItem $out | ForEach-Object { Write-Host $_.Name }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: et-mod-libs-win
+          path: winlibs/*
+          retention-days: 1
+
   build:
-    needs: [ qagame-aarch64, mac ]
+    needs: [ qagame-aarch64, mac, windows-msvc ]
     runs-on: ubuntu-latest
     # debian:11 (glibc 2.31) for broad compatibility with old ET servers.
     container: debian:11
@@ -108,7 +156,6 @@ jobs:
           retry apt-get update
           retry apt-get install -y --no-install-recommends \
             ca-certificates git build-essential make gcc-multilib g++-multilib \
-            gcc-mingw-w64 g++-mingw-w64 \
             zip unzip curl file
 
       - uses: actions/checkout@v4
@@ -129,16 +176,11 @@ jobs:
           cp qagame.mp.i386.so   cgame.mp.i386.so   ui.mp.i386.so \
              qagame.mp.x86_64.so cgame.mp.x86_64.so ui.mp.x86_64.so "$GITHUB_WORKSPACE/modlibs/"
 
-      - name: Build Windows DLLs (MinGW cross, x64 + x86)
-        run: |
-          set -e
-          cd 0.83/GameInterfaces/ET/src
-          rm -rf build
-          make -j"$(nproc)" WIN=x64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ qagame cgame ui
-          rm -rf build
-          make -j"$(nproc)" WIN=x86 CC=i686-w64-mingw32-gcc   CXX=i686-w64-mingw32-g++   qagame cgame ui
-          cp qagame_mp_x64.dll cgame_mp_x64.dll ui_mp_x64.dll \
-             qagame_mp_x86.dll cgame_mp_x86.dll ui_mp_x86.dll "$GITHUB_WORKSPACE/modlibs/"
+      - name: Download Windows MSVC DLLs
+        uses: actions/download-artifact@v4
+        with:
+          name: et-mod-libs-win
+          path: modlibs
 
       - name: Download native aarch64 qagame
         uses: actions/download-artifact@v4
@@ -189,8 +231,11 @@ jobs:
             file "$dll" | grep -q "$want" || { echo "FAIL: $dll wrong arch: $(file -b "$dll")"; exit 1; }
             objdump -p "$dll" | grep -qw vmMain   || { echo "FAIL: $dll does not export vmMain"; exit 1; }
             objdump -p "$dll" | grep -qw dllEntry || { echo "FAIL: $dll does not export dllEntry"; exit 1; }
+            # MSVC build -> must NOT depend on a MinGW runtime DLL...
             bad=$(objdump -p "$dll" | awk '/DLL Name:/{print $3}' | grep -iE 'libgcc|libstdc|libwinpthread' || true)
             [ -z "$bad" ] || { echo "FAIL: $dll needs a MinGW runtime DLL: $bad"; exit 1; }
+            # ...and must carry no GCC marker (the MinGW ABI is what crashed ET:Legacy).
+            if strings "$dll" | grep -q 'GCC: (GNU)'; then echo "FAIL: $dll still built with GCC/MinGW (wrong C++ ABI)"; exit 1; fi
             echo "OK: $dll | $(file -b "$dll" | cut -d, -f1-2) | exports vmMain+dllEntry | imports $(objdump -p "$dll" | awk '/DLL Name:/{print $3}' | tr '\n' ' ')"
           }
           checkwin qagame_mp_x64.dll "x86-64"
