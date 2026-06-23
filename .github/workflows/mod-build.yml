@@ -108,20 +108,20 @@ jobs:
 
       - name: Build mod DLLs (MSVC v143, vcxproj)
         shell: pwsh
-        env:
-          # vcxproj reference $(REPO_ROOT)\Omnibot\Common; $(BOOST) is referenced but
-          # the mod C++ does not actually include boost, so a dummy path is fine.
-          REPO_ROOT: ${{ github.workspace }}\0.83
-          BOOST: ${{ github.workspace }}\0.83
         run: |
           cd 0.83\GameInterfaces\ET\src
+          # Paths.props derives REPO_ROOT from $(SolutionDir) (unset when building a
+          # vcxproj directly) and a property sheet overrides env vars, so REPO_ROOT
+          # and BOOST MUST be passed as command-line /p: properties (highest
+          # precedence). BOOST is referenced but the mod C++ pulls no boost -> dummy.
+          $repo = "$env:GITHUB_WORKSPACE\0.83"
           $projects = @("cgame\cgame.vcxproj","game\game.vcxproj","ui\ui.vcxproj")
           foreach ($p in $projects) {
             foreach ($plat in @("Win32","x64")) {
               Write-Host "==> msbuild $p $plat"
               # Release pins v120_xp (not on the runner) -> override to v143.
               # PostBuildEvent copies into a local ET install -> disable in CI.
-              msbuild $p /p:Configuration=Release /p:Platform=$plat /p:PlatformToolset=v143 /p:PostBuildEventUseInBuild=false /m /v:m /nologo
+              msbuild $p /p:Configuration=Release /p:Platform=$plat /p:PlatformToolset=v143 /p:PostBuildEventUseInBuild=false /p:REPO_ROOT=$repo /p:BOOST=$repo /m /v:m /nologo
               if ($LASTEXITCODE -ne 0) { throw "msbuild failed: $p $plat" }
             }
           }
